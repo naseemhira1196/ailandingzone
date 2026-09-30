@@ -24,7 +24,7 @@ The dashboard includes:
 
 ## Presenter notes
 
-`AI-Landing-Zone-Dashboard-Talk-Track.docx` contains the one-hour agenda, talking points, click cues, and discussion prompts. Keep this document separate from the customer-facing dashboard during presentation.
+`AI-Landing-Zone-Dashboard-Talk-Track.docx` contains the one-hour agenda, talking points, click cues, and discussion prompts. It matches the current **AI Landing Zone - High Level** tab, seven-part blueprint, revised networking diagrams, and **Deployment accelerator** button. The blueprint walkthrough and accelerator visit fit within the existing 60 minutes. Keep this document separate from the customer-facing dashboard during presentation; it is not published on the Azure site.
 
 ## Important boundaries
 
