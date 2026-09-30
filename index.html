@@ -173,6 +173,7 @@ body {
 .iconbtn:hover { background: var(--cp-accent-soft); border-color: var(--cp-accent); color: var(--cp-accent); }
 .iconbtn.primary { background: var(--cp-accent); border-color: var(--cp-accent); color: var(--cp-accent-fg); }
 .iconbtn.primary:hover { background: var(--cp-accent-hover); }
+a.iconbtn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
 
 .content { flex: 1; overflow-y: auto; padding: 26px 32px 60px; }
 .panel { display: none; max-width: 1180px; margin: 0 auto; animation: fadein 0.18s ease; }
@@ -494,6 +495,10 @@ a { color: var(--cp-link); }
         <h1 id="topTitle">AI Landing Zone - High Level</h1>
       </div>
       <div class="toolbar">
+        <a class="iconbtn" id="acceleratorLink" href="https://azure.github.io/AI-Landing-Zones/#ai-gateway-landing-zone" target="_blank" rel="noopener noreferrer" aria-label="Deployment accelerator (opens in a new tab)">
+          Deployment accelerator
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2L7 9M7 3H2v11h11V9"></path></svg>
+        </a>
         <button class="iconbtn" id="themeToggle">Dark theme</button>
         <button class="iconbtn" id="fullscreenToggle">Full screen</button>
       </div>

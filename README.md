@@ -20,6 +20,7 @@ The dashboard includes:
 - Governance discussion controls and Audit versus Deny scenarios.
 - Locally saved decisions and open questions, with a plain-text export.
 - Light/dark themes, full-screen controls, and responsive layouts.
+- A **Deployment accelerator** button that opens the AI Landing Zones accelerator's AI gateway section in a new tab, leaving the dashboard open. It links to guidance; it does not create Azure resources.
 
 ## Presenter notes
 
@@ -122,7 +123,7 @@ The dashboard requires browser JavaScript. If your hosting environment enforces 
 
 ### Offline presentation
 
-Download `index.html` and open it directly in a modern browser. The dashboard and its supporting diagrams work without a network connection or external documentation links.
+Download `index.html` and open it directly in a modern browser. The dashboard and its supporting diagrams work without a network connection. The optional **Deployment accelerator** link requires internet access.
 
 ### Data and access considerations
 
