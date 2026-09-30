@@ -16,6 +16,7 @@ The dashboard includes:
 - APIM hub and Foundry spoke diagrams with illustrative request and workload scenarios.
 - A drag-and-drop service sort with immediate baseline feedback and keyboard-friendly placement controls.
 - Microsoft-managed and customer-managed networking comparisons.
+- Spacious network diagrams with separate hybrid-connectivity paths and arrow labels; smaller screens scroll within the diagram instead of squeezing its text.
 - Governance discussion controls and Audit versus Deny scenarios.
 - Locally saved decisions and open questions, with a plain-text export.
 - Light/dark themes, full-screen controls, and responsive layouts.
