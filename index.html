@@ -867,57 +867,69 @@ a { color: var(--cp-link); }
           </div>
 
           <div class="topo-wrap spacious" id="vnetDiagramBYO" style="display:none;">
-            <svg viewBox="0 0 1160 370" xmlns="http://www.w3.org/2000/svg" aria-labelledby="byoTitle">
-              <title id="byoTitle">Customer-managed network with a separate hybrid connectivity path</title>
+            <svg viewBox="0 0 1160 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="byoTitle byoDesc">
+              <title id="byoTitle">Customer-managed VNet with separate agent and private endpoint subnets</title>
+              <desc id="byoDesc">The customer VNet contains an agent subnet delegated to Microsoft.App/environments for hosted Micro VMs and data proxies, and a separate nondelegated subnet for private endpoint NICs. Private endpoints connect to managed data services outside the VNet. On-premises connects to the network through ExpressRoute or VPN.</desc>
               <defs>
                 <marker id="byoArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                   <path d="M0,0 L10,5 L0,10 Z" class="topo-arrow-fill"></path>
                 </marker>
               </defs>
-              <path class="topo-edge" d="M495,84 V184" marker-end="url(#byoArrow)"></path>
-              <text class="topo-edge-label" x="519" y="136">ExpressRoute / VPN</text>
-              <path class="topo-edge" d="M180,260 H326" marker-end="url(#byoArrow)"></path>
-              <path class="topo-edge-flow" d="M180,260 H326"></path>
-              <text class="topo-edge-label" x="255" y="236" text-anchor="middle">VNet integration</text>
-              <path class="topo-edge" d="M660,260 H786" marker-end="url(#byoArrow)"></path>
-              <path class="topo-edge-flow" d="M660,260 H786"></path>
-              <text class="topo-edge-label" x="725" y="236" text-anchor="middle">Private access</text>
+              <rect id="byoVnetBoundary" x="250" y="180" width="690" height="290" rx="12" fill="var(--cp-accent-soft)" stroke="var(--cp-border-strong)" stroke-dasharray="6 5"></rect>
+              <text class="topo-node-label" x="275" y="212">Customer VNet</text>
+              <text class="topo-node-sub" x="275" y="237">Two separate subnets within the network</text>
+              <path class="topo-edge" d="M620,90 V176" marker-end="url(#byoArrow)"></path>
+              <text class="topo-edge-label" x="644" y="137">ExpressRoute / VPN</text>
+              <path class="topo-edge" d="M180,342 H271" marker-end="url(#byoArrow)"></path>
+              <path class="topo-edge-flow" d="M180,342 H271"></path>
+              <text class="topo-edge-label" x="215" y="322" text-anchor="middle">Injection</text>
+              <path class="topo-edge" d="M555,342 H681" marker-end="url(#byoArrow)"></path>
+              <path class="topo-edge-flow" d="M555,342 H681"></path>
+              <text class="topo-edge-label" x="620" y="322" text-anchor="middle">Private access</text>
 
               <g class="topo-node">
-                <rect class="topo-node-box" x="20" y="210" width="160" height="100" rx="14"></rect>
-                <text class="topo-node-label" x="100" y="252" text-anchor="middle">Foundry Agent</text>
-                <text class="topo-node-sub" x="100" y="278" text-anchor="middle">BYO VNet setup</text>
+                <rect class="topo-node-box" x="20" y="292" width="160" height="100" rx="14"></rect>
+                <text class="topo-node-label" x="100" y="334" text-anchor="middle">Foundry service</text>
+                <text class="topo-node-sub" x="100" y="360" text-anchor="middle">BYO VNet integration</text>
               </g>
 
               <g class="topo-node">
-                <rect class="topo-node-box" x="400" y="20" width="190" height="64" rx="12"></rect>
-                <text class="topo-node-label" x="495" y="46" text-anchor="middle">On-Premises</text>
-                <text class="topo-node-sub" x="495" y="68" text-anchor="middle">Enterprise network</text>
+                <rect class="topo-node-box" x="525" y="20" width="190" height="70" rx="12"></rect>
+                <text class="topo-node-label" x="620" y="49" text-anchor="middle">On-Premises</text>
+                <text class="topo-node-sub" x="620" y="73" text-anchor="middle">Enterprise network</text>
               </g>
 
-              <g class="topo-node">
-                <rect class="topo-node-box" x="330" y="188" width="330" height="144" rx="14"></rect>
-                <text class="topo-node-label" x="495" y="222" text-anchor="middle">Customer VNet Subnet</text>
-                <text class="topo-node-sub" x="495" y="248" text-anchor="middle">Azure Firewall + UDR</text>
-                <text class="topo-node-sub" x="495" y="272" text-anchor="middle">FQDN allow-list, deny-by-default</text>
-                <text class="topo-node-sub" x="495" y="304" text-anchor="middle">Full customer control of egress</text>
+              <g class="topo-node" id="byoAgentSubnet">
+                <rect class="topo-node-box" x="275" y="260" width="280" height="165" rx="14"></rect>
+                <text class="topo-node-label" x="415" y="294" text-anchor="middle">Agent delegated subnet</text>
+                <text class="topo-node-sub" x="415" y="321" text-anchor="middle">Microsoft.App/environments</text>
+                <text class="topo-node-sub" x="415" y="350" text-anchor="middle">Hosted Micro VMs + data proxies</text>
+                <text class="topo-node-sub" x="415" y="379" text-anchor="middle">Shared runtime / project capacity</text>
+                <text class="topo-node-sub" x="415" y="406" text-anchor="middle">No private endpoints in this subnet</text>
               </g>
 
-              <g class="topo-node">
-                <rect class="topo-node-box" x="790" y="210" width="150" height="100" rx="14"></rect>
-                <text class="topo-node-label" x="865" y="250" text-anchor="middle">Private</text>
-                <text class="topo-node-label" x="865" y="274" text-anchor="middle">Endpoint</text>
+              <g class="topo-node" id="byoPrivateEndpointSubnet">
+                <rect class="topo-node-box" x="685" y="260" width="230" height="165" rx="14"></rect>
+                <text class="topo-node-label" x="800" y="294" text-anchor="middle">Private endpoint subnet</text>
+                <text class="topo-node-sub" x="800" y="321" text-anchor="middle">Not delegated</text>
+                <text class="topo-node-sub" x="800" y="350" text-anchor="middle">Private endpoint NICs</text>
+                <text class="topo-node-sub" x="800" y="379" text-anchor="middle">Private IPs for service access</text>
+                <text class="topo-node-sub" x="800" y="406" text-anchor="middle">Separate from the agent subnet</text>
               </g>
 
-              <path class="topo-edge" d="M940,260 H1036" marker-end="url(#byoArrow)"></path>
-              <path class="topo-edge-flow" d="M940,260 H1036"></path>
-              <text class="topo-edge-label" x="990" y="236" text-anchor="middle">Data access</text>
-              <g class="topo-node">
-                <rect class="topo-node-box" x="1040" y="210" width="100" height="100" rx="14"></rect>
-                <text class="topo-node-label" x="1090" y="250" text-anchor="middle">Data</text>
-                <text class="topo-node-label" x="1090" y="274" text-anchor="middle">Services</text>
+              <path class="topo-edge" d="M915,342 H1036" marker-end="url(#byoArrow)"></path>
+              <path class="topo-edge-flow" d="M915,342 H1036"></path>
+              <text class="topo-edge-label" x="986" y="322" text-anchor="middle">Private Link</text>
+              <g class="topo-node" id="byoDataServices">
+                <rect class="topo-node-box" x="1040" y="292" width="100" height="100" rx="14"></rect>
+                <text class="topo-node-label" x="1090" y="333" text-anchor="middle">Data</text>
+                <text class="topo-node-label" x="1090" y="357" text-anchor="middle">Services</text>
               </g>
             </svg>
+            <div class="network-note" id="byoSubnetExplanation">
+              <strong>Same VNet, different subnets.</strong> The delegated subnet supplies runtime IPs for hosted Micro VMs and project data proxies. The separate, nondelegated subnet holds private endpoint NICs; the managed data services themselves are not deployed into that subnet. This example places both subnets in one VNet; private endpoints can also be reached in a peered VNet with the appropriate routing and DNS.
+              <p><strong>Firewall placement is separate.</strong> If Azure Firewall is used, it lives in its own dedicated <code>AzureFirewallSubnet</code>, often in the connectivity hub. UDRs and network rules control supported outbound paths; private endpoint traffic is not automatically routed through the firewall.</p>
+            </div>
           </div>
 
           <div class="vnet-cols">
@@ -935,6 +947,7 @@ a { color: var(--cp-link); }
               <ul id="vnetB">
                 <li>Full control: your own Azure Firewall/NVA, user-defined routes, and network peering.</li>
                 <li>Connects to hub/spoke, shared services, or on-premises via ExpressRoute/VPN.</li>
+                <li>Separate subnets: delegate the agent runtime subnet to Microsoft.App/environments; place private endpoint NICs in a different, nondelegated subnet.</li>
                 <li>Encryption key ownership is a separate service-level decision, not a property of a private endpoint.</li>
                 <li>Trade-off: more complex setup (subnet delegation to Container Apps, CapHost creation), private IP ranges only, /27 minimum subnet for agent delegation.</li>
               </ul>

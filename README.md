@@ -16,6 +16,7 @@ The dashboard includes:
 - APIM hub and Foundry spoke diagrams with illustrative request and workload scenarios.
 - A drag-and-drop service sort with immediate baseline feedback and keyboard-friendly placement controls.
 - Microsoft-managed and customer-managed networking comparisons.
+- A BYO VNet diagram that separates the delegated agent runtime subnet from the nondelegated private endpoint subnet, with explicit firewall-placement guidance.
 - An optional **Networking Deep Dive** reference tab with hosted/prompt traffic paths, clickable ownership details, subnet address budgets, managed outbound modes, private DNS examples, and troubleshooting checks.
 - Spacious network diagrams with separate hybrid-connectivity paths and arrow labels; smaller screens scroll within the diagram instead of squeezing its text.
 - Governance discussion controls and Audit versus Deny scenarios.
