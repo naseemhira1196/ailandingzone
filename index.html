@@ -1700,10 +1700,12 @@ a { color: var(--cp-link); }
       result.replaceChildren(title, text);
     }
     render(0);
-    const note = document.createElement("p");
-    note.className = "scenario-source";
-    note.textContent = disclaimer;
-    root.appendChild(note);
+    if (disclaimer) {
+      const note = document.createElement("p");
+      note.className = "scenario-source";
+      note.textContent = disclaimer;
+      root.appendChild(note);
+    }
   }
 
   buildScenario("gatewayScenario", "One request, different outcomes", [
@@ -1751,7 +1753,7 @@ a { color: var(--cp-link); }
       result: "An eligible cached response avoids this model inference call",
       text: "Caching is opt-in, not automatic. Configure lookup and store policies, similarity thresholds, isolation, and freshness. Embedding and cache operations may still incur cost. Sensitive or personalized responses need additional safeguards.",
     },
-  ], "Example policy ordering; not measured performance or billing data.");
+  ]);
 
   buildScenario("workloadScenario", "The workload shapes the dependencies", [
     {
