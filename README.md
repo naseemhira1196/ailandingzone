@@ -12,7 +12,7 @@ Download or clone this repository and open `index.html` in a modern browser. No 
 
 The dashboard includes:
 
-- A clickable landing zone architecture map.
+- An **AI Landing Zone - High Level** view with a clickable hub/spoke map and supporting enterprise foundation, platform, workload, and operations blueprint.
 - APIM hub and Foundry spoke diagrams with illustrative request and workload scenarios.
 - A drag-and-drop service sort with immediate baseline feedback and keyboard-friendly placement controls.
 - Microsoft-managed and customer-managed networking comparisons.
@@ -42,6 +42,8 @@ The dashboard is hosted on Azure Static Web Apps **Free** in **Central US**:
 - Estimated hosting cost: $0/month within Free-tier limits; no production SLA.
 
 This is a manual content deployment, not a GitHub-connected deployment. Pushing to `main` does **not** automatically update the Azure site.
+
+**Friendly domain:** Azure assigns the `azurestaticapps.net` hostname automatically; renaming the resource does not change it. An address such as `ai-landing-zone.example.com` requires a domain you own, DNS configuration, and custom-domain validation. No custom domain is configured for this deployment yet.
 
 #### Publish dashboard updates
 
@@ -119,7 +121,7 @@ The dashboard requires browser JavaScript. If your hosting environment enforces 
 
 ### Offline presentation
 
-Download `index.html` and open it directly in a modern browser. The dashboard interactions work without a network connection; external Microsoft Learn links require internet access.
+Download `index.html` and open it directly in a modern browser. The dashboard and its supporting diagrams work without a network connection or external documentation links.
 
 ### Data and access considerations
 

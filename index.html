@@ -197,7 +197,7 @@ body {
   margin-bottom: 10px;
 }
 
-/* ---------- Section 1: Landing Zone Map ---------- */
+/* ---------- Section 1: AI Landing Zone - High Level ---------- */
 .map-wrap { display: flex; flex-direction: column; align-items: center; gap: 0; }
 .map-row { display: flex; gap: 22px; justify-content: center; width: 100%; flex-wrap: wrap; }
 .node {
@@ -241,6 +241,7 @@ body {
 .topo-edge-flow { stroke: var(--cp-accent); stroke-width: 2; fill: none; stroke-dasharray: 6 6; animation: topo-dash 1.2s linear infinite; opacity: 0.8; }
 .topo-edge-label { fill: var(--cp-text-soft); font-size: 10px; font-family: "Segoe UI", Aptos, Calibri, sans-serif; }
 .topo-arrow-fill { fill: var(--cp-border-strong); }
+.topo-boundary { fill: var(--cp-bg-elevated); stroke: var(--cp-border); stroke-width: 1.5; stroke-dasharray: 6 4; }
 .badge-box { fill: var(--cp-accent-soft); stroke: var(--cp-accent); stroke-width: 1; }
 .badge-label { fill: var(--cp-accent); font-size: 10px; font-weight: 700; font-family: "Segoe UI", Aptos, Calibri, sans-serif; pointer-events: none; }
 @keyframes topo-dash { to { stroke-dashoffset: -24; } }
@@ -471,7 +472,7 @@ a { color: var(--cp-link); }
       <div class="brand-tile" aria-hidden="true">AI</div>
       <div class="title">AI Landing Zone</div>
     </div>
-    <button class="navbtn active" data-panel="p1"><span class="num">1</span> Landing Zone Map</button>
+    <button class="navbtn active" data-panel="p1"><span class="num">1</span> AI Landing Zone - High Level</button>
     <button class="navbtn" data-panel="p4"><span class="num">2</span> Hub &amp; Spoke Landing Zones</button>
     <button class="navbtn" data-panel="p2"><span class="num">3</span> Day-1 Services Sort</button>
     <button class="navbtn" data-panel="p3"><span class="num">4</span> VNet Showdown</button>
@@ -487,7 +488,7 @@ a { color: var(--cp-link); }
   <main class="main">
     <div class="topbar">
       <div>
-        <h1 id="topTitle">Landing Zone Map</h1>
+        <h1 id="topTitle">AI Landing Zone - High Level</h1>
       </div>
       <div class="toolbar">
         <button class="iconbtn" id="themeToggle">Dark theme</button>
@@ -498,7 +499,7 @@ a { color: var(--cp-link); }
 
     <div class="content">
 
-      <!-- PANEL 1: Landing Zone Map -->
+      <!-- PANEL 1: AI Landing Zone - High Level -->
       <section class="panel active" id="p1">
         <div class="card">
           <h2>Hub &amp; Spoke Architecture</h2>
@@ -592,6 +593,125 @@ a { color: var(--cp-link); }
               <li>AI Search — grounding/RAG via Foundry IQ and agentic retrieval (usually required).</li>
               <li>Cosmos DB — thread/state storage (depends on hosting pattern).</li>
               <li>Private endpoints, private DNS, access permissions, and public-network restrictions must be configured together.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card" id="landingZoneBlueprint">
+          <h2>AI Landing Zone Blueprint</h2>
+          <div class="topo-wrap">
+            <svg viewBox="0 0 940 570" xmlns="http://www.w3.org/2000/svg" aria-labelledby="blueprintTitle blueprintDescription">
+              <title id="blueprintTitle">Enterprise foundation, shared platform, and AI workload landing zone</title>
+              <desc id="blueprintDescription">Governance spans platform and workload subscriptions. Shared connectivity and an APIM gateway support an AI workload with an application, Foundry, and use-case-specific data services. Operations spans both layers. Connections illustrate responsibilities, not a deployment-ready network design.</desc>
+              <defs>
+                <marker id="blueprintArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M0,0 L10,5 L0,10 Z" class="topo-arrow-fill"></path>
+                </marker>
+              </defs>
+              <g class="topo-node" data-detail="blueprint-foundation">
+                <rect class="topo-node-box" x="20" y="16" width="900" height="72" rx="12"></rect>
+                <text class="topo-node-label" x="470" y="44" text-anchor="middle">Enterprise foundation</text>
+                <text class="topo-node-sub" x="470" y="66" text-anchor="middle">Microsoft Entra ID · Management groups · Azure Policy · Role-based access</text>
+              </g>
+              <path class="topo-edge" d="M230,88 V124 M700,88 V124" marker-end="url(#blueprintArrow)"></path>
+              <text class="topo-edge-label" x="470" y="111" text-anchor="middle">Governance and access scopes</text>
+
+              <rect class="topo-boundary" x="20" y="128" width="420" height="336" rx="12"></rect>
+              <text class="topo-node-label" x="230" y="157" text-anchor="middle">Platform landing zone</text>
+              <text class="topo-node-sub" x="230" y="177" text-anchor="middle">Shared services · Platform ownership</text>
+              <g class="topo-node" data-detail="blueprint-network">
+                <rect class="topo-node-box" x="44" y="200" width="372" height="92" rx="12"></rect>
+                <text class="topo-node-label" x="230" y="230" text-anchor="middle">Connectivity hub</text>
+                <text class="topo-node-sub" x="230" y="252" text-anchor="middle">Hybrid access · Firewall / egress controls</text>
+                <text class="topo-node-sub" x="230" y="274" text-anchor="middle">Private DNS · Network routing</text>
+              </g>
+              <path class="topo-edge" d="M230,292 V338" marker-end="url(#blueprintArrow)"></path>
+              <text class="topo-edge-label" x="244" y="319">Network reachability</text>
+              <g class="topo-node" data-detail="blueprint-gateway">
+                <rect class="topo-node-box" x="44" y="342" width="372" height="92" rx="12"></rect>
+                <text class="topo-node-label" x="230" y="372" text-anchor="middle">Shared AI gateway · APIM</text>
+                <text class="topo-node-sub" x="230" y="394" text-anchor="middle">Caller identity · Model routing · Token limits</text>
+                <text class="topo-node-sub" x="230" y="416" text-anchor="middle">Logical gateway hub; placement varies</text>
+              </g>
+
+              <rect class="topo-boundary" x="500" y="128" width="420" height="336" rx="12"></rect>
+              <text class="topo-node-label" x="710" y="157" text-anchor="middle">AI workload landing zone</text>
+              <text class="topo-node-sub" x="710" y="177" text-anchor="middle">Workload subscription · Team ownership</text>
+              <g class="topo-node" data-detail="blueprint-application">
+                <rect class="topo-node-box" x="524" y="196" width="372" height="64" rx="12"></rect>
+                <text class="topo-node-label" x="710" y="221" text-anchor="middle">AI application / orchestration</text>
+                <text class="topo-node-sub" x="710" y="244" text-anchor="middle">User experience · Retrieval · Tool authorization</text>
+              </g>
+              <path class="topo-edge" d="M524,228 H468 V364 H420" marker-end="url(#blueprintArrow)"></path>
+              <text class="topo-edge-label" x="710" y="283" text-anchor="middle">Model request via gateway</text>
+              <path class="topo-edge-flow" d="M416,406 H484 V324 H520"></path>
+              <path class="topo-edge" d="M416,406 H484 V324 H520" marker-end="url(#blueprintArrow)"></path>
+              <g class="topo-node" data-detail="blueprint-foundry">
+                <rect class="topo-node-box" x="524" y="294" width="372" height="64" rx="12"></rect>
+                <text class="topo-node-label" x="710" y="319" text-anchor="middle">Microsoft Foundry</text>
+                <text class="topo-node-sub" x="710" y="342" text-anchor="middle">Projects · Model deployments · Agent capabilities</text>
+              </g>
+              <path class="topo-edge" d="M710,358 V386" marker-end="url(#blueprintArrow)"></path>
+              <g class="topo-node" data-detail="blueprint-data">
+                <rect class="topo-node-box" x="524" y="390" width="372" height="56" rx="12"></rect>
+                <text class="topo-node-label" x="710" y="413" text-anchor="middle">Use-case-specific data and services</text>
+                <text class="topo-node-sub" x="710" y="434" text-anchor="middle">Search · Storage · State · Secrets · Tools</text>
+              </g>
+              <g class="topo-node" data-detail="blueprint-operations">
+                <rect class="topo-node-box" x="20" y="496" width="900" height="58" rx="12"></rect>
+                <text class="topo-node-label" x="470" y="519" text-anchor="middle">Cross-cutting operations</text>
+                <text class="topo-node-sub" x="470" y="542" text-anchor="middle">Observability · Cost ownership · Infrastructure as code · Security operations</text>
+              </g>
+              <path class="topo-edge" d="M230,464 V492 M710,464 V492" marker-end="url(#blueprintArrow)"></path>
+            </svg>
+          </div>
+          <div class="detail" id="detail-blueprint-foundation">
+            <h3>Govern once, delegate deliberately</h3>
+            <ul>
+              <li>Management groups organize subscriptions and inherited policy assignments. Microsoft Entra ID supplies identities; role assignments define access at the appropriate scope.</li>
+              <li>Policy, identity permissions, and network controls solve different problems. None substitutes for the others.</li>
+            </ul>
+          </div>
+          <div class="detail" id="detail-blueprint-network">
+            <h3>Connectivity is a shared platform capability</h3>
+            <ul>
+              <li>Hybrid connectivity, DNS resolution, routing, and egress controls establish approved network paths into and out of workload environments.</li>
+              <li>Private endpoints require working DNS and routing, supported service configuration, and appropriate public-access restrictions. Peering alone does not provide end-to-end private access.</li>
+            </ul>
+          </div>
+          <div class="detail" id="detail-blueprint-gateway">
+            <h3>A governed model access point</h3>
+            <ul>
+              <li>Applications call an APIM API, which can apply identity checks, consumer limits, backend selection, and diagnostics before forwarding a model request.</li>
+              <li>The gateway is a logical shared service. Its subscription and network placement depend on the APIM tier and enterprise topology; it need not reside inside the connectivity hub.</li>
+              <li>The arrows show a conceptual application-to-gateway-to-model request. They do not imply that every tool call or retrieval operation passes through APIM.</li>
+            </ul>
+          </div>
+          <div class="detail" id="detail-blueprint-application">
+            <h3>The application owns the user-facing workflow</h3>
+            <ul>
+              <li>Application orchestration assembles prompts, retrieves authorized context, and controls which tools or actions may run.</li>
+              <li>Document permissions and approval for high-impact actions belong in the application design, not merely in a network diagram.</li>
+            </ul>
+          </div>
+          <div class="detail" id="detail-blueprint-foundry">
+            <h3>A repeatable environment for AI workloads</h3>
+            <ul>
+              <li>Foundry projects organize AI development and access to model and agent capabilities. The workload team owns evaluations, releases, and operational readiness.</li>
+              <li>Separate subscriptions, resources, projects, or environments according to the required isolation boundary. A project is not automatically a separate network or subscription boundary.</li>
+            </ul>
+          </div>
+          <div class="detail" id="detail-blueprint-data">
+            <h3>Dependencies follow the use case</h3>
+            <ul>
+              <li>A model-only application may need no search index. Retrieval adds governed data access; stateful agents and tools introduce their own runtime and storage requirements.</li>
+              <li>Search, storage, state stores, and secrets services are examples, not a mandatory bundle. Both applications and agent runtimes may access these dependencies.</li>
+            </ul>
+          </div>
+          <div class="detail" id="detail-blueprint-operations">
+            <h3>Operate the platform and workload together</h3>
+            <ul>
+              <li>Correlate gateway, application, and model diagnostics while protecting prompt and response data. Define retention, access, and incident ownership.</li>
+              <li>Use infrastructure as code for repeatable environments. Assign budgets and cost ownership; budget alerts alone do not stop spending.</li>
             </ul>
           </div>
         </div>
@@ -1139,7 +1259,7 @@ a { color: var(--cp-link); }
   const navButtons = document.querySelectorAll(".navbtn");
   const panels = document.querySelectorAll(".panel");
   const titles = {
-    p1: "Landing Zone Map",
+    p1: "AI Landing Zone - High Level",
     p2: "Day-1 Services Sort",
     p3: "VNet Showdown",
     p4: "Hub & Spoke Landing Zones",
@@ -1512,7 +1632,7 @@ a { color: var(--cp-link); }
   });
 
   // Illustrative cases are intentionally separate from persisted customer notes and real telemetry.
-  function buildScenario(id, title, cases, source) {
+  function buildScenario(id, title, cases, disclaimer) {
     const root = document.getElementById(id);
     const heading = document.createElement("div");
     heading.className = "scenario-heading";
@@ -1568,13 +1688,7 @@ a { color: var(--cp-link); }
     render(0);
     const note = document.createElement("p");
     note.className = "scenario-source";
-    note.textContent = source.text + " ";
-    if (source.url) {
-      const link = document.createElement("a");
-      link.href = source.url;
-      link.textContent = "Microsoft Learn";
-      note.appendChild(link);
-    }
+    note.textContent = disclaimer;
     root.appendChild(note);
   }
 
@@ -1623,7 +1737,7 @@ a { color: var(--cp-link); }
       result: "An eligible cached response avoids this model inference call",
       text: "Caching is opt-in, not automatic. Configure lookup and store policies, similarity thresholds, isolation, and freshness. Embedding and cache operations may still incur cost. Sensitive or personalized responses need additional safeguards.",
     },
-  ], { text: "Example policy ordering; not measured performance or billing data.", url: "https://learn.microsoft.com/en-us/azure/api-management/llm-token-limit-policy" });
+  ], "Example policy ordering; not measured performance or billing data.");
 
   buildScenario("workloadScenario", "The workload shapes the dependencies", [
     {
@@ -1659,7 +1773,7 @@ a { color: var(--cp-link); }
       result: "Tools expand both capabilities and the control boundary",
       text: "Least privilege, approval for high-impact actions, and observability belong in the workload design. Runtime and tool choices determine which stores and compute services are needed.",
     },
-  ], { text: "Conceptual application flows, not a fixed Foundry service dependency list." });
+  ], "Conceptual application flows, not a fixed Foundry service dependency list.");
 
   buildScenario("policyScenario", "Audit is not enforcement", [
     {
@@ -1695,7 +1809,7 @@ a { color: var(--cp-link); }
       result: "Passing one policy is not a full security assessment",
       text: "Other policies, permissions, and deployment checks still apply. Disabling public access alone does not create working private endpoints, DNS resolution, or identity permissions.",
     },
-  ], { text: "Illustrative resource-property policy; independent of the discussion checklist.", url: "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-basics" });
+  ], "Illustrative resource-property policy; independent of the discussion checklist.");
 
   // ---------- Init ----------
   renderThemeButton();
