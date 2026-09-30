@@ -27,6 +27,44 @@ The dashboard includes:
 - Decisions are stored in the current browser's local storage, not synchronized to a shared service. Export them before switching browsers or clearing browser data. Storage failures are displayed in the dashboard.
 - Microsoft/Azure-inspired styling does not make this an official Azure portal or Microsoft product.
 
-## Hosting
+## Deployment
 
-`index.html` can be served by any static web host, including GitHub Pages. Hosting is not configured automatically by this repository. Browser storage remains local to each visitor and hosting origin.
+### Option 1: GitHub Pages
+
+This repository is ready for static hosting: `index.html` is already in the repository root. No build command, dependencies, environment variables, or Azure resources are needed.
+
+1. Open this repository on GitHub and go to **Settings > Pages**. You need permission to manage the repository's Pages settings.
+2. Under **Build and deployment**, set **Source** to **Deploy from a branch**.
+3. Select the **main** branch and the **/ (root)** folder, then select **Save**.
+4. Wait for the Pages deployment to finish. Check the repository's **Actions** tab for the Pages build/deployment status.
+5. Return to **Settings > Pages** and open the published URL shown there. Use that URL when sharing the dashboard.
+6. Confirm the navigation, Hub/Spoke scenarios, service sort, theme switch, and **Export decisions** work in the hosted version.
+
+If Pages is unavailable, check your repository visibility, GitHub plan, organization policies, and permissions. Repository visibility alone does not guarantee that a Pages site is private; verify site access before sharing customer-sensitive material.
+
+**Publishing updates:** commit changes to `index.html` and push them to `main`. GitHub Pages redeploys from that branch. After the deployment succeeds, refresh the site; use a hard refresh if the previous version is still cached.
+
+**Published files:** branch-based deployment from the repository root also makes other publishable files, including the presenter talk track, accessible on the site. If the presenter notes must not be distributed, use a separate deployment location containing only `index.html` instead.
+
+### Option 2: Another static web host
+
+1. Create a static site using your preferred hosting provider.
+2. Upload only `index.html` to the site's public root directory. If the host requires an output folder, place `index.html` inside that folder and select it as the publish directory.
+3. Choose a static/no-framework configuration. There is no build step or server process to run.
+4. Enable HTTPS and configure access restrictions appropriate for your audience.
+5. Open the host's published URL and perform the same interaction checks listed above.
+
+The dashboard requires browser JavaScript. If your hosting environment enforces a Content Security Policy, its configuration must permit the dashboard's inline scripts and styles through an approved policy, such as matching hashes.
+
+### Offline presentation
+
+Download `index.html` and open it directly in a modern browser. The dashboard interactions work without a network connection; external Microsoft Learn links require internet access.
+
+### Data and access considerations
+
+- Hosting serves the dashboard; it does not create a backend, user accounts, or shared session storage.
+- Decisions remain in each visitor's browser. Opening a local file and opening the hosted site use separate storage contexts, so existing notes do not transfer automatically.
+- Use **Export decisions** before changing browsers, clearing browser data, or moving to another URL. Export is a plain-text handoff, not an importable session backup.
+- For restricted audiences, use a host with appropriate authentication and access controls. Do not treat an unlisted URL as access control.
+
+These steps describe how to deploy the app; hosting is not enabled automatically by cloning or pushing this repository.
