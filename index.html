@@ -469,6 +469,29 @@ a { color: var(--cp-link); }
 .scenario-result { background: var(--cp-accent-soft); }
 .tabs { border-bottom: 1px solid var(--cp-border); }
 .badge { font-weight: 600; letter-spacing: 0.02em; }
+.nav-reference { margin-top: 12px; border-top-color: var(--cp-border); }
+.nav-reference small { display: block; margin-top: 4px; color: var(--cp-text-muted); font-size: 0.72rem; font-weight: 400; }
+.network-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.network-tabs button { min-height: 44px; }
+.network-tabs button[aria-pressed="true"] { background: var(--cp-accent); color: var(--cp-accent-fg); border-color: var(--cp-accent); }
+.network-pane[hidden], .network-hidden { display: none; }
+.network-intro { margin: 0 0 20px; line-height: 1.6; color: var(--cp-text-muted); }
+.network-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 20px 0; }
+.network-grid > div { min-width: 0; padding: 20px; border: 1px solid var(--cp-border); border-radius: 8px; background: var(--cp-bg-elevated); }
+.network-grid p { margin: 8px 0 0; font-size: 0.88rem; line-height: 1.6; }
+.network-metric { display: block; font-size: 2rem; font-weight: 600; color: var(--cp-accent); margin-bottom: 8px; }
+.network-note { padding: 16px 20px; border-left: 4px solid var(--cp-accent); background: var(--cp-accent-soft); line-height: 1.6; margin: 20px 0; }
+.network-accordion { border: 1px solid var(--cp-border); border-radius: 8px; margin-top: 12px; }
+.network-accordion summary { padding: 16px; font-weight: 600; cursor: pointer; line-height: 1.5; }
+.network-accordion > div { padding: 0 20px 20px; line-height: 1.65; }
+.network-accordion p { margin: 8px 0; }
+.network-accordion li { margin: 8px 0; }
+.network-accordion code, .network-note code { overflow-wrap: anywhere; }
+.network-table-wrap { overflow-x: auto; margin: 20px 0; }
+.network-table { border-collapse: collapse; width: 100%; text-align: left; font-size: 0.88rem; }
+.network-table th, .network-table td { padding: 14px; border-bottom: 1px solid var(--cp-border); vertical-align: top; line-height: 1.6; }
+.network-table th { background: var(--cp-bg-elevated); }
+.network-table code { overflow-wrap: anywhere; }
 @media (max-width: 1100px) {
   .feature-grid, .journey { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .journey li::after { display: none; }
@@ -485,6 +508,8 @@ a { color: var(--cp-link); }
   .card { padding: 18px; }
   .topo-wrap { padding: 16px; }
   .gov-ring[data-level] { max-width: 100%; }
+  .nav-reference { margin-top: 0; border-top-color: transparent; }
+  .network-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) {
   .feature-grid, .journey { grid-template-columns: 1fr; }
@@ -511,6 +536,7 @@ a { color: var(--cp-link); }
     <button class="navbtn" data-panel="p3"><span class="num">4</span> VNet Showdown</button>
     <button class="navbtn" data-panel="p5"><span class="num">5</span> Policy Baseline</button>
     <button class="navbtn" data-panel="p6"><span class="num">6</span> Decisions &amp; Parking Lot</button>
+    <button class="navbtn nav-reference" data-panel="p7"><span class="num" aria-hidden="true">R</span><span>Networking Deep Dive<small>Optional reference</small></span></button>
     <div class="sidebar-footer">
       <div class="progress-label">Session progress</div>
       <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
@@ -1189,6 +1215,160 @@ a { color: var(--cp-link); }
         </div>
       </section>
 
+      <section class="panel" id="p7" aria-label="Networking Deep Dive">
+        <div class="card">
+          <h2>Networking Deep Dive</h2>
+          <p class="network-intro">Foundry Agent Service networking: request paths, shared subnet capacity, outbound controls, and operational checks.</p>
+          <div class="network-tabs" role="group" aria-label="Networking topics">
+            <button class="iconbtn" data-network-view="flows" aria-controls="network-flows" aria-pressed="true">Traffic &amp; ownership</button>
+            <button class="iconbtn" data-network-view="capacity" aria-controls="network-capacity" aria-pressed="false">Subnet planning</button>
+            <button class="iconbtn" data-network-view="egress" aria-controls="network-egress" aria-pressed="false">Managed egress</button>
+            <button class="iconbtn" data-network-view="operations" aria-controls="network-operations" aria-pressed="false">DNS &amp; operations</button>
+          </div>
+
+          <div class="network-pane" id="network-flows">
+            <h3>BYO VNet: trace an agent request</h3>
+            <div class="network-tabs" role="group" aria-label="Agent traffic path">
+              <button class="iconbtn" data-network-agent="hosted" aria-pressed="true" aria-controls="networkTraffic">Hosted agent</button>
+              <button class="iconbtn" data-network-agent="prompt" aria-pressed="false" aria-controls="networkTraffic">Prompt agent</button>
+            </div>
+            <div class="topo-wrap spacious" id="networkTraffic">
+              <svg viewBox="0 0 1160 380" role="group" aria-labelledby="networkTrafficTitle networkTrafficDesc">
+                <title id="networkTrafficTitle">Hosted agent request and tool path</title>
+                <desc id="networkTrafficDesc">Client to Foundry endpoint, Micro VM, Tools Service, per-project data proxy, then customer resources through private endpoints. Select a component for its responsibilities.</desc>
+                <defs><marker id="networkArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="var(--cp-border-strong)"></path></marker></defs>
+                <path class="topo-edge" d="M200 100 H330" marker-end="url(#networkArrow)"></path>
+                <text class="topo-edge-label" x="265" y="85" text-anchor="middle">HTTPS 443</text>
+                <g data-network-hosted>
+                  <path class="topo-edge" d="M435 150 V190 H135 V240" marker-end="url(#networkArrow)"></path>
+                  <text class="topo-edge-label" x="280" y="178" text-anchor="middle">Hosted /invoke</text>
+                  <path class="topo-edge" d="M250 290 H390" marker-end="url(#networkArrow)"></path>
+                  <text class="topo-edge-label" x="320" y="276" text-anchor="middle">Tool call</text>
+                </g>
+                <g data-network-prompt class="network-hidden">
+                  <path class="topo-edge" d="M435 150 V240" marker-end="url(#networkArrow)"></path>
+                  <text class="topo-edge-label" x="452" y="200">Prompt path</text>
+                </g>
+                <path class="topo-edge" d="M620 290 H760" marker-end="url(#networkArrow)"></path>
+                <text class="topo-edge-label" x="690" y="276" text-anchor="middle">Project egress</text>
+                <path class="topo-edge" d="M885 240 V150" marker-end="url(#networkArrow)"></path>
+                <text class="topo-edge-label" x="901" y="198">Private endpoints</text>
+                <g class="topo-node" data-detail="network-client">
+                  <rect class="topo-node-box" x="20" y="50" width="180" height="100"></rect>
+                  <text class="topo-node-label" x="110" y="89" text-anchor="middle">Client / application</text>
+                  <text class="topo-node-sub" x="110" y="116" text-anchor="middle">Authenticated request</text>
+                </g>
+                <g class="topo-node" data-detail="network-foundry">
+                  <rect class="topo-node-box" x="330" y="50" width="210" height="100"></rect>
+                  <text class="topo-node-label" x="435" y="89" text-anchor="middle">Foundry endpoint</text>
+                  <text class="topo-node-sub" x="435" y="116" text-anchor="middle">Platform entry point</text>
+                </g>
+                <g class="topo-node" data-detail="network-runtime" data-network-hosted>
+                  <rect class="topo-node-box" x="20" y="240" width="230" height="100"></rect>
+                  <text class="topo-node-label" x="135" y="279" text-anchor="middle">Micro VM runtime</text>
+                  <text class="topo-node-sub" x="135" y="306" text-anchor="middle">Delegated subnet / Hosted</text>
+                </g>
+                <g class="topo-node" data-detail="network-tools">
+                  <rect class="topo-node-box" x="390" y="240" width="230" height="100"></rect>
+                  <text class="topo-node-label" x="505" y="279" text-anchor="middle">Tools Service</text>
+                  <text class="topo-node-sub" x="505" y="306" text-anchor="middle">Microsoft-managed platform</text>
+                </g>
+                <g class="topo-node" data-detail="network-proxy">
+                  <rect class="topo-node-box" x="760" y="240" width="250" height="100"></rect>
+                  <text class="topo-node-label" x="885" y="279" text-anchor="middle">Single-tenant data proxy</text>
+                  <text class="topo-node-sub" x="885" y="306" text-anchor="middle">Delegated subnet / Per project</text>
+                </g>
+                <g class="topo-node" data-detail="network-private">
+                  <rect class="topo-node-box" x="790" y="50" width="340" height="100"></rect>
+                  <text class="topo-node-label" x="960" y="80" text-anchor="middle">Private resource access</text>
+                  <text class="topo-node-sub" x="960" y="106" text-anchor="middle">Separate private endpoint subnet</text>
+                  <text class="topo-node-sub" x="960" y="130" text-anchor="middle">Storage / databases / Key Vault</text>
+                </g>
+              </svg>
+            </div>
+            <p class="network-note" id="networkFlowSummary" role="status"></p>
+            <div class="detail" id="detail-network-client"><strong>Client and application owner</strong><p>Clients need both network reachability and a valid identity. An APIM gateway can govern client requests, but it is not the agent runtime's outbound firewall.</p></div>
+            <div class="detail" id="detail-network-foundry"><strong>Inbound access is a separate decision</strong><p>Requests enter the Foundry endpoint over HTTPS 443. Configure private inbound connectivity and DNS for clients when required; attaching a delegated subnet for outbound traffic does not make inbound access private automatically.</p></div>
+            <div class="detail" id="detail-network-runtime"><strong>Hosted agent: your code, managed runtime</strong><p>You control the container image, agent code, and supported CPU/memory configuration, not the underlying Micro VM operating system. Hosted sessions consume delegated-subnet IP capacity. Direct outbound calls made by agent code can use the Micro VM's NIC; registered tool calls use the data proxy path.</p></div>
+            <div class="detail" id="detail-network-tools"><strong>Shared execution service</strong><p>Both agent types use the platform Tools Service. Prompt agents run on Microsoft-managed compute without a customer Micro VM on this path. Tool authorization and least-privilege resource permissions remain necessary.</p></div>
+            <div class="detail" id="detail-network-proxy"><strong>Project-level private egress</strong><p>Each project has a dedicated, single-tenant data proxy. Its infrastructure consumes delegated-subnet IPs and can scale with traffic. Microsoft operates this component; the customer configures network boundaries and permitted destinations, not its containers or host OS.</p></div>
+            <div class="detail" id="detail-network-private"><strong>Private endpoints are not the service itself</strong><p>Place private endpoints in a separate, nondelegated subnet and configure the matching DNS zones. Storage, databases, and Key Vault remain managed services behind those endpoints. Endpoint approval, DNS, routing, public-access settings, and data-plane permissions must all align.</p></div>
+            <div class="network-grid">
+              <div><h3>Microsoft operates</h3><p>The Foundry endpoint, Tools Service, runtime hosts, and project data proxies.</p></div>
+              <div><h3>You configure</h3><p>BYO address space, delegation, DNS, private endpoints, routes, network rules, and resource permissions.</p></div>
+              <div><h3>Two outbound paths</h3><p>Registered tool calls use the data proxy. Hosted agent code can also make direct calls through its runtime NIC.</p></div>
+            </div>
+          </div>
+
+          <div class="network-pane" id="network-capacity" hidden>
+            <h3>Shared subnet capacity, not a per-agent allocation</h3>
+            <p class="network-intro">The delegated subnet is configured at the Foundry account level and shared across its projects and agent types. Start production planning at /24 or larger, then size for actual peak usage and temporary maintenance capacity.</p>
+            <div class="network-tabs" role="group" aria-label="Illustrative subnet size">
+              <button class="iconbtn" data-network-subnet="27" aria-pressed="false" aria-controls="networkCapacityResult">/27 · Small development</button>
+              <button class="iconbtn" data-network-subnet="26" aria-pressed="false" aria-controls="networkCapacityResult">/26 · Scoped pilot</button>
+              <button class="iconbtn" data-network-subnet="24" aria-pressed="true" aria-controls="networkCapacityResult">/24 · Production starting point</button>
+              <button class="iconbtn" data-network-subnet="23" aria-pressed="false" aria-controls="networkCapacityResult">/23 · More headroom</button>
+            </div>
+            <div id="networkCapacityResult" role="status" aria-live="polite" aria-atomic="true">
+              <div class="network-grid">
+                <div><span class="network-metric" id="networkUsable"></span><h3>Usable subnet IPs</h3><p>Address count minus the five addresses reserved by Azure.</p></div>
+                <div><span class="network-metric" id="networkEnvelope"></span><h3>Planning envelope</h3><p>Combined IP use kept below 80%: hosted sessions plus project-level networking components.</p></div>
+                <div><span class="network-metric" id="networkSpare"></span><h3>IPs left outside the envelope</h3><p>Headroom for scaling, rolling upgrades, and overlapping old/new infrastructure.</p></div>
+              </div>
+              <p class="network-note" id="networkCapacitySummary"></p>
+            </div>
+            <details class="network-accordion"><summary>What consumes capacity?</summary><div><p>Hosted sessions normally map 1:1 to usable IPs. Data proxies and other project-level networking components also consume addresses. Prompt agent versions do not consume their own runtime IPs, but their project networking still does.</p><p>Do not size from a fixed replica-to-IP formula. Real consumption depends on concurrency, project traffic, scale-out, and platform maintenance. Low-traffic project counts are not a guarantee of capacity under load.</p></div></details>
+            <details class="network-accordion"><summary>Subnet capacity is not the session quota</summary><div><p>All Foundry accounts and projects in the same subscription and region share the regional session quota. A larger subnet does not raise it. Check current regional limits and request an increase when necessary.</p><p>A support-approved mapping of up to 10 sessions per IP may be available, subject to regional capacity. Do not assume this mapping in the default address plan.</p></div></details>
+            <details class="network-accordion"><summary>Address space and subnet prerequisites</summary><div><ul><li>Use non-overlapping RFC 1918 space: <code>10.0.0.0/8</code>, <code>172.16.0.0/12</code>, or <code>192.168.0.0/16</code>.</li><li>Public ranges and CGNAT <code>100.64.0.0/10</code> are not supported by this BYO setup. Do not plan against an announced future exception.</li><li>Delegate the runtime subnet to <code>Microsoft.App/environments</code>; /27 is the minimum, not a production recommendation.</li><li>Use a separate subnet for private endpoints. Check overlap across peered VNets and hybrid routes before allocation.</li></ul></div></details>
+          </div>
+
+          <div class="network-pane" id="network-egress" hidden>
+            <h3>Microsoft-managed VNet: choose the outbound boundary</h3>
+            <p class="network-intro">Microsoft manages the network, subnet sizing, and runtime IP allocation. You choose isolation settings, outbound rules, private connections, approvals, and resource permissions.</p>
+            <div class="network-tabs" role="group" aria-label="Managed outbound mode">
+              <button class="iconbtn" data-network-egress="approved" aria-pressed="true" aria-controls="networkEgressResult">Allow only approved outbound</button>
+              <button class="iconbtn" data-network-egress="internet" aria-pressed="false" aria-controls="networkEgressResult">Allow internet outbound</button>
+            </div>
+            <div id="networkEgressResult" role="status" aria-live="polite" aria-atomic="true">
+              <div class="network-grid">
+                <div><span class="badge">01 / Runtime</span><h3>Managed agent network</h3><p>Hosted and prompt agents use the account's managed outbound boundary.</p></div>
+                <div><span class="badge">02 / Control</span><h3 id="networkEgressTitle"></h3><p id="networkEgressControl"></p></div>
+                <div><span class="badge">03 / Destination</span><h3 id="networkEgressDestination"></h3><p id="networkEgressOutcome"></p></div>
+              </div>
+              <p class="network-note" id="networkEgressSummary"></p>
+            </div>
+            <details class="network-accordion"><summary>Approved outbound: firewall and cost implications</summary><div><p>Approved outbound uses private endpoints, service tags, and optional FQDN rules. FQDN rules use a Microsoft-managed Azure Firewall and support ports 80 and 443; budget for the associated firewall charges.</p><p>You cannot insert your own Azure Firewall or NVA into this managed network, or share its managed firewall across Foundry accounts. This is different from routing BYO subnet traffic through your own firewall.</p></div></details>
+            <details class="network-accordion"><summary>Private connections and on-premises access</summary><div><p>Managed private endpoints are platform-managed; they do not create customer-visible NICs in your own VNet. Approve the target resource connections and configure the required identities.</p><p>For on-premises services, use a supported private connectivity pattern, such as a private endpoint to Application Gateway with an appropriately configured backend. Verify protocol and backend support; do not assume direct peering into the managed VNet.</p></div></details>
+            <details class="network-accordion"><summary>Mode changes and migration constraints</summary><div><p>These buttons only change this illustration. In Azure, enabled managed isolation cannot simply be disabled; approved-only outbound cannot be relaxed back to internet outbound. Moving from a custom VNet setup to managed networking requires redeployment.</p><p>Confirm current region, API, agent type, tool, and deployment-path support before choosing the operating model. Inbound private access is still configured separately.</p></div></details>
+          </div>
+
+          <div class="network-pane" id="network-operations" hidden>
+            <h3>Private connectivity requires a complete chain</h3>
+            <div class="network-grid">
+              <div><span class="badge">01 / Resolve</span><h3>DNS returns the private IP</h3><p>Check the normal service hostname from the actual calling network, including on-premises clients.</p></div>
+              <div><span class="badge">02 / Reach</span><h3>Routing and rules allow it</h3><p>Confirm endpoint approval, peering or hybrid routes, NSGs, and the service's required ports.</p></div>
+              <div><span class="badge">03 / Authorize</span><h3>The identity has access</h3><p>Verify the calling identity and resource data-plane roles. A private IP does not grant permission.</p></div>
+            </div>
+            <details class="network-accordion" open><summary>Private DNS examples</summary><div>
+              <div class="network-table-wrap" tabindex="0" role="region" aria-label="Private DNS zone examples">
+                <table class="network-table">
+                  <thead><tr><th scope="col">Resource endpoint</th><th scope="col">Private DNS zone</th></tr></thead>
+                  <tbody>
+                    <tr><th scope="row">Storage / Blob</th><td><code>privatelink.blob.core.windows.net</code></td></tr>
+                    <tr><th scope="row">Azure SQL Database</th><td><code>privatelink.database.windows.net</code></td></tr>
+                    <tr><th scope="row">Key Vault</th><td><code>privatelink.vaultcore.azure.net</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>Examples, not a complete zone list. Foundry, Search, Cosmos DB, and other Storage subresources require their own matching zones. Link the relevant VNets or provide resolution through a shared DNS design. On-premises DNS typically forwards through an Azure-side resolver.</p>
+              <p>Validate the service's normal hostname with <code>nslookup</code> from the calling network. Connect using that hostname, not a hardcoded private IP, so TLS hostname checks continue to work.</p>
+            </div></details>
+            <details class="network-accordion"><summary>BYO egress, routes, and hybrid connectivity</summary><div><p>Use supported UDR and firewall/NVA configurations to control outbound paths. Include required platform dependencies as well as approved workload destinations; a blanket deny without the necessary rules can prevent provisioning or execution.</p><p>Private endpoint traffic is not automatically inspected by your firewall. Effective routes and private endpoint network-policy settings determine the path. ExpressRoute or VPN provides connectivity, not DNS resolution or resource authorization.</p></div></details>
+            <details class="network-accordion"><summary>Capacity symptoms and escalation</summary><div><ul><li><strong>Data proxy 5xx:</strong> investigate proxy health and capacity; the status alone does not prove IP exhaustion.</li><li><strong>Hosted session HTTP 429 <code>subnet_exhausted</code>:</strong> investigate available subnet capacity during session creation or resume.</li><li><strong>New project provisioning failure:</strong> check address availability, deployment errors, capability configuration, and provisioning permissions.</li></ul><p>Direct delegated-subnet utilization is not currently exposed in the portal. Monitor these service signals and record timestamps, affected projects, region, concurrency, and recent changes. For persistent exhaustion, plan additional capacity or a new Foundry instance with a fresh subnet; coordinate with support.</p></div></details>
+            <details class="network-accordion"><summary>Timeouts, name resolution, and authorization errors</summary><div><ul><li><strong>Name lookup fails or returns a public IP:</strong> check zone records, VNet links, and DNS forwarding.</li><li><strong>Connection times out:</strong> inspect effective routes, endpoint approval, NSG/firewall decisions, ports, and service health.</li><li><strong>401 / 403:</strong> inspect token audience, identity, data-plane roles, and service access rules; not every 403 is a routing issue.</li><li><strong>Provisioning succeeds but runtime fails:</strong> the provisioning caller and runtime project identity can require different permissions.</li></ul></div></details>
+          </div>
+        </div>
+      </section>
     </div>
   </main>
 </div>
@@ -1196,6 +1376,7 @@ a { color: var(--cp-link); }
 <script>
 (() => {
   const STORAGE_KEY = "aiLandingZoneDashboard_v1";
+  const corePanels = ["p1", "p4", "p2", "p3", "p5", "p6"];
 
   const services = [
     { name: "Microsoft Foundry", icon: "🧭", col: "Required", why: "Unified control plane for AI apps and agents" },
@@ -1227,6 +1408,10 @@ a { color: var(--cp-link); }
     sortWhyShown: {},
     vnetMode: "ms",
     zone: "hub",
+    networkView: "flows",
+    networkAgent: "hosted",
+    networkSubnet: "24",
+    networkEgress: "approved",
     govActive: null,
     checked: {},
     lot: [{ a: "", b: "" }, { a: "", b: "" }, { a: "", b: "" }],
@@ -1247,8 +1432,12 @@ a { color: var(--cp-link); }
         if (!record(saved)) throw new Error("Invalid saved session");
         const restored = { ...state };
         for (const [key, allowed] of Object.entries({
-          activePanel: ["p1", "p2", "p3", "p4", "p5", "p6"],
+          activePanel: [...corePanels, "p7"],
           vnetMode: ["ms", "byo"], zone: ["hub", "spoke"],
+          networkView: ["flows", "capacity", "egress", "operations"],
+          networkAgent: ["hosted", "prompt"],
+          networkSubnet: ["27", "26", "24", "23"],
+          networkEgress: ["approved", "internet"],
           govActive: [null, "mg", "sub", "lz", "deploy"],
         })) {
           if (key in saved) {
@@ -1310,6 +1499,7 @@ a { color: var(--cp-link); }
     p4: "Hub & Spoke Landing Zones",
     p5: "Policy Baseline",
     p6: "Decisions & Parking Lot",
+    p7: "Networking Deep Dive",
   };
 
   function showPanel(id) {
@@ -1321,15 +1511,15 @@ a { color: var(--cp-link); }
     });
     document.getElementById("topTitle").textContent = titles[id];
     state.activePanel = id;
-    state.visited[id] = true;
+    if (corePanels.includes(id)) state.visited[id] = true;
     updateProgress();
     save();
   }
   navButtons.forEach(b => b.addEventListener("click", () => showPanel(b.dataset.panel)));
 
   function updateProgress() {
-    const total = 6;
-    const done = Object.values(state.visited).filter(Boolean).length;
+    const total = corePanels.length;
+    const done = corePanels.filter(id => state.visited[id]).length;
     document.getElementById("progressFill").style.width = (done / total * 100) + "%";
     document.getElementById("progressLabel").textContent = done + " / " + total + " segments visited";
   }
@@ -1362,11 +1552,77 @@ a { color: var(--cp-link); }
         n.setAttribute("aria-expanded", String(active));
         n.querySelector(".topo-node-box").classList.toggle("active", active);
       });
+
       if (!isShown) {
         detail.classList.add("show");
       }
     });
   });
+
+  // Reference choices persist independently of the six workshop segments.
+  function renderNetworking() {
+    const groups = [
+      ["view", state.networkView], ["agent", state.networkAgent],
+      ["subnet", state.networkSubnet], ["egress", state.networkEgress],
+    ];
+    groups.forEach(([group, selected]) => {
+      document.querySelectorAll("[data-network-" + group + "]").forEach(button => {
+        button.setAttribute("aria-pressed", String(button.getAttribute("data-network-" + group) === selected));
+      });
+    });
+    document.querySelectorAll(".network-pane").forEach(pane => {
+      pane.hidden = pane.id !== "network-" + state.networkView;
+    });
+    const hosted = state.networkAgent === "hosted";
+    document.querySelectorAll("[data-network-hosted]").forEach(node => node.classList.toggle("network-hidden", !hosted));
+    document.querySelectorAll("[data-network-prompt]").forEach(node => node.classList.toggle("network-hidden", hosted));
+    document.getElementById("networkTrafficTitle").textContent = (hosted ? "Hosted" : "Prompt") + " agent request and tool path";
+    document.getElementById("networkTrafficDesc").textContent = "Client to Foundry endpoint, " +
+      (hosted ? "Micro VM, " : "") + "Tools Service, per-project data proxy, then customer resources through private endpoints.";
+    document.getElementById("networkFlowSummary").textContent = hosted
+      ? "Hosted: the Micro VM runs your agent code. Registered tool calls use the Tools Service and data proxy; direct calls made by your code can use the runtime NIC. This diagram traces the tool path."
+      : "Prompt: no customer Micro VM on this path. Microsoft-managed execution calls tools through the project's data proxy. Prompt versions do not consume runtime IPs, but project networking still does.";
+    const usable = 2 ** (32 - Number(state.networkSubnet)) - 5;
+    const envelope = Math.floor(usable * 0.8);
+    document.getElementById("networkUsable").textContent = String(usable);
+    document.getElementById("networkEnvelope").textContent = String(envelope);
+    document.getElementById("networkSpare").textContent = String(usable - envelope);
+    document.getElementById("networkCapacitySummary").textContent = "/" + state.networkSubnet +
+      ": illustrative address budget only, not a supported session count or measured utilization. " +
+      (Number(state.networkSubnet) > 24 ? "Smaller than the /24 production starting point. " : "Validate this size against your workload peak. ") +
+      "Project networking consumes part of the envelope, and regional session quotas apply separately.";
+    const approved = state.networkEgress === "approved";
+    document.getElementById("networkEgressTitle").textContent = approved ? "Approved destinations only" : "Internet outbound allowed";
+    document.getElementById("networkEgressControl").textContent = approved
+      ? "Use private endpoints, service tags, and optional FQDN allow rules."
+      : "The managed-network mode allows broad outbound internet connectivity.";
+    document.getElementById("networkEgressDestination").textContent = approved ? "Unapproved egress blocked" : "Public destinations reachable";
+    document.getElementById("networkEgressOutcome").textContent = approved
+      ? "Required platform rules and configured approvals define reachable destinations."
+      : "Private endpoints can still serve selected Azure dependencies; other access controls still apply.";
+    document.getElementById("networkEgressSummary").textContent = approved
+      ? "FQDN allow rules use a managed Azure Firewall and can incur firewall charges. This is not a customer-owned firewall or an unrestricted internet path."
+      : "Internet outbound is not deny-by-default egress. Private endpoints for selected resources do not make every outbound destination private.";
+  }
+  for (const [group, key] of [
+    ["view", "networkView"], ["agent", "networkAgent"],
+    ["subnet", "networkSubnet"], ["egress", "networkEgress"],
+  ]) {
+    document.querySelectorAll("[data-network-" + group + "]").forEach(button => {
+      button.addEventListener("click", () => {
+        state[key] = button.getAttribute("data-network-" + group);
+        if (group === "agent") {
+          document.querySelectorAll("#p7 .detail").forEach(detail => detail.classList.remove("show"));
+          document.querySelectorAll("#p7 .topo-node[data-detail]").forEach(node => {
+            node.setAttribute("aria-expanded", "false");
+            node.querySelector(".topo-node-box").classList.remove("active");
+          });
+        }
+        renderNetworking();
+        save();
+      });
+    });
+  }
 
   // ---------- Panel 2: Card sort ----------
   const pool = document.getElementById("pool");
@@ -1860,6 +2116,7 @@ a { color: var(--cp-link); }
 
   // ---------- Init ----------
   renderThemeButton();
+  renderNetworking();
   renderZone();
   renderSort();
   renderVnet();

@@ -16,6 +16,7 @@ The dashboard includes:
 - APIM hub and Foundry spoke diagrams with illustrative request and workload scenarios.
 - A drag-and-drop service sort with immediate baseline feedback and keyboard-friendly placement controls.
 - Microsoft-managed and customer-managed networking comparisons.
+- An optional **Networking Deep Dive** reference tab with hosted/prompt traffic paths, clickable ownership details, subnet address budgets, managed outbound modes, private DNS examples, and troubleshooting checks.
 - Spacious network diagrams with separate hybrid-connectivity paths and arrow labels; smaller screens scroll within the diagram instead of squeezing its text.
 - Governance discussion controls and Audit versus Deny scenarios.
 - Locally saved decisions and open questions, with a plain-text export.
@@ -32,6 +33,14 @@ The dashboard includes:
 - Service classifications are a workshop reference baseline, not universal deployment requirements. Validate current service, SKU, region, and hosting-mode support before implementing an architecture.
 - Decisions are stored in the current browser's local storage, not synchronized to a shared service. Export them before switching browsers or clearing browser data. Storage failures are displayed in the dashboard.
 - Microsoft/Azure-inspired styling does not make this an official Azure portal or Microsoft product.
+
+## Optional networking reference
+
+**Networking Deep Dive** is separate from the six core workshop segments and does not affect session progress or the 60-minute agenda. Its topic, agent-path, subnet-size, and outbound-mode selections are saved locally with the existing session; older saved sessions remain compatible. Use it for questions rather than adding it to the timed walkthrough.
+
+The reference adapts the supplied networking deck into generic diagrams and technical explanations, without publishing the source presentation or customer-specific architecture labels. Networking guidance was checked on September 30, 2026. Unlike the deck's older capacity examples, it does not assume a universal 50-session quota, a fixed replica-to-IP formula, or a future relaxation of supported address ranges.
+
+Subnet figures show address arithmetic and an illustrative below-80% planning envelope, **not** guaranteed session capacity. Validate project-level overhead, peak traffic, current regional quotas, API/agent support, and maintenance headroom. Outbound-mode buttons only change the illustration: they do not configure Azure, simulate real traffic, or imply that managed-network transitions are reversible.
 
 ## Deployment
 
