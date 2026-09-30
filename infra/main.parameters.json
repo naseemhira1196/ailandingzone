@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "value": "ailandingzone-dashboard-dev-44e3"
+    },
+    "location": {
+      "value": "centralus"
+    },
+    "sessionId": {
+      "value": "44e30f4f-7110-4152-b55f-9bae38e8040f"
+    },
+    "deployedBy": {
+      "value": "MOD Administrator"
+    },
+    "createdAt": {
+      "value": "2026-09-30T13:28:59.7280000-04:00"
+    }
+  }
+}

@@ -4,6 +4,10 @@ A self-contained, Microsoft Fluent-inspired dashboard for an interactive, one-ho
 
 ## Open the dashboard
 
+**Live dashboard:** https://thankful-ground-035389910.3.azurestaticapps.net
+
+The Azure-hosted version is public and requires no sign-in. Only `index.html` is published; the presenter guide is not included.
+
 Download or clone this repository and open `index.html` in a modern browser. No build, package installation, Azure subscription, or backend is required.
 
 The dashboard includes:
@@ -28,6 +32,63 @@ The dashboard includes:
 - Microsoft/Azure-inspired styling does not make this an official Azure portal or Microsoft product.
 
 ## Deployment
+
+### Current hosting: Azure Static Web Apps
+
+The dashboard is hosted on Azure Static Web Apps **Free** in **Central US**:
+
+- Resource group: `rg-ailandingzone-dashboard-dev-44e3`
+- App: `swa-ailandingzone-dashboard-dev-44e3`
+- Estimated hosting cost: $0/month within Free-tier limits; no production SLA.
+
+This is a manual content deployment, not a GitHub-connected deployment. Pushing to `main` does **not** automatically update the Azure site.
+
+#### Publish dashboard updates
+
+Requirements: Azure CLI, Node.js/npm, and Azure permission to retrieve the app's deployment token. Run this PowerShell example from the repository root after editing `index.html`. It publishes only that file, keeps the token in process memory, and removes the staging file afterward.
+
+```powershell
+az login
+$subscription = '<your Azure subscription ID>'
+$resourceGroup = 'rg-ailandingzone-dashboard-dev-44e3'
+$app = 'swa-ailandingzone-dashboard-dev-44e3'
+# Use a space-free staging path for the Windows deployment client.
+$stage = Join-Path $HOME ("swa-publish-" + [guid]::NewGuid().ToString('N'))
+if ($stage.Contains(' ')) { throw 'Choose a writable staging path without spaces.' }
+New-Item -ItemType Directory -Path $stage -ErrorAction Stop | Out-Null
+try {
+    Copy-Item -LiteralPath .\index.html -Destination (Join-Path $stage 'index.html') -ErrorAction Stop
+    $env:SWA_CLI_DEPLOYMENT_TOKEN = az staticwebapp secrets list `
+        --name $app --resource-group $resourceGroup --subscription $subscription `
+        --query properties.apiKey -o tsv
+    if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($env:SWA_CLI_DEPLOYMENT_TOKEN)) {
+        throw 'Unable to retrieve the deployment token.'
+    }
+    npx --yes @azure/static-web-apps-cli@2.0.10 deploy $stage --app-name $app --env production
+    if ($LASTEXITCODE -ne 0) { throw 'Dashboard deployment failed.' }
+} finally {
+    Remove-Item Env:\SWA_CLI_DEPLOYMENT_TOKEN -ErrorAction SilentlyContinue
+    Remove-Item -LiteralPath (Join-Path $stage 'index.html') -ErrorAction SilentlyContinue
+    Remove-Item -LiteralPath $stage -ErrorAction SilentlyContinue
+}
+```
+
+Open the live URL after publishing. Never print the deployment token, pass it as a command-line argument, or commit it. Do not upload the repository root: it contains presenter notes and infrastructure files that are not part of the public dashboard.
+
+#### Provision the hosting infrastructure
+
+`infra\main.bicep` creates the resource group and Free Static Web App. For another environment, copy and edit `infra\main.parameters.json` with your own environment name, supported region, and deployment metadata before running:
+
+```powershell
+az deployment sub what-if --name dashboard-hosting --location centralus `
+    --subscription '<your Azure subscription ID>' `
+    --template-file infra\main.bicep --parameters infra\main.parameters.json
+az deployment sub create --name dashboard-hosting --location centralus `
+    --subscription '<your Azure subscription ID>' `
+    --template-file infra\main.bicep --parameters infra\main.parameters.json
+```
+
+Review the preview before creating resources. Infrastructure provisioning alone does not publish content; use the update procedure above with the newly created app and resource group names.
 
 ### Option 1: GitHub Pages
 
