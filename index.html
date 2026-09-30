@@ -86,15 +86,16 @@ body {
   width: 256px;
   flex-shrink: 0;
   position: sticky;
+  align-self: flex-start;
   top: 0;
   height: 100vh;
   overflow-y: auto;
-  background: var(--cp-bg-elevated);
+  background: var(--cp-surface);
   border-right: 1px solid var(--cp-border);
   padding: 20px 14px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 .brand {
   display: flex;
@@ -118,12 +119,13 @@ body {
   gap: 10px;
   width: 100%;
   text-align: left;
-  padding: 10px 12px;
+  padding: 12px;
   border-radius: 0.625rem;
   border: 1px solid transparent;
   background: transparent;
   color: var(--cp-text);
   font-size: 0.9rem;
+  line-height: 1.45;
   font-family: inherit;
   cursor: pointer;
   transition: background 0.12s ease, border-color 0.12s ease;
@@ -132,7 +134,7 @@ body {
 .navbtn.active { background: var(--cp-accent-soft); border-color: transparent; color: var(--cp-accent); font-weight: 600; box-shadow: inset 3px 0 var(--cp-accent); }
 .navbtn .num {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 24px; height: 24px; border-radius: 4px;
+  width: 28px; height: 28px; border-radius: 4px;
   background: var(--cp-surface-soft); border: 1px solid var(--cp-border);
   font-size: 0.72rem; font-weight: 700; color: var(--cp-text-muted); flex-shrink: 0;
 }
@@ -154,15 +156,17 @@ body {
 }
 
 .topbar {
+  position: sticky; top: 0; z-index: 20;
   display: flex; align-items: center; justify-content: space-between;
-  gap: 16px;
-  padding: 14px 28px;
+  gap: 20px;
+  padding: 20px 24px;
   border-bottom: 1px solid var(--cp-shell);
   background: var(--cp-shell);
   color: var(--cp-shell-text);
   flex-wrap: wrap;
+  box-shadow: var(--cp-shadow);
 }
-.topbar h1 { font-size: 1.15rem; font-weight: 600; margin: 0; }
+.topbar h1 { font-size: 1.3rem; line-height: 1.35; font-weight: 600; margin: 0; }
 
 .iconbtn {
   border: 1px solid var(--cp-border); background: var(--cp-surface-soft);
@@ -175,7 +179,7 @@ body {
 .iconbtn.primary:hover { background: var(--cp-accent-hover); }
 a.iconbtn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
 
-.content { flex: 1; overflow-y: auto; padding: 26px 32px 60px; }
+.content { flex: 1; overflow-y: auto; padding: 28px 24px 60px; }
 .panel { display: none; max-width: 1180px; margin: 0 auto; animation: fadein 0.18s ease; }
 .panel.active { display: block; }
 @keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
@@ -184,11 +188,17 @@ a.iconbtn { display: inline-flex; align-items: center; gap: 8px; text-decoration
   background: var(--cp-surface);
   border: 1px solid var(--cp-border);
   border-radius: 16px;
-  padding: 20px 22px;
-  margin-bottom: 18px;
+  padding: 24px;
+  margin-bottom: 24px;
   box-shadow: var(--cp-shadow);
 }
-.card h2 { margin: 0 0 12px; font-size: 1.12rem; font-weight: 600; }
+.card h2 {
+  display: flex; align-items: center; gap: 12px;
+  margin: 0 0 20px; padding-bottom: 16px;
+  border-bottom: 1px solid var(--cp-border);
+  font-size: 1.15rem; line-height: 1.4; font-weight: 600;
+}
+.card h2::before { content: ""; width: 4px; height: 24px; flex-shrink: 0; border-radius: 2px; background: var(--cp-accent); }
 .card h3 { margin: 0 0 8px; font-size: 0.92rem; }
 .hint { font-size: 0.82rem; color: var(--cp-text-muted); margin: 0 0 16px; }
 .badge {
@@ -218,8 +228,8 @@ a.iconbtn { display: inline-flex; align-items: center; gap: 8px; text-decoration
 }
 .node.dep { max-width: 640px; margin-top: 0; }
 .detail {
-  margin-top: 18px; border: 1px dashed var(--cp-border-strong); border-radius: 16px;
-  padding: 16px 20px; background: var(--cp-surface-soft); display: none;
+  margin-top: 20px; border: 1px solid var(--cp-border); border-left: 4px solid var(--cp-accent); border-radius: 16px;
+  padding: 20px; background: var(--cp-accent-soft); display: none; line-height: 1.55;
 }
 .detail.show { display: block; }
 .detail ul { margin: 8px 0 0; padding-left: 20px; }
@@ -227,8 +237,8 @@ a.iconbtn { display: inline-flex; align-items: center; gap: 8px; text-decoration
 
 /* ---------- Shared: SVG topology diagrams ---------- */
 .topo-wrap {
-  border: 1px solid var(--cp-border); border-radius: 16px; background: var(--cp-surface-soft);
-  padding: 16px; margin-bottom: 18px;
+  border: 1px solid var(--cp-border); border-radius: 16px; background: var(--cp-bg-elevated);
+  padding: 20px; margin-bottom: 18px;
 }
 .topo-wrap { overflow-x: auto; }
 .topo-wrap svg { width: 100%; min-width: 740px; height: auto; display: block; }
@@ -251,11 +261,11 @@ a.iconbtn { display: inline-flex; align-items: center; gap: 8px; text-decoration
 @keyframes topo-dash { to { stroke-dashoffset: -24; } }
 
 /* ---------- Shared: feature grid ---------- */
-.feature-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 4px; }
-.feature-card { border: 1px solid var(--cp-border); border-radius: 16px; padding: 14px; background: var(--cp-surface-soft); }
+.feature-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 16px; }
+.feature-card { border: 1px solid var(--cp-border); border-radius: 16px; padding: 18px; background: var(--cp-bg-elevated); }
 .feature-card .fi { font-size: 1.3rem; margin-bottom: 6px; }
 .feature-card h4 { margin: 0 0 4px; font-size: 0.86rem; }
-.feature-card p { margin: 0; font-size: 0.78rem; color: var(--cp-text-muted); }
+.feature-card p { margin: 0; font-size: 0.82rem; line-height: 1.55; color: var(--cp-text-muted); }
 
 /* ---------- Shared: toggle switch ---------- */
 .toggle-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
@@ -389,10 +399,11 @@ a.iconbtn { display: inline-flex; align-items: center; gap: 8px; text-decoration
 .savehint { font-size: 0.76rem; color: var(--cp-text-muted); }
 
 .scenario { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--cp-border); }
-.scenario-heading { display: flex; gap: 12px; align-items: baseline; justify-content: space-between; flex-wrap: wrap; margin-bottom: 12px; }
+.scenario-heading { display: flex; gap: 12px; align-items: baseline; justify-content: space-between; flex-wrap: wrap; margin-bottom: 16px; }
+.scenario-heading h3 { font-size: 1.05rem; line-height: 1.4; }
 .scenario-heading .badge { margin: 0; }
 .scenario-options { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-.scenario-options button { line-height: 1.4; }
+.scenario-options button { line-height: 1.4; min-height: 40px; }
 .scenario-options button[aria-pressed="true"] { background: var(--cp-accent); color: var(--cp-accent-fg); border-color: var(--cp-accent); }
 .journey { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; list-style: none; padding: 0; margin: 0 0 16px; }
 .journey li { position: relative; min-width: 0; padding: 16px; border: 2px solid var(--cp-border); border-radius: 16px; background: var(--cp-surface-soft); }
@@ -419,7 +430,8 @@ a { color: var(--cp-link); }
 .chip-status { font-size: 0.7rem; font-weight: 600; }
 .chip-move { display: block; margin-top: 8px; font-size: 0.75rem; }
 .chip-move select { display: block; max-width: 100%; margin-top: 4px; padding: 6px; border: 1px solid var(--cp-border); border-radius: 0.625rem; background: var(--cp-surface); color: var(--cp-text); font: inherit; }
-.toolbar { display: flex; gap: 8px; flex-wrap: wrap; }
+.toolbar { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+.utility-controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 :focus-visible { outline: 3px solid var(--cp-accent); outline-offset: 3px; }
 .topo-node:focus-visible .topo-node-box { stroke: var(--cp-accent); stroke-width: 3; }
 .check-item { width: 100%; text-align: left; color: var(--cp-text); font: inherit; }
@@ -427,6 +439,7 @@ a { color: var(--cp-link); }
 .accuracy-row { flex-wrap: wrap; gap: 8px; }
 .card, .topo-wrap, .feature-card, .detail, .sort-col, .pool, .vnet-col,
 .rule-box, .check-item, .gov-ring, .gov-detail, .journey li { border-radius: 8px; }
+.card { border-radius: 12px; }
 .iconbtn, .navbtn, .chip, .badge, .scenario-result, .status-banner,
 .lot-table textarea, .chip-move select, .toggle-switch, .toggle-thumb, .toggle-opt { border-radius: 4px; }
 .iconbtn { min-height: 32px; padding: 8px 12px; font-weight: 600; }
@@ -435,6 +448,19 @@ a { color: var(--cp-link); }
   border-color: color-mix(in srgb, var(--cp-shell-text) 55%, var(--cp-shell));
 }
 .topbar .iconbtn:hover { background: color-mix(in srgb, var(--cp-shell-text) 16%, var(--cp-shell)); }
+.topbar .accelerator-cta {
+  min-height: 52px; padding: 14px 20px; gap: 12px;
+  border: 2px solid var(--cp-shell-text); border-radius: 8px;
+  background: var(--cp-shell-text); color: var(--cp-shell);
+  font-size: 1rem; font-weight: 700; line-height: 1.35;
+  box-shadow: var(--cp-shadow);
+}
+.topbar .accelerator-cta:hover {
+  background: var(--cp-shell-text); color: var(--cp-shell);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cp-shell-text) 35%, var(--cp-shell));
+}
+.accelerator-cta svg { flex-shrink: 0; }
+.topbar .utility-controls .iconbtn { min-height: 36px; font-size: 0.78rem; font-weight: 400; }
 .topbar :focus-visible { outline-color: var(--cp-shell-text); }
 .topo-node-box { rx: 6px; }
 .badge-box { rx: 4px; }
@@ -449,19 +475,22 @@ a { color: var(--cp-link); }
 }
 @media (max-width: 860px) {
   .app { flex-direction: column; }
-  .sidebar { position: static; height: auto; width: 100%; flex-direction: row; overflow-x: auto; }
-  .navbtn { width: auto; min-width: 176px; flex-shrink: 0; }
+  .sidebar { position: static; height: auto; width: 100%; flex-direction: row; overflow-x: auto; padding: 12px; scroll-snap-type: x proximity; }
+  .navbtn { width: auto; min-width: 196px; flex-shrink: 0; scroll-snap-align: start; }
   .sidebar-footer { display: none; }
   .brand { display: none; }
   .sort-cols, .vnet-cols { grid-template-columns: 1fr; }
   .content { padding: 16px 12px 32px; }
-  .topbar { padding: 16px; }
-  .card { padding: 16px; }
+  .topbar { position: static; padding: 20px 16px; }
+  .card { padding: 18px; }
+  .topo-wrap { padding: 16px; }
   .gov-ring[data-level] { max-width: 100%; }
 }
 @media (max-width: 480px) {
   .feature-grid, .journey { grid-template-columns: 1fr; }
   .lot-table th, .lot-table td { padding: 6px 2px; }
+  .toolbar { width: 100%; gap: 12px; }
+  .topbar .accelerator-cta { width: 100%; justify-content: center; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -495,12 +524,14 @@ a { color: var(--cp-link); }
         <h1 id="topTitle">AI Landing Zone - High Level</h1>
       </div>
       <div class="toolbar">
-        <a class="iconbtn" id="acceleratorLink" href="https://azure.github.io/AI-Landing-Zones/#ai-gateway-landing-zone" target="_blank" rel="noopener noreferrer" aria-label="Deployment accelerator (opens in a new tab)">
+        <a class="iconbtn accelerator-cta" id="acceleratorLink" href="https://azure.github.io/AI-Landing-Zones/#ai-gateway-landing-zone" target="_blank" rel="noopener noreferrer" aria-label="Deployment accelerator (opens in a new tab)">
           Deployment accelerator
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2L7 9M7 3H2v11h11V9"></path></svg>
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2L7 9M7 3H2v11h11V9"></path></svg>
         </a>
-        <button class="iconbtn" id="themeToggle">Dark theme</button>
-        <button class="iconbtn" id="fullscreenToggle">Full screen</button>
+        <div class="utility-controls">
+          <button class="iconbtn" id="themeToggle">Dark theme</button>
+          <button class="iconbtn" id="fullscreenToggle">Full screen</button>
+        </div>
       </div>
     </div>
     <div class="status-banner" id="appStatus" role="alert" hidden></div>

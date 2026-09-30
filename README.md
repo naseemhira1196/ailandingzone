@@ -20,7 +20,7 @@ The dashboard includes:
 - Governance discussion controls and Audit versus Deny scenarios.
 - Locally saved decisions and open questions, with a plain-text export.
 - Light/dark themes, full-screen controls, and responsive layouts.
-- A **Deployment accelerator** button that opens the AI Landing Zones accelerator's AI gateway section in a new tab, leaving the dashboard open. It links to guidance; it does not create Azure resources.
+- A prominent **Deployment accelerator** primary button in the sticky desktop header, expanding to full width on phones. It opens the AI Landing Zones accelerator's AI gateway section in a new tab, leaving the dashboard open. It links to guidance; it does not create Azure resources.
 
 ## Presenter notes
 
