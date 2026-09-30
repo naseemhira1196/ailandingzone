@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Landing Zone — Interactive Session Dashboard</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f5f6f8;
+  --cp-bg-elevated: #fafafa;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f3f4f6;
+  --cp-border: #e0e0e0;
+  --cp-border-strong: #8a8886;
+  --cp-text: #242424;
+  --cp-text-muted: #605e5c;
+  --cp-text-soft: #616161;
+  --cp-accent: #0078d4;
+  --cp-accent-hover: #106ebe;
+  --cp-accent-soft: #eff6fc;
+  --cp-accent-fg: #ffffff;
+  --cp-success: #107c10;
+  --cp-danger: #c42b1c;
+  --cp-warning: #8a5d00;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --cp-shell: #0078d4;
+  --cp-shell-text: #ffffff;
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(0, 120, 212, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #141414;
+  --cp-bg-elevated: #1b1a19;
+  --cp-surface: #242424;
+  --cp-surface-soft: #292929;
+  --cp-border: #424242;
+  --cp-border-strong: #808080;
+  --cp-text: #f5f5f5;
+  --cp-text-muted: #c8c6c4;
+  --cp-text-soft: #b3b0ad;
+  --cp-accent: #60b5ff;
+  --cp-accent-hover: #8ac9ff;
+  --cp-accent-soft: #16334a;
+  --cp-accent-fg: #102030;
+  --cp-success: #6ccb5f;
+  --cp-danger: #ff998f;
+  --cp-warning: #fce100;
+  --cp-link: #60b5ff;
+  --cp-shadow: 0 1px 3px rgba(0, 0, 0, 0.24);
+  --cp-shell: #0f3654;
+  --cp-shell-text: #ffffff;
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(96, 181, 255, 0.14);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  min-height: 100vh;
+}
+
+/* ---------- Layout ---------- */
+.app { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 256px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--cp-bg-elevated);
+  border-right: 1px solid var(--cp-border);
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 10px 18px;
+  border-bottom: 1px solid var(--cp-border);
+  margin-bottom: 12px;
+}
+.brand-tile {
+  width: 36px; height: 36px; flex-shrink: 0; display: grid; place-items: center;
+  border-radius: 4px; background: var(--cp-accent); color: var(--cp-accent-fg);
+  font-size: 0.9rem; font-weight: 700; letter-spacing: 0.04em;
+}
+.brand .title { font-weight: 700; font-size: 1.02rem; line-height: 1.3; }
+.brand .subtitle { font-size: 0.78rem; color: var(--cp-text-muted); margin-top: 4px; }
+
+.navbtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 0.625rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--cp-text);
+  font-size: 0.9rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+.navbtn:hover { background: var(--cp-surface-soft); }
+.navbtn.active { background: var(--cp-accent-soft); border-color: transparent; color: var(--cp-accent); font-weight: 600; box-shadow: inset 3px 0 var(--cp-accent); }
+.navbtn .num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; border-radius: 4px;
+  background: var(--cp-surface-soft); border: 1px solid var(--cp-border);
+  font-size: 0.72rem; font-weight: 700; color: var(--cp-text-muted); flex-shrink: 0;
+}
+.navbtn.active .num { background: var(--cp-accent); border-color: var(--cp-accent); color: var(--cp-accent-fg); }
+
+.sidebar-footer { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--cp-border); }
+.progress-track {
+  height: 6px; border-radius: 999px; background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border); overflow: hidden; margin-top: 8px;
+}
+.progress-fill { height: 100%; background: var(--cp-accent); transition: width 0.25s ease; }
+.progress-label { font-size: 0.72rem; color: var(--cp-text-muted); margin-top: 6px; }
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px;
+  padding: 14px 28px;
+  border-bottom: 1px solid var(--cp-shell);
+  background: var(--cp-shell);
+  color: var(--cp-shell-text);
+  flex-wrap: wrap;
+}
+.topbar h1 { font-size: 1.15rem; font-weight: 600; margin: 0; }
+
+.iconbtn {
+  border: 1px solid var(--cp-border); background: var(--cp-surface-soft);
+  color: var(--cp-text); border-radius: 0.625rem; padding: 7px 10px;
+  cursor: pointer; font-size: 0.85rem; font-family: inherit; line-height: 1;
+  transition: background 0.12s ease;
+}
+.iconbtn:hover { background: var(--cp-accent-soft); border-color: var(--cp-accent); color: var(--cp-accent); }
+.iconbtn.primary { background: var(--cp-accent); border-color: var(--cp-accent); color: var(--cp-accent-fg); }
+.iconbtn.primary:hover { background: var(--cp-accent-hover); }
+
+.content { flex: 1; overflow-y: auto; padding: 26px 32px 60px; }
+.panel { display: none; max-width: 1180px; margin: 0 auto; animation: fadein 0.18s ease; }
+.panel.active { display: block; }
+@keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+.card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 20px 22px;
+  margin-bottom: 18px;
+  box-shadow: var(--cp-shadow);
+}
+.card h2 { margin: 0 0 12px; font-size: 1.12rem; font-weight: 600; }
+.card h3 { margin: 0 0 8px; font-size: 0.92rem; }
+.hint { font-size: 0.82rem; color: var(--cp-text-muted); margin: 0 0 16px; }
+.badge {
+  display: inline-block; font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.03em; padding: 3px 9px; border-radius: 999px;
+  background: var(--cp-accent-soft); color: var(--cp-accent); border: 1px solid var(--cp-accent);
+  margin-bottom: 10px;
+}
+
+/* ---------- Section 1: Landing Zone Map ---------- */
+.map-wrap { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.map-row { display: flex; gap: 22px; justify-content: center; width: 100%; flex-wrap: wrap; }
+.node {
+  flex: 1; min-width: 260px; max-width: 420px;
+  border: 2px solid var(--cp-border-strong);
+  border-radius: 16px; padding: 18px 20px; cursor: pointer;
+  background: var(--cp-surface-soft);
+  transition: border-color 0.15s ease, transform 0.1s ease, background 0.15s ease;
+  text-align: left;
+}
+.node:hover { transform: translateY(-2px); border-color: var(--cp-accent); }
+.node.selected { border-color: var(--cp-accent); background: var(--cp-accent-soft); }
+.node .label { font-weight: 700; font-size: 0.95rem; }
+.node .tag { font-size: 0.72rem; color: var(--cp-text-muted); margin-top: 2px; }
+.connector {
+  width: 2px; height: 34px; background: var(--cp-border-strong); margin: 0 auto;
+}
+.node.dep { max-width: 640px; margin-top: 0; }
+.detail {
+  margin-top: 18px; border: 1px dashed var(--cp-border-strong); border-radius: 16px;
+  padding: 16px 20px; background: var(--cp-surface-soft); display: none;
+}
+.detail.show { display: block; }
+.detail ul { margin: 8px 0 0; padding-left: 20px; }
+.detail li { margin-bottom: 6px; font-size: 0.88rem; }
+
+/* ---------- Shared: SVG topology diagrams ---------- */
+.topo-wrap {
+  border: 1px solid var(--cp-border); border-radius: 16px; background: var(--cp-surface-soft);
+  padding: 16px; margin-bottom: 18px;
+}
+.topo-wrap { overflow-x: auto; }
+.topo-wrap svg { width: 100%; min-width: 740px; height: auto; display: block; }
+.topo-node[data-detail] { cursor: pointer; }
+.topo-node-box { fill: var(--cp-surface); stroke: var(--cp-border-strong); stroke-width: 1.5; transition: stroke 0.15s ease, fill 0.15s ease, stroke-width 0.15s ease; }
+.topo-node:hover .topo-node-box { stroke: var(--cp-accent); }
+.topo-node-box.active { stroke: var(--cp-accent); stroke-width: 2.5; fill: var(--cp-accent-soft); }
+.topo-node-label { fill: var(--cp-text); font-size: 13px; font-weight: 700; font-family: "Segoe UI", Aptos, Calibri, sans-serif; pointer-events: none; }
+.topo-node-sub { fill: var(--cp-text-muted); font-size: 10.5px; font-family: "Segoe UI", Aptos, Calibri, sans-serif; pointer-events: none; }
+.topo-edge { stroke: var(--cp-border-strong); stroke-width: 1.6; fill: none; }
+.topo-edge-flow { stroke: var(--cp-accent); stroke-width: 2; fill: none; stroke-dasharray: 6 6; animation: topo-dash 1.2s linear infinite; opacity: 0.8; }
+.topo-edge-label { fill: var(--cp-text-soft); font-size: 10px; font-family: "Segoe UI", Aptos, Calibri, sans-serif; }
+.topo-arrow-fill { fill: var(--cp-border-strong); }
+.badge-box { fill: var(--cp-accent-soft); stroke: var(--cp-accent); stroke-width: 1; }
+.badge-label { fill: var(--cp-accent); font-size: 10px; font-weight: 700; font-family: "Segoe UI", Aptos, Calibri, sans-serif; pointer-events: none; }
+@keyframes topo-dash { to { stroke-dashoffset: -24; } }
+
+/* ---------- Shared: feature grid ---------- */
+.feature-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 4px; }
+.feature-card { border: 1px solid var(--cp-border); border-radius: 16px; padding: 14px; background: var(--cp-surface-soft); }
+.feature-card .fi { font-size: 1.3rem; margin-bottom: 6px; }
+.feature-card h4 { margin: 0 0 4px; font-size: 0.86rem; }
+.feature-card p { margin: 0; font-size: 0.78rem; color: var(--cp-text-muted); }
+
+/* ---------- Shared: toggle switch ---------- */
+.toggle-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.toggle-switch {
+  position: relative; width: 340px; max-width: 100%; height: 40px;
+  border: 1px solid var(--cp-border); border-radius: 999px; background: var(--cp-surface-soft);
+  cursor: pointer; display: flex; user-select: none;
+}
+.toggle-thumb {
+  position: absolute; top: 3px; left: 3px; width: calc(50% - 3px); height: calc(100% - 6px);
+  background: var(--cp-accent); border-radius: 999px; transition: left 0.2s ease;
+}
+.toggle-switch.right .toggle-thumb { left: calc(50% + 0px); }
+.toggle-opt {
+  flex: 1; z-index: 1; display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 600; color: var(--cp-text-muted); transition: color 0.2s ease;
+}
+.toggle-opt.active { color: var(--cp-accent-fg); }
+
+/* ---------- Section 2: Card Sort ---------- */
+.sort-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px; }
+.sort-col { border: 1px solid var(--cp-border); border-radius: 16px; padding: 12px; background: var(--cp-surface-soft); min-height: 120px; transition: border-color 0.12s ease, background 0.12s ease; }
+.sort-col.dragover { border-color: var(--cp-accent); background: var(--cp-accent-soft); }
+.sort-col h3 { display: flex; justify-content: space-between; align-items: center; }
+.sort-col .count { font-size: 0.72rem; color: var(--cp-text-muted); font-weight: 400; }
+.pool { border: 1px dashed var(--cp-border-strong); border-radius: 16px; padding: 12px; margin-bottom: 14px; background: var(--cp-bg-elevated); transition: border-color 0.12s ease, background 0.12s ease; min-height: 52px; }
+.pool.dragover { border-color: var(--cp-accent); background: var(--cp-accent-soft); }
+.chip {
+  display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px;
+  border: 1px solid var(--cp-border); background: var(--cp-surface);
+  border-radius: 0.625rem; padding: 7px 11px; margin: 4px; font-size: 0.82rem; cursor: grab;
+  transition: border-color 0.12s ease, background 0.12s ease, opacity 0.12s ease;
+}
+.chip:active { cursor: grabbing; }
+.chip:hover { border-color: var(--cp-accent); }
+.chip.dragging { opacity: 0.4; }
+.chip.picked { border-color: var(--cp-accent); background: var(--cp-accent-soft); }
+.chip.correct { border-color: var(--cp-success); background: color-mix(in srgb, var(--cp-success) 10%, var(--cp-surface)); }
+.chip.incorrect { border-color: var(--cp-danger); background: color-mix(in srgb, var(--cp-danger) 8%, var(--cp-surface)); }
+.chip .why { display: none; font-size: 0.74rem; color: var(--cp-text-muted); margin-top: 4px; max-width: 220px; white-space: normal; }
+.chip .why.show { display: block; }
+.chip-head { display: flex; align-items: center; gap: 6px; }
+.chip-icon { font-size: 0.95rem; line-height: 1; }
+.sort-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.accuracy-meter { margin-bottom: 14px; }
+.accuracy-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.accuracy-label { font-size: 0.8rem; font-weight: 700; color: var(--cp-text-muted); text-transform: uppercase; letter-spacing: 0.03em; }
+.accuracy-value { font-size: 0.8rem; color: var(--cp-text-muted); }
+.accuracy-track { height: 10px; border-radius: 6px; background: var(--cp-surface-soft); border: 1px solid var(--cp-border); overflow: hidden; }
+.accuracy-fill { height: 100%; width: 0%; background: var(--cp-success); border-radius: 6px; transition: width 0.25s ease; }
+
+/* ---------- Section 3: VNet Showdown ---------- */
+.vnet-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.vnet-col { border: 1px solid var(--cp-border); border-radius: 16px; padding: 16px 18px; background: var(--cp-surface-soft); }
+.vnet-col ul { margin: 10px 0 0; padding-left: 20px; }
+.vnet-col li { margin-bottom: 8px; font-size: 0.86rem; }
+.rule-box { margin-top: 16px; border: 1px dashed var(--cp-border-strong); border-radius: 16px; padding: 14px 18px; background: var(--cp-bg-elevated); }
+
+/* ---------- Section 4: Hub & Spoke tabs ---------- */
+.tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.tab {
+  border: 0; border-bottom: 3px solid transparent; background: none; color: var(--cp-text-muted);
+  border-radius: 0; padding: 12px 16px; cursor: pointer; font-size: 0.86rem; font-family: inherit;
+}
+.tab:hover { background: var(--cp-surface-soft); color: var(--cp-text); }
+.tab.active { border-bottom-color: var(--cp-accent); color: var(--cp-accent); font-weight: 600; }
+.path-panel { display: none; }
+.path-panel.active { display: block; }
+
+/* ---------- Section 5: Policy checklist ---------- */
+.check-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  border: 1px solid var(--cp-border); border-radius: 16px; padding: 14px 16px; margin-bottom: 10px;
+  background: var(--cp-surface-soft); cursor: pointer; transition: border-color 0.12s ease;
+}
+.check-item:hover { border-color: var(--cp-accent); }
+.check-item.checked { border-color: var(--cp-success); background: color-mix(in srgb, var(--cp-success) 6%, var(--cp-surface)); }
+.check-box {
+  width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--cp-border-strong);
+  flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; color: var(--cp-accent-fg); background: var(--cp-surface);
+}
+.check-item.checked .check-box { background: var(--cp-success); border-color: var(--cp-success); }
+.check-icon { font-size: 1.15rem; line-height: 1; flex-shrink: 0; margin-top: 1px; }
+.check-item .txt b { font-size: 0.88rem; }
+.check-item .txt p { margin: 3px 0 0; font-size: 0.8rem; color: var(--cp-text-muted); }
+.check-item.glow { animation: glow-pulse 1.1s ease 2; }
+@keyframes glow-pulse { 0%, 100% { box-shadow: none; } 50% { box-shadow: 0 0 0 3px var(--cp-accent-soft); } }
+
+.gov-rings { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 18px; }
+.gov-ring {
+  width: 100%; border: 1.5px solid var(--cp-border-strong); border-radius: 16px; padding: 14px 18px;
+  cursor: pointer; text-align: center; background: var(--cp-surface-soft); transition: all 0.15s ease;
+}
+.gov-ring[data-level="1"] { max-width: 100%; }
+.gov-ring[data-level="2"] { max-width: 80%; }
+.gov-ring[data-level="3"] { max-width: 60%; }
+.gov-ring[data-level="4"] { max-width: 40%; }
+.gov-ring:hover { border-color: var(--cp-accent); }
+.gov-ring.active { border-color: var(--cp-accent); background: var(--cp-accent-soft); }
+.gov-ring .ring-icon { font-size: 1.3rem; line-height: 1; margin-bottom: 4px; }
+.gov-ring .ring-label { font-weight: 700; font-size: 0.9rem; }
+.gov-ring .ring-sub { font-size: 0.74rem; color: var(--cp-text-muted); margin-top: 2px; }
+.gov-detail {
+  border: 1px dashed var(--cp-border-strong); border-radius: 16px; padding: 14px 18px;
+  background: var(--cp-bg-elevated); margin-bottom: 18px; min-height: 50px;
+}
+.gov-detail .step-tag { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--cp-accent); }
+.gov-detail p { margin: 5px 0 0; font-size: 0.9rem; }
+
+/* ---------- Section 6: Parking lot ---------- */
+.lot-table { width: 100%; border-collapse: collapse; }
+.lot-table th {
+  text-align: left; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em;
+  color: var(--cp-text-muted); border-bottom: 1px solid var(--cp-border); padding: 8px 10px;
+}
+.lot-table td { border-bottom: 1px solid var(--cp-border); padding: 6px; vertical-align: top; }
+.lot-table textarea {
+  width: 100%; min-height: 54px; resize: vertical; border: 1px solid transparent;
+  border-radius: 0.625rem; padding: 8px; background: transparent; color: var(--cp-text);
+  font-family: inherit; font-size: 0.85rem;
+}
+.lot-table textarea:focus { outline: none; border-color: var(--cp-accent); background: var(--cp-surface); }
+.lot-table td.rm { width: 34px; text-align: center; }
+.lot-table td.rm button {
+  border: none; background: transparent; color: var(--cp-text-muted); cursor: pointer; font-size: 1rem;
+}
+.lot-table td.rm button:hover { color: var(--cp-danger); }
+
+.footerbar { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; flex-wrap: wrap; gap: 10px; }
+.savehint { font-size: 0.76rem; color: var(--cp-text-muted); }
+
+.scenario { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--cp-border); }
+.scenario-heading { display: flex; gap: 12px; align-items: baseline; justify-content: space-between; flex-wrap: wrap; margin-bottom: 12px; }
+.scenario-heading .badge { margin: 0; }
+.scenario-options { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.scenario-options button { line-height: 1.4; }
+.scenario-options button[aria-pressed="true"] { background: var(--cp-accent); color: var(--cp-accent-fg); border-color: var(--cp-accent); }
+.journey { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; list-style: none; padding: 0; margin: 0 0 16px; }
+.journey li { position: relative; min-width: 0; padding: 16px; border: 2px solid var(--cp-border); border-radius: 16px; background: var(--cp-surface-soft); }
+.journey li:not(:last-child)::after { content: "\2192"; position: absolute; right: -22px; top: 38px; color: var(--cp-text-muted); }
+.journey .passed { border-color: var(--cp-success); }
+.journey .blocked { border-color: var(--cp-danger); }
+.journey .highlight { border-color: var(--cp-accent); background: var(--cp-accent-soft); }
+.journey .skipped { border-style: dashed; }
+.journey strong, .journey small { display: block; }
+.journey strong { margin: 8px 0; font-size: 0.95rem; }
+.journey small { color: var(--cp-text-muted); line-height: 1.5; }
+.stage-status { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--cp-text-muted); }
+.passed .stage-status { color: var(--cp-success); }
+.blocked .stage-status { color: var(--cp-danger); }
+.scenario-result { padding: 16px; border-left: 4px solid var(--cp-accent); background: var(--cp-surface-soft); border-radius: 0.625rem; }
+.scenario-result p { margin: 8px 0 0; line-height: 1.5; font-size: 0.88rem; }
+.scenario-source { margin: 12px 0 0; font-size: 0.76rem; color: var(--cp-text-muted); }
+a { color: var(--cp-link); }
+.status-banner { margin: 12px 32px 0; padding: 12px; border: 1px solid var(--cp-warning); border-radius: 0.625rem; }
+.chip { max-width: calc(100% - 8px); }
+.chip-head { min-width: 0; }
+.chip-head { border: 0; padding: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.chip-head span:last-child { overflow-wrap: anywhere; }
+.chip-status { font-size: 0.7rem; font-weight: 600; }
+.chip-move { display: block; margin-top: 8px; font-size: 0.75rem; }
+.chip-move select { display: block; max-width: 100%; margin-top: 4px; padding: 6px; border: 1px solid var(--cp-border); border-radius: 0.625rem; background: var(--cp-surface); color: var(--cp-text); font: inherit; }
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; }
+:focus-visible { outline: 3px solid var(--cp-accent); outline-offset: 3px; }
+.topo-node:focus-visible .topo-node-box { stroke: var(--cp-accent); stroke-width: 3; }
+.check-item { width: 100%; text-align: left; color: var(--cp-text); font: inherit; }
+.toggle-opt { border: 0; background: none; font-family: inherit; cursor: pointer; padding: 4px 8px; border-radius: 999px; }
+.accuracy-row { flex-wrap: wrap; gap: 8px; }
+.card, .topo-wrap, .feature-card, .detail, .sort-col, .pool, .vnet-col,
+.rule-box, .check-item, .gov-ring, .gov-detail, .journey li { border-radius: 8px; }
+.iconbtn, .navbtn, .chip, .badge, .scenario-result, .status-banner,
+.lot-table textarea, .chip-move select, .toggle-switch, .toggle-thumb, .toggle-opt { border-radius: 4px; }
+.iconbtn { min-height: 32px; padding: 8px 12px; font-weight: 600; }
+.topbar .iconbtn {
+  color: var(--cp-shell-text); background: none;
+  border-color: color-mix(in srgb, var(--cp-shell-text) 55%, var(--cp-shell));
+}
+.topbar .iconbtn:hover { background: color-mix(in srgb, var(--cp-shell-text) 16%, var(--cp-shell)); }
+.topbar :focus-visible { outline-color: var(--cp-shell-text); }
+.topo-node-box { rx: 6px; }
+.badge-box { rx: 4px; }
+.feature-card .fi { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 8px; background: var(--cp-accent-soft); margin-bottom: 12px; }
+.journey li { border-width: 1px; border-top-width: 3px; }
+.scenario-result { background: var(--cp-accent-soft); }
+.tabs { border-bottom: 1px solid var(--cp-border); }
+.badge { font-weight: 600; letter-spacing: 0.02em; }
+@media (max-width: 1100px) {
+  .feature-grid, .journey { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .journey li::after { display: none; }
+}
+@media (max-width: 860px) {
+  .app { flex-direction: column; }
+  .sidebar { position: static; height: auto; width: 100%; flex-direction: row; overflow-x: auto; }
+  .navbtn { width: auto; min-width: 176px; flex-shrink: 0; }
+  .sidebar-footer { display: none; }
+  .brand { display: none; }
+  .sort-cols, .vnet-cols { grid-template-columns: 1fr; }
+  .content { padding: 16px 12px 32px; }
+  .topbar { padding: 16px; }
+  .card { padding: 16px; }
+  .gov-ring[data-level] { max-width: 100%; }
+}
+@media (max-width: 480px) {
+  .feature-grid, .journey { grid-template-columns: 1fr; }
+  .lot-table th, .lot-table td { padding: 6px 2px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <nav class="sidebar">
+    <div class="brand">
+      <div class="brand-tile" aria-hidden="true">AI</div>
+      <div class="title">AI Landing Zone</div>
+    </div>
+    <button class="navbtn active" data-panel="p1"><span class="num">1</span> Landing Zone Map</button>
+    <button class="navbtn" data-panel="p4"><span class="num">2</span> Hub &amp; Spoke Landing Zones</button>
+    <button class="navbtn" data-panel="p2"><span class="num">3</span> Day-1 Services Sort</button>
+    <button class="navbtn" data-panel="p3"><span class="num">4</span> VNet Showdown</button>
+    <button class="navbtn" data-panel="p5"><span class="num">5</span> Policy Baseline</button>
+    <button class="navbtn" data-panel="p6"><span class="num">6</span> Decisions &amp; Parking Lot</button>
+    <div class="sidebar-footer">
+      <div class="progress-label">Session progress</div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-label" id="progressLabel">0 / 6 segments visited</div>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h1 id="topTitle">Landing Zone Map</h1>
+      </div>
+      <div class="toolbar">
+        <button class="iconbtn" id="themeToggle">Dark theme</button>
+        <button class="iconbtn" id="fullscreenToggle">Full screen</button>
+      </div>
+    </div>
+    <div class="status-banner" id="appStatus" role="alert" hidden></div>
+
+    <div class="content">
+
+      <!-- PANEL 1: Landing Zone Map -->
+      <section class="panel active" id="p1">
+        <div class="card">
+          <h2>Hub &amp; Spoke Architecture</h2>
+
+          <div class="topo-wrap">
+            <svg viewBox="0 0 920 240" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <marker id="lzArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M0,0 L10,5 L0,10 Z" class="topo-arrow-fill"></path>
+                </marker>
+              </defs>
+
+              <!-- edges -->
+              <path class="topo-edge" d="M175,120 L233,90" marker-end="url(#lzArrow)"></path>
+              <path class="topo-edge-flow" d="M175,120 L233,90"></path>
+              <text class="topo-edge-label" x="150" y="98" text-anchor="middle">ExpressRoute / VPN</text>
+
+              <path class="topo-edge" d="M423,90 L473,90" marker-end="url(#lzArrow)"></path>
+              <path class="topo-edge-flow" d="M423,90 L473,90"></path>
+              <text class="topo-edge-label" x="448" y="20" text-anchor="middle">VNet peering</text>
+
+              <path class="topo-edge" d="M663,90 L718,120" marker-end="url(#lzArrow)"></path>
+              <path class="topo-edge-flow" d="M663,90 L718,120"></path>
+              <text class="topo-edge-label" x="722" y="98" text-anchor="middle">Private endpoints</text>
+
+              <!-- onprem -->
+              <g class="topo-node" data-detail="onprem">
+                <rect class="topo-node-box" x="20" y="100" width="155" height="80" rx="14"></rect>
+                <text class="topo-node-label" x="97" y="136" text-anchor="middle">Users /</text>
+                <text class="topo-node-label" x="97" y="152" text-anchor="middle">On-Premises</text>
+                <text class="topo-node-sub" x="97" y="170" text-anchor="middle">Enterprise perimeter</text>
+              </g>
+
+              <!-- hub -->
+              <g class="topo-node" data-detail="hub">
+                <rect class="topo-node-box" x="235" y="30" width="188" height="120" rx="14"></rect>
+                <text class="topo-node-label" x="329" y="70" text-anchor="middle">AI Landing Zone</text>
+                <text class="topo-node-label" x="329" y="88" text-anchor="middle">for APIM — Hub</text>
+                <text class="topo-node-sub" x="329" y="112" text-anchor="middle">Gateway layer</text>
+                <text class="topo-node-sub" x="329" y="128" text-anchor="middle">auth · routing · quotas</text>
+              </g>
+
+              <!-- spoke -->
+              <g class="topo-node" data-detail="spoke">
+                <rect class="topo-node-box" x="475" y="30" width="188" height="120" rx="14"></rect>
+                <text class="topo-node-label" x="569" y="70" text-anchor="middle">AI Landing Zone</text>
+                <text class="topo-node-label" x="569" y="88" text-anchor="middle">for Foundry — Spoke</text>
+                <text class="topo-node-sub" x="569" y="112" text-anchor="middle">Workload layer</text>
+                <text class="topo-node-sub" x="569" y="128" text-anchor="middle">projects · agents · models</text>
+              </g>
+
+              <!-- deps -->
+              <g class="topo-node" data-detail="deps">
+                <rect class="topo-node-box" x="720" y="100" width="180" height="80" rx="14"></rect>
+                <text class="topo-node-label" x="810" y="132" text-anchor="middle">Data + Dependencies</text>
+                <text class="topo-node-sub" x="810" y="150" text-anchor="middle">Search · Cosmos · Storage</text>
+                <text class="topo-node-sub" x="810" y="164" text-anchor="middle">Key Vault</text>
+              </g>
+            </svg>
+          </div>
+
+          <div class="detail" id="detail-onprem">
+            <h3>Users / On-Premises</h3>
+            <ul>
+              <li>Enterprise apps and users reach Azure through the established hybrid network path — typically ExpressRoute or VPN into the hub VNet.</li>
+              <li>Traffic never needs to traverse the public internet to reach Foundry or its dependent services.</li>
+              <li>This is the enterprise perimeter — it stays customer-owned regardless of which VNet isolation model Foundry uses.</li>
+            </ul>
+          </div>
+          <div class="detail" id="detail-hub">
+            <h3>AI Landing Zone for APIM (Hub)</h3>
+            <ul>
+              <li>Centralizes access control, token governance, routing, and telemetry across every Foundry spoke.</li>
+              <li>Publishes API contracts — a single, governed front door for AI apps and agents.</li>
+              <li>Can be one deployment covering prod + non-prod, or split, depending on governance needs.</li>
+              <li>Enforces per-consumer token limits, semantic caching, model routing, and rate-limit-by-key policy.</li>
+            </ul>
+          </div>
+          <div class="detail" id="detail-spoke">
+            <h3>AI Landing Zone for Foundry (Spoke)</h3>
+            <ul>
+              <li>Each business unit or use case gets its own Foundry deployment: projects, agents, models.</li>
+              <li>Isolation for model deployments, quotas, cost tracking, and operational ownership.</li>
+              <li>Templated and repeatable — new spokes onboard through infrastructure-as-code, not portal clicks.</li>
+            </ul>
+          </div>
+          <div class="detail" id="detail-deps">
+            <h3>Workload Data + Dependencies</h3>
+            <ul>
+              <li>Storage Account and Key Vault — included in this reference architecture; validate requirements for the selected hosting mode.</li>
+              <li>AI Search — grounding/RAG via Foundry IQ and agentic retrieval (usually required).</li>
+              <li>Cosmos DB — thread/state storage (depends on hosting pattern).</li>
+              <li>Private endpoints, private DNS, access permissions, and public-network restrictions must be configured together.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL 2: Card Sort -->
+      <section class="panel" id="p2">
+        <div class="card">
+          <h2>Day-1 Services Card Sort</h2>
+          <p class="hint">Workshop reference baseline. Service requirements vary by model, hosting pattern, and enterprise controls.</p>
+
+          <div class="pool" id="pool"></div>
+
+          <div class="sort-cols">
+            <div class="sort-col" data-col="Required"><h3>Required <span class="count" id="cnt-Required">0</span></h3><div class="colitems" id="col-Required"></div></div>
+            <div class="sort-col" data-col="Depends"><h3>Depends <span class="count" id="cnt-Depends">0</span></h3><div class="colitems" id="col-Depends"></div></div>
+            <div class="sort-col" data-col="Optional"><h3>Optional <span class="count" id="cnt-Optional">0</span></h3><div class="colitems" id="col-Optional"></div></div>
+          </div>
+
+          <div class="accuracy-meter">
+            <div class="accuracy-row">
+              <span class="accuracy-label">Baseline match</span>
+              <span class="accuracy-value" id="accuracyValue">0 / 12 placed</span>
+            </div>
+            <div class="accuracy-track" id="accuracyTrack" role="progressbar" aria-label="Baseline match among placed services" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="accuracy-fill" id="accuracyFill"></div></div>
+          </div>
+
+          <div class="sort-actions">
+            <button class="iconbtn" id="resetSort">Reset</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL 3: VNet Showdown -->
+      <section class="panel" id="p3">
+        <div class="card">
+          <h2>Microsoft-Managed vs. Customer-Managed VNet</h2>
+
+          <div class="toggle-row">
+            <div class="toggle-switch" id="vnetToggle">
+              <div class="toggle-thumb"></div>
+              <button class="toggle-opt active" data-mode="ms" aria-pressed="true">Microsoft-Managed</button>
+              <button class="toggle-opt" data-mode="byo" aria-pressed="false">Customer-Managed (BYO)</button>
+            </div>
+          </div>
+
+          <div class="topo-wrap" id="vnetDiagramMS">
+            <svg viewBox="0 0 920 220" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <marker id="msArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M0,0 L10,5 L0,10 Z" class="topo-arrow-fill"></path>
+                </marker>
+              </defs>
+              <path class="topo-edge" d="M175,110 L233,110" marker-end="url(#msArrow)"></path>
+              <path class="topo-edge-flow" d="M175,110 L233,110"></path>
+              <path class="topo-edge" d="M545,110 L603,110" marker-end="url(#msArrow)"></path>
+              <path class="topo-edge-flow" d="M545,110 L603,110"></path>
+
+              <g class="topo-node">
+                <rect class="topo-node-box" x="20" y="70" width="155" height="80" rx="14"></rect>
+                <text class="topo-node-label" x="97" y="105" text-anchor="middle">Foundry Agent</text>
+                <text class="topo-node-sub" x="97" y="123" text-anchor="middle">Standard setup</text>
+              </g>
+
+              <g class="topo-node">
+                <rect class="topo-node-box" x="235" y="50" width="310" height="120" rx="14" style="stroke-dasharray:6 5;"></rect>
+                <text class="topo-node-label" x="390" y="85" text-anchor="middle">Microsoft-Managed Subnet</text>
+                <text class="topo-node-sub" x="390" y="106" text-anchor="middle">Microsoft handles IP range,</text>
+                <text class="topo-node-sub" x="390" y="120" text-anchor="middle">delegation &amp; runtime networking</text>
+                <text class="topo-node-sub" x="390" y="142" text-anchor="middle">No customer firewall / UDR path</text>
+              </g>
+
+              <g class="topo-node">
+                <rect class="topo-node-box" x="605" y="70" width="150" height="80" rx="14"></rect>
+                <text class="topo-node-label" x="680" y="100" text-anchor="middle">Managed</text>
+                <text class="topo-node-label" x="680" y="116" text-anchor="middle">Private Endpoint</text>
+              </g>
+
+              <path class="topo-edge" d="M755,110 L813,110" marker-end="url(#msArrow)"></path>
+              <path class="topo-edge-flow" d="M755,110 L813,110"></path>
+              <g class="topo-node">
+                <rect class="topo-node-box" x="815" y="70" width="90" height="80" rx="14"></rect>
+                <text class="topo-node-label" x="860" y="102" text-anchor="middle">Data</text>
+                <text class="topo-node-label" x="860" y="118" text-anchor="middle">Services</text>
+              </g>
+            </svg>
+          </div>
+
+          <div class="topo-wrap" id="vnetDiagramBYO" style="display:none;">
+            <svg viewBox="0 0 920 220" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <marker id="byoArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M0,0 L10,5 L0,10 Z" class="topo-arrow-fill"></path>
+                </marker>
+              </defs>
+              <path class="topo-edge" d="M115,70 L115,60" marker-end="url(#byoArrow)"></path>
+              <path class="topo-edge" d="M175,110 L233,110" marker-end="url(#byoArrow)"></path>
+              <path class="topo-edge-flow" d="M175,110 L233,110"></path>
+              <path class="topo-edge" d="M545,110 L603,110" marker-end="url(#byoArrow)"></path>
+              <path class="topo-edge-flow" d="M545,110 L603,110"></path>
+
+              <g class="topo-node">
+                <rect class="topo-node-box" x="20" y="70" width="155" height="80" rx="14"></rect>
+                <text class="topo-node-label" x="97" y="105" text-anchor="middle">Foundry Agent</text>
+                <text class="topo-node-sub" x="97" y="123" text-anchor="middle">BYO VNet setup</text>
+              </g>
+
+              <g class="topo-node">
+                <rect class="topo-node-box" x="20" y="10" width="190" height="50" rx="12"></rect>
+                <text class="topo-node-label" x="115" y="32" text-anchor="middle">On-Premises</text>
+                <text class="topo-node-sub" x="115" y="48" text-anchor="middle">via ExpressRoute / VPN</text>
+              </g>
+
+              <g class="topo-node">
+                <rect class="topo-node-box" x="235" y="50" width="310" height="120" rx="14"></rect>
+                <text class="topo-node-label" x="390" y="82" text-anchor="middle">Customer VNet Subnet</text>
+                <text class="topo-node-sub" x="390" y="103" text-anchor="middle">Azure Firewall + UDR</text>
+                <text class="topo-node-sub" x="390" y="117" text-anchor="middle">FQDN allow-list, deny-by-default</text>
+                <text class="topo-node-sub" x="390" y="140" text-anchor="middle">Full customer control of egress</text>
+              </g>
+
+              <g class="topo-node">
+                <rect class="topo-node-box" x="605" y="70" width="150" height="80" rx="14"></rect>
+                <text class="topo-node-label" x="680" y="100" text-anchor="middle">Private</text>
+                <text class="topo-node-label" x="680" y="116" text-anchor="middle">Endpoint</text>
+              </g>
+
+              <path class="topo-edge" d="M755,110 L813,110" marker-end="url(#byoArrow)"></path>
+              <path class="topo-edge-flow" d="M755,110 L813,110"></path>
+              <g class="topo-node">
+                <rect class="topo-node-box" x="815" y="70" width="90" height="80" rx="14"></rect>
+                <text class="topo-node-label" x="860" y="102" text-anchor="middle">Data</text>
+                <text class="topo-node-label" x="860" y="118" text-anchor="middle">Services</text>
+              </g>
+            </svg>
+          </div>
+
+          <div class="vnet-cols">
+            <div class="vnet-col">
+              <h3>Microsoft-Managed VNet</h3>
+              <ul id="vnetA">
+                <li>Microsoft handles subnet range, IP selection, and delegation — fastest path to private connectivity.</li>
+                <li>Storage and Search isolation supported out of the box via managed private endpoints.</li>
+                <li>Lower operational burden — no firewall, UDRs, or peering to design and maintain.</li>
+                <li>Trade-off: customer-controlled routing and inspection are constrained. Validate connectivity and diagnostics support for the selected service and deployment mode.</li>
+              </ul>
+            </div>
+            <div class="vnet-col">
+              <h3>Customer-Managed VNet (BYO)</h3>
+              <ul id="vnetB">
+                <li>Full control: your own Azure Firewall/NVA, user-defined routes, and network peering.</li>
+                <li>Connects to hub/spoke, shared services, or on-premises via ExpressRoute/VPN.</li>
+                <li>Encryption key ownership is a separate service-level decision, not a property of a private endpoint.</li>
+                <li>Trade-off: more complex setup (subnet delegation to Container Apps, CapHost creation), private IP ranges only, /27 minimum subnet for agent delegation.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="rule-box" id="ruleBox">
+            <b>Network design decision:</b> private connectivity alone does not require a customer-managed runtime VNet. Evaluate BYO when you need customer-controlled routing, inspection, or integration with existing networks. Confirm supported inbound and outbound paths for the selected Foundry service and deployment mode. The enterprise perimeter remains a separate responsibility.
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL 4: Hub & Spoke Landing Zones -->
+      <section class="panel" id="p4">
+        <div class="card">
+          <h2>AI Landing Zones in Detail</h2>
+          <div class="tabs">
+            <button class="tab active" data-tab="hub">APIM Landing Zone — Hub</button>
+            <button class="tab" data-tab="spoke">AI Landing Zone for Foundry — Spoke</button>
+          </div>
+
+          <div class="path-panel active" id="hub">
+            <div class="topo-wrap">
+              <svg viewBox="0 0 920 300" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <marker id="hubArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M0,0 L10,5 L0,10 Z" class="topo-arrow-fill"></path>
+                  </marker>
+                </defs>
+
+                <path class="topo-edge" d="M180,140 L243,140" marker-end="url(#hubArrow)"></path>
+                <path class="topo-edge-flow" d="M180,140 L243,140"></path>
+
+                <path class="topo-edge" d="M517,110 L575,60" marker-end="url(#hubArrow)"></path>
+                <path class="topo-edge-flow" d="M517,110 L575,60"></path>
+                <path class="topo-edge" d="M517,140 L575,140" marker-end="url(#hubArrow)"></path>
+                <path class="topo-edge-flow" d="M517,140 L575,140"></path>
+                <path class="topo-edge" d="M517,170 L575,220" marker-end="url(#hubArrow)"></path>
+                <path class="topo-edge-flow" d="M517,170 L575,220"></path>
+
+                <path class="topo-edge" d="M340,180 L340,225" marker-end="url(#hubArrow)"></path>
+                <path class="topo-edge-flow" d="M340,180 L340,225"></path>
+
+                <g class="topo-node" data-detail="hub-consumers">
+                  <rect class="topo-node-box" x="20" y="100" width="160" height="80" rx="14"></rect>
+                  <text class="topo-node-label" x="100" y="135" text-anchor="middle">Apps &amp; Agents</text>
+                  <text class="topo-node-sub" x="100" y="153" text-anchor="middle">Consumers of AI</text>
+                </g>
+
+                <g class="topo-node" data-detail="hub-gateway">
+                  <rect class="topo-node-box" x="245" y="70" width="270" height="140" rx="14"></rect>
+                  <text class="topo-node-label" x="380" y="100" text-anchor="middle">APIM Gateway</text>
+                  <text class="topo-node-sub" x="380" y="118" text-anchor="middle">Single governed front door</text>
+                  <rect class="badge-box" x="265" y="132" width="110" height="26" rx="8"></rect>
+                  <text class="badge-label" x="320" y="149" text-anchor="middle">Auth · Routing</text>
+                  <rect class="badge-box" x="385" y="132" width="110" height="26" rx="8"></rect>
+                  <text class="badge-label" x="440" y="149" text-anchor="middle">Quotas · Caching</text>
+                  <text class="topo-node-sub" x="380" y="192" text-anchor="middle">One deployment, many spokes</text>
+                </g>
+
+                <g class="topo-node" data-detail="hub-spokes">
+                  <rect class="topo-node-box" x="577" y="20" width="185" height="80" rx="14"></rect>
+                  <text class="topo-node-label" x="670" y="55" text-anchor="middle">Foundry Spoke A</text>
+                  <text class="topo-node-sub" x="670" y="73" text-anchor="middle">Business unit / use case</text>
+                </g>
+                <g class="topo-node" data-detail="hub-spokes">
+                  <rect class="topo-node-box" x="577" y="110" width="185" height="60" rx="14"></rect>
+                  <text class="topo-node-label" x="670" y="135" text-anchor="middle">Foundry Spoke B</text>
+                  <text class="topo-node-sub" x="670" y="153" text-anchor="middle">Business unit / use case</text>
+                </g>
+                <g class="topo-node" data-detail="hub-spokes">
+                  <rect class="topo-node-box" x="577" y="190" width="185" height="60" rx="14" style="stroke-dasharray:6 5;"></rect>
+                  <text class="topo-node-label" x="670" y="215" text-anchor="middle">Foundry Spoke ...</text>
+                  <text class="topo-node-sub" x="670" y="233" text-anchor="middle">Scales out repeatably</text>
+                </g>
+
+                <g class="topo-node" data-detail="hub-shared">
+                  <rect class="topo-node-box" x="245" y="230" width="190" height="60" rx="14"></rect>
+                  <text class="topo-node-label" x="340" y="255" text-anchor="middle">Shared Services</text>
+                  <text class="topo-node-sub" x="340" y="273" text-anchor="middle">Log Analytics · Key Vault · Entra</text>
+                </g>
+              </svg>
+            </div>
+
+            <div class="detail" id="detail-hub-consumers">
+              <h3>Apps &amp; Agents (Consumers)</h3>
+              <ul>
+                <li>Every AI app or agent in the estate calls through the same governed door — no direct-to-model access.</li>
+                <li>Consumers are identified by subscription key or Entra identity, never by a shared secret baked into code.</li>
+              </ul>
+            </div>
+            <div class="detail" id="detail-hub-gateway">
+              <h3>APIM Gateway</h3>
+              <ul>
+                <li>Centralizes access control, token governance, routing, and telemetry across every Foundry spoke.</li>
+                <li>Publishes API contracts — a single, governed front door for AI apps and agents.</li>
+                <li>Can be one deployment covering prod + non-prod, or split, depending on governance needs.</li>
+                <li>Enforces per-consumer token limits, semantic caching, model routing, and rate-limit-by-key policy.</li>
+              </ul>
+            </div>
+            <div class="detail" id="detail-hub-spokes">
+              <h3>Foundry Spokes</h3>
+              <ul>
+                <li>The hub fans out to every Foundry spoke — one per business unit, product, or use case.</li>
+                <li>New spokes plug into the same gateway contract without renegotiating access for every consumer.</li>
+              </ul>
+            </div>
+            <div class="detail" id="detail-hub-shared">
+              <h3>Shared Services</h3>
+              <ul>
+                <li>One Log Analytics workspace per environment tier makes cross-service audit joins possible.</li>
+                <li>Key Vault holds gateway certificates and secrets; Entra ID backs every identity check at the gateway.</li>
+              </ul>
+            </div>
+
+            <div class="feature-grid">
+              <div class="feature-card"><div class="fi">🛡️</div><h4>Governed Front Door</h4><p>One place to enforce auth, quota, and routing for every AI consumer.</p></div>
+              <div class="feature-card"><div class="fi">📊</div><h4>Unified Telemetry</h4><p>Every request, token count, and rejection lands in one observable pipeline.</p></div>
+              <div class="feature-card"><div class="fi">⚡</div><h4>Semantic Caching</h4><p>Eligible similar prompts can reuse responses when caching is configured, partitioned, and safe for the workload.</p></div>
+              <div class="feature-card"><div class="fi">🔁</div><h4>Repeatable Onboarding</h4><p>New spokes attach to the hub contract instead of a bespoke integration.</p></div>
+            </div>
+            <div class="scenario" id="gatewayScenario"></div>
+          </div>
+
+          <div class="path-panel" id="spoke">
+            <div class="topo-wrap">
+              <svg viewBox="0 0 920 300" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <marker id="spokeArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M0,0 L10,5 L0,10 Z" class="topo-arrow-fill"></path>
+                  </marker>
+                </defs>
+
+                <path class="topo-edge" d="M180,80 L243,80" marker-end="url(#spokeArrow)"></path>
+                <path class="topo-edge-flow" d="M180,80 L243,80"></path>
+                <path class="topo-edge" d="M420,80 L478,80" marker-end="url(#spokeArrow)"></path>
+                <path class="topo-edge-flow" d="M420,80 L478,80"></path>
+
+                <path class="topo-edge" d="M600,110 L600,150" marker-end="url(#spokeArrow)"></path>
+                <path class="topo-edge-flow" d="M600,110 L600,150"></path>
+
+                <path class="topo-edge" d="M545,180 L330,230" marker-end="url(#spokeArrow)"></path>
+                <path class="topo-edge-flow" d="M545,180 L330,230"></path>
+                <path class="topo-edge" d="M600,205 L600,230" marker-end="url(#spokeArrow)"></path>
+                <path class="topo-edge-flow" d="M600,205 L600,230"></path>
+                <path class="topo-edge" d="M655,180 L820,230" marker-end="url(#spokeArrow)"></path>
+                <path class="topo-edge-flow" d="M655,180 L820,230"></path>
+
+                <g class="topo-node" data-detail="spoke-pe">
+                  <rect class="topo-node-box" x="20" y="40" width="160" height="80" rx="14"></rect>
+                  <text class="topo-node-label" x="100" y="75" text-anchor="middle">APIM Hub</text>
+                  <text class="topo-node-sub" x="100" y="93" text-anchor="middle">Upstream gateway</text>
+                </g>
+
+                <g class="topo-node" data-detail="spoke-pe">
+                  <rect class="topo-node-box" x="245" y="40" width="175" height="80" rx="14" style="stroke-dasharray:6 5;"></rect>
+                  <text class="topo-node-label" x="332" y="75" text-anchor="middle">Private Endpoint</text>
+                  <text class="topo-node-sub" x="332" y="93" text-anchor="middle">No public network path</text>
+                </g>
+
+                <g class="topo-node" data-detail="spoke-account">
+                  <rect class="topo-node-box" x="480" y="20" width="245" height="160" rx="14"></rect>
+                  <text class="topo-node-label" x="602" y="55" text-anchor="middle">Foundry Account</text>
+                  <text class="topo-node-sub" x="602" y="73" text-anchor="middle">One per business unit</text>
+                  <rect class="badge-box" x="500" y="90" width="90" height="26" rx="8"></rect>
+                  <text class="badge-label" x="545" y="107" text-anchor="middle">Projects</text>
+                  <rect class="badge-box" x="600" y="90" width="105" height="26" rx="8"></rect>
+                  <text class="badge-label" x="652" y="107" text-anchor="middle">Quotas &amp; Cost</text>
+                  <text class="topo-node-sub" x="602" y="140" text-anchor="middle">Templated, IaC-onboarded</text>
+                  <text class="topo-node-sub" x="602" y="158" text-anchor="middle">Agents · Models · Evaluations</text>
+                </g>
+
+                <g class="topo-node" data-detail="spoke-deps">
+                  <rect class="topo-node-box" x="235" y="230" width="190" height="60" rx="14"></rect>
+                  <text class="topo-node-label" x="330" y="255" text-anchor="middle">AI Search</text>
+                  <text class="topo-node-sub" x="330" y="273" text-anchor="middle">Grounding / agentic RAG</text>
+                </g>
+                <g class="topo-node" data-detail="spoke-deps">
+                  <rect class="topo-node-box" x="505" y="230" width="190" height="60" rx="14"></rect>
+                  <text class="topo-node-label" x="600" y="255" text-anchor="middle">Cosmos DB</text>
+                  <text class="topo-node-sub" x="600" y="273" text-anchor="middle">Thread / state storage</text>
+                </g>
+                <g class="topo-node" data-detail="spoke-deps">
+                  <rect class="topo-node-box" x="725" y="230" width="190" height="60" rx="14"></rect>
+                  <text class="topo-node-label" x="820" y="255" text-anchor="middle">Storage + Key Vault</text>
+                  <text class="topo-node-sub" x="820" y="273" text-anchor="middle">Workload dependencies</text>
+                </g>
+              </svg>
+            </div>
+
+            <div class="detail" id="detail-spoke-pe">
+              <h3>Private Endpoint from the Hub</h3>
+              <ul>
+                <li>Traffic arrives from the APIM hub over a private endpoint — never the public internet.</li>
+                <li>This is the only path into the spoke; publicNetworkAccess stays disabled on the Foundry account.</li>
+              </ul>
+            </div>
+            <div class="detail" id="detail-spoke-account">
+              <h3>Foundry Account</h3>
+              <ul>
+                <li>Each business unit or use case gets its own Foundry deployment: projects, agents, models.</li>
+                <li>Isolation for model deployments, quotas, cost tracking, and operational ownership.</li>
+                <li>Templated and repeatable — new spokes onboard through infrastructure-as-code, not portal clicks.</li>
+              </ul>
+            </div>
+            <div class="detail" id="detail-spoke-deps">
+              <h3>Workload Data + Dependencies</h3>
+              <ul>
+                <li>Storage Account and Key Vault — included in this reference architecture; validate requirements for the selected hosting mode.</li>
+                <li>AI Search — grounding/RAG via Foundry IQ and agentic retrieval (usually required).</li>
+                <li>Cosmos DB — thread/state storage (depends on hosting pattern).</li>
+                <li>Private endpoints, private DNS, access permissions, and public-network restrictions must be configured together.</li>
+              </ul>
+            </div>
+
+            <div class="feature-grid">
+              <div class="feature-card"><div class="fi">🏗️</div><h4>Per-Workload Isolation</h4><p>Each spoke owns its projects, agents, and model deployments independently.</p></div>
+              <div class="feature-card"><div class="fi">🔒</div><h4>Private by Default</h4><p>Public network access disabled; every dependency reached via private endpoint.</p></div>
+              <div class="feature-card"><div class="fi">💰</div><h4>Cost &amp; Quota Ownership</h4><p>Track workload costs and configure usage controls. Budget alerts alone do not cap spending.</p></div>
+              <div class="feature-card"><div class="fi">📦</div><h4>Repeatable Onboarding</h4><p>New spokes stand up from the same infrastructure-as-code template.</p></div>
+            </div>
+            <div class="scenario" id="workloadScenario"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL 5: Policy checklist -->
+      <section class="panel" id="p5">
+        <div class="card">
+          <h2>Policy Baseline</h2>
+          <p class="hint">Policy set higher up is inherited by everything nested inside it.</p>
+
+          <div class="gov-rings" id="govRings">
+            <div class="gov-ring" data-level="1" data-ring="mg">
+              <div class="ring-icon">🏢</div>
+              <div class="ring-label">Management Group (AI subscriptions)</div>
+              <div class="ring-sub">Inheritance within this management group</div>
+            </div>
+            <div class="gov-ring" data-level="2" data-ring="sub">
+              <div class="ring-icon">🗂️</div>
+              <div class="ring-label">Subscriptions (shared + per-LOB)</div>
+              <div class="ring-sub">Hub and spoke boundaries</div>
+            </div>
+            <div class="gov-ring" data-level="3" data-ring="lz">
+              <div class="ring-icon">🧭</div>
+              <div class="ring-label">AI Landing Zone (APIM + Foundry)</div>
+              <div class="ring-sub">Workload-specific compliance</div>
+            </div>
+            <div class="gov-ring" data-level="4" data-ring="deploy">
+              <div class="ring-icon">🚀</div>
+              <div class="ring-label">Foundry Deployment</div>
+              <div class="ring-sub">Per-model, per-project telemetry</div>
+            </div>
+          </div>
+          <div class="gov-detail" id="govDetail">
+            <span class="step-tag">Management Group (AI subscriptions)</span>
+            <p>Policy assigned once here is inherited by every subscription and resource underneath — this is what makes the next four controls consistent across the whole estate instead of configured per-subscription.</p>
+          </div>
+
+          <h3 style="margin-top:6px;">Five governance controls to have in place</h3>
+          <div id="checklist"></div>
+          <div class="scenario" id="policyScenario"></div>
+        </div>
+      </section>
+
+      <!-- PANEL 6: Parking lot -->
+      <section class="panel" id="p6">
+        <div class="card">
+          <h2>Decisions &amp; Parking Lot</h2>
+          <table class="lot-table">
+            <thead><tr><th style="width:46%">✅ Decision ready to make today</th><th style="width:46%">❓ Open question to park</th><th></th></tr></thead>
+            <tbody id="lotBody"></tbody>
+          </table>
+          <div class="footerbar">
+            <button class="iconbtn primary" id="addRow">+ Add Row</button>
+            <button class="iconbtn" id="exportNotes">Export decisions</button>
+            <span class="savehint" id="saveStatus" role="status">Stored in this browser only.</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+(() => {
+  const STORAGE_KEY = "aiLandingZoneDashboard_v1";
+
+  const services = [
+    { name: "Microsoft Foundry", icon: "🧭", col: "Required", why: "Unified control plane for AI apps and agents" },
+    { name: "Azure OpenAI", icon: "🧠", col: "Required", why: "Selected model provider in this workshop baseline; other model choices change this requirement." },
+    { name: "AI Search", icon: "🔎", col: "Depends", why: "Usually required — grounding/RAG via Foundry IQ, agentic retrieval" },
+    { name: "Storage Account", icon: "🗄️", col: "Required", why: "Confirmed Foundry Agent Service dependency" },
+    { name: "Key Vault", icon: "🔑", col: "Required", why: "Foundry Agent Service dependency; MS-managed keys by default" },
+    { name: "Managed Identity", icon: "🪪", col: "Required", why: "Identity-first auth; automatic agent identity" },
+    { name: "App Insights", icon: "📈", col: "Depends", why: "Recommended — trace-first diagnostics per project" },
+    { name: "Log Analytics", icon: "📊", col: "Depends", why: "Recommended — centralized diagnostics and auditing" },
+    { name: "Azure Container Apps", icon: "📦", col: "Depends", why: "Recommended BYO agent hosting runtime" },
+    { name: "Container Registry", icon: "🏷️", col: "Depends", why: "BYO agent containerization" },
+    { name: "Cosmos DB", icon: "🌐", col: "Depends", why: "Confirmed Foundry Agent Service dependency" },
+    { name: "Content Safety", icon: "🛡️", col: "Optional", why: "Guardrails: PII, jailbreak, prompt shielding" },
+  ];
+
+  const policyItems = [
+    { t: "Dedicated management group for AI subscriptions", d: "So policy is inherited, not configured per-subscription.", icon: "🏢" },
+    { t: "Azure Policy at MG scope", d: "Allow only approved models, deny non-Foundry resource types.", icon: "📜" },
+    { t: "Disable local (key) authentication, enforce with policy", d: "Keys aren't attributable and bypass Conditional Access.", icon: "🔐" },
+    { t: "Use built-in policy initiatives first", d: "Foundry Tools, Machine Learning, AI Search — under Workload Specific Compliance — before writing custom policy.", icon: "📋" },
+    { t: "One shared Log Analytics workspace per environment tier", d: "Dev/test/prod. This is what makes cross-service audit joins possible.", icon: "📊" },
+  ];
+
+  let state = {
+    activePanel: "p1",
+    visited: { p1: true, p2: false, p3: false, p4: false, p5: false, p6: false },
+    sort: {},          // name -> col
+    sortWhyShown: {},
+    vnetMode: "ms",
+    zone: "hub",
+    govActive: null,
+    checked: {},
+    lot: [{ a: "", b: "" }, { a: "", b: "" }, { a: "", b: "" }],
+  };
+
+  let storageBlocked = false;
+  function reportError(message, error) {
+    document.getElementById("appStatus").textContent = message;
+    document.getElementById("appStatus").hidden = false;
+    console.error(message, error);
+  }
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const saved = JSON.parse(raw);
+        const record = v => v !== null && typeof v === "object" && !Array.isArray(v);
+        if (!record(saved)) throw new Error("Invalid saved session");
+        const restored = { ...state };
+        for (const [key, allowed] of Object.entries({
+          activePanel: ["p1", "p2", "p3", "p4", "p5", "p6"],
+          vnetMode: ["ms", "byo"], zone: ["hub", "spoke"],
+          govActive: [null, "mg", "sub", "lz", "deploy"],
+        })) {
+          if (key in saved) {
+            if (!allowed.includes(saved[key])) throw new Error("Invalid " + key);
+            restored[key] = saved[key];
+          }
+        }
+        for (const [key, keys] of Object.entries({
+          visited: Object.keys(state.visited),
+          checked: policyItems.map((_, i) => String(i)),
+          sortWhyShown: services.map(s => s.name),
+          sort: services.map(s => s.name),
+        })) {
+          if (!(key in saved)) continue;
+          if (!record(saved[key])) throw new Error("Invalid " + key);
+          restored[key] = { ...state[key] };
+          for (const [name, value] of Object.entries(saved[key])) {
+            if (!keys.includes(name) || (key === "sort"
+              ? !["Required", "Depends", "Optional"].includes(value)
+              : typeof value !== "boolean")) throw new Error("Invalid saved " + key);
+            restored[key][name] = value;
+          }
+        }
+        if ("lot" in saved) {
+          if (!Array.isArray(saved.lot) || !saved.lot.every(row =>
+            record(row) && typeof row.a === "string" && typeof row.b === "string"))
+            throw new Error("Invalid saved decisions");
+          restored.lot = saved.lot.map(({ a, b }) => ({ a, b }));
+        }
+        state = restored;
+      }
+    } catch (error) {
+      storageBlocked = true;
+      document.getElementById("saveStatus").textContent = "Not saved. Export decisions before closing.";
+      reportError("Saved session could not be loaded. Existing storage has not been overwritten. New changes remain in this page; export decisions before closing.", error);
+    }
+  }
+  function save() {
+    if (storageBlocked) return;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      document.getElementById("saveStatus").textContent = "Saved in this browser only.";
+    } catch (error) {
+      storageBlocked = true;
+      document.getElementById("saveStatus").textContent = "Not saved. Export decisions before closing.";
+      reportError("Browser storage is unavailable. Changes remain in this page; export decisions before closing.", error);
+    }
+  }
+
+  load();
+
+  // ---------- Navigation ----------
+  const navButtons = document.querySelectorAll(".navbtn");
+  const panels = document.querySelectorAll(".panel");
+  const titles = {
+    p1: "Landing Zone Map",
+    p2: "Day-1 Services Sort",
+    p3: "VNet Showdown",
+    p4: "Hub & Spoke Landing Zones",
+    p5: "Policy Baseline",
+    p6: "Decisions & Parking Lot",
+  };
+
+  function showPanel(id) {
+    panels.forEach(p => p.classList.toggle("active", p.id === id));
+    navButtons.forEach(b => {
+      b.classList.toggle("active", b.dataset.panel === id);
+      if (b.dataset.panel === id) b.setAttribute("aria-current", "page");
+      else b.removeAttribute("aria-current");
+    });
+    document.getElementById("topTitle").textContent = titles[id];
+    state.activePanel = id;
+    state.visited[id] = true;
+    updateProgress();
+    save();
+  }
+  navButtons.forEach(b => b.addEventListener("click", () => showPanel(b.dataset.panel)));
+
+  function updateProgress() {
+    const total = 6;
+    const done = Object.values(state.visited).filter(Boolean).length;
+    document.getElementById("progressFill").style.width = (done / total * 100) + "%";
+    document.getElementById("progressLabel").textContent = done + " / " + total + " segments visited";
+  }
+
+  function keyboardClick(element) {
+    element.tabIndex = 0;
+    element.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        element.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+      }
+    });
+  }
+
+  // Each diagram owns its details; shared detail keys can highlight several nodes.
+  document.querySelectorAll(".topo-node[data-detail]").forEach(node => {
+    node.setAttribute("role", "button");
+    node.setAttribute("aria-expanded", "false");
+    node.setAttribute("aria-controls", "detail-" + node.dataset.detail);
+    node.setAttribute("aria-label", Array.from(node.querySelectorAll(".topo-node-label")).map(t => t.textContent).join(" "));
+    keyboardClick(node);
+    node.addEventListener("click", () => {
+      const scope = node.closest(".path-panel") || node.closest(".panel");
+      const key = node.dataset.detail;
+      const detail = document.getElementById("detail-" + key);
+      const isShown = detail.classList.contains("show");
+      scope.querySelectorAll(".detail").forEach(d => d.classList.remove("show"));
+      scope.querySelectorAll(".topo-node[data-detail]").forEach(n => {
+        const active = !isShown && n.dataset.detail === key;
+        n.setAttribute("aria-expanded", String(active));
+        n.querySelector(".topo-node-box").classList.toggle("active", active);
+      });
+      if (!isShown) {
+        detail.classList.add("show");
+      }
+    });
+  });
+
+  // ---------- Panel 2: Card sort ----------
+  const pool = document.getElementById("pool");
+
+  function renderSort() {
+    pool.innerHTML = "";
+    ["Required", "Depends", "Optional"].forEach(c => document.getElementById("col-" + c).innerHTML = "");
+    const counts = { Required: 0, Depends: 0, Optional: 0 };
+
+    services.forEach(s => {
+      const placedCol = state.sort[s.name];
+      const chip = document.createElement("div");
+      chip.className = "chip" + (placedCol ? (placedCol === s.col ? " correct" : " incorrect") : "");
+      chip.dataset.name = s.name;
+      chip.draggable = true;
+      const whyId = "why-" + s.name.replace(/[^a-z0-9]/gi, "");
+      const whyShown = !!state.sortWhyShown && state.sortWhyShown[s.name];
+      chip.innerHTML = "<button type=\"button\" class=\"chip-head\"><span class=\"chip-icon\" aria-hidden=\"true\">" + s.icon + "</span><span>" + s.name + "</span></button>" +
+        (placedCol ? '<span class="chip-status">' + (placedCol === s.col ? "Matches baseline" : "Revisit placement") + '</span>' : "") +
+        '<div class="why' + (whyShown ? " show" : "") + '" id="' + whyId + '">' + s.why + "</div>";
+
+      const head = chip.querySelector(".chip-head");
+      head.setAttribute("aria-expanded", String(!!whyShown));
+      head.setAttribute("aria-controls", whyId);
+      head.addEventListener("click", () => {
+        state.sortWhyShown = state.sortWhyShown || {};
+        state.sortWhyShown[s.name] = !state.sortWhyShown[s.name];
+        chip.querySelector(".why").classList.toggle("show", state.sortWhyShown[s.name]);
+        head.setAttribute("aria-expanded", String(state.sortWhyShown[s.name]));
+        save();
+      });
+      const moveLabel = document.createElement("label");
+      moveLabel.className = "chip-move";
+      moveLabel.textContent = "Placement";
+      const select = document.createElement("select");
+      select.setAttribute("aria-label", s.name + " placement");
+      ["Unplaced", "Required", "Depends", "Optional"].forEach(value => {
+        const option = document.createElement("option");
+        option.value = value === "Unplaced" ? "" : value;
+        option.textContent = value;
+        select.appendChild(option);
+      });
+      select.value = placedCol || "";
+      select.addEventListener("change", () => {
+        placeChip(s.name, select.value || null);
+        Array.from(document.querySelectorAll(".chip")).find(c => c.dataset.name === s.name).querySelector("select").focus();
+      });
+      moveLabel.appendChild(select);
+      chip.querySelector(".why").appendChild(moveLabel);
+
+      chip.addEventListener("dragstart", (e) => {
+        chip.classList.add("dragging");
+        e.dataTransfer.setData("text/plain", s.name);
+        e.dataTransfer.effectAllowed = "move";
+      });
+      chip.addEventListener("dragend", () => chip.classList.remove("dragging"));
+
+      if (placedCol) {
+        document.getElementById("col-" + placedCol).appendChild(chip);
+        counts[placedCol]++;
+      } else {
+        pool.appendChild(chip);
+      }
+    });
+
+    ["Required", "Depends", "Optional"].forEach(c => document.getElementById("cnt-" + c).textContent = counts[c]);
+
+    const placed = services.filter(s => state.sort[s.name]).length;
+    const correct = services.filter(s => state.sort[s.name] === s.col).length;
+    const pct = placed ? Math.round((correct / placed) * 100) : 0;
+    document.getElementById("accuracyFill").style.width = pct + "%";
+    document.getElementById("accuracyTrack").setAttribute("aria-valuenow", String(pct));
+    document.getElementById("accuracyValue").textContent =
+      placed ? correct + " / " + placed + " match (" + pct + "%) · " + placed + " / " + services.length + " placed" : "0 / " + services.length + " placed";
+  }
+
+  function placeChip(name, col) {
+    if (!services.some(s => s.name === name) || (col !== null && !["Required", "Depends", "Optional"].includes(col))) {
+      reportError("This item cannot be placed in the service sort.", new Error("Invalid service or bucket"));
+      return;
+    }
+    if (col) { state.sort[name] = col; } else { delete state.sort[name]; }
+    renderSort();
+    save();
+  }
+
+  function wireDropZone(el, col) {
+    el.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+      el.classList.add("dragover");
+    });
+    el.addEventListener("dragleave", () => el.classList.remove("dragover"));
+    el.addEventListener("drop", (e) => {
+      e.preventDefault();
+      el.classList.remove("dragover");
+      const name = e.dataTransfer.getData("text/plain");
+      if (name) placeChip(name, col);
+    });
+  }
+
+  document.querySelectorAll(".sort-col").forEach(col => wireDropZone(col, col.dataset.col));
+  wireDropZone(pool, null);
+
+  document.getElementById("resetSort").addEventListener("click", () => {
+    state.sort = {};
+    state.sortWhyShown = {};
+    renderSort();
+    save();
+  });
+
+  // ---------- Panel 3: VNet showdown ----------
+  function renderVnet() {
+    const isByo = state.vnetMode === "byo";
+    document.getElementById("vnetToggle").classList.toggle("right", isByo);
+    document.querySelectorAll("#vnetToggle .toggle-opt").forEach(opt => {
+      opt.classList.toggle("active", (opt.dataset.mode === "byo") === isByo);
+      opt.setAttribute("aria-pressed", String((opt.dataset.mode === "byo") === isByo));
+    });
+    document.getElementById("vnetDiagramMS").style.display = isByo ? "none" : "block";
+    document.getElementById("vnetDiagramBYO").style.display = isByo ? "block" : "none";
+  }
+  document.querySelectorAll("#vnetToggle .toggle-opt").forEach(opt => {
+    opt.addEventListener("click", () => {
+      state.vnetMode = opt.dataset.mode;
+      renderVnet();
+      save();
+    });
+  });
+
+  // ---------- Panel 4: Hub & Spoke tabs ----------
+  function renderZone() {
+    document.querySelectorAll("#p4 .tab").forEach(tab => {
+      const active = tab.dataset.tab === state.zone;
+      tab.classList.toggle("active", active);
+      tab.setAttribute("aria-pressed", String(active));
+      tab.setAttribute("aria-controls", tab.dataset.tab);
+    });
+    document.querySelectorAll("#p4 .path-panel").forEach(p => p.classList.toggle("active", p.id === state.zone));
+  }
+  document.querySelectorAll("#p4 .tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      state.zone = tab.dataset.tab;
+      renderZone();
+      save();
+    });
+  });
+
+  // ---------- Panel 5: checklist ----------
+  const checklistEl = document.getElementById("checklist");
+  function renderChecklist() {
+    checklistEl.innerHTML = "";
+    policyItems.forEach((item, idx) => {
+      const row = document.createElement("button");
+      row.type = "button";
+      row.setAttribute("role", "checkbox");
+      row.setAttribute("aria-checked", String(!!state.checked[idx]));
+      row.className = "check-item" + (state.checked[idx] ? " checked" : "");
+      row.dataset.idx = idx;
+      row.innerHTML =
+        '<div class="check-box">' + (state.checked[idx] ? "&#10003;" : "") + "</div>" +
+        '<div class="check-icon">' + item.icon + '</div>' +
+        '<div class="txt"><b>' + (idx + 1) + ". " + item.t + "</b><p>" + item.d + "</p></div>";
+      row.addEventListener("click", () => {
+        state.checked[idx] = !state.checked[idx];
+        renderChecklist();
+        checklistEl.querySelector('[data-idx="' + idx + '"]').focus();
+        save();
+      });
+      checklistEl.appendChild(row);
+    });
+  }
+
+  // ---------- Panel 5: governance rings ----------
+  const govMap = {
+    mg: {
+      title: "Management Group (AI subscriptions)",
+      text: "Policy assigned once here is inherited by every subscription and resource underneath — this is what makes the next four controls consistent across the whole estate instead of configured per-subscription.",
+      items: [0, 1],
+    },
+    sub: {
+      title: "Subscriptions (shared + per-LOB)",
+      text: "Hub and spoke subscription boundaries carry the inherited policy down, and are where local (key) authentication gets disabled and enforced.",
+      items: [2],
+    },
+    lz: {
+      title: "AI Landing Zone (APIM + Foundry)",
+      text: "A landing zone is an architecture, not a separate Azure Policy scope. Assign applicable initiatives at management group, subscription, resource group, or resource scope to cover its resources.",
+      items: [3],
+    },
+    deploy: {
+      title: "Foundry Deployment",
+      text: "Per-model, per-project telemetry lands in one shared Log Analytics workspace per environment tier, enabling cross-service audit joins.",
+      items: [4],
+    },
+  };
+  function renderGovRings() {
+    document.querySelectorAll(".gov-ring").forEach(ring => {
+      ring.setAttribute("role", "button");
+      keyboardClick(ring);
+      ring.classList.toggle("active", state.govActive === ring.dataset.ring);
+    });
+    if (state.govActive) {
+      const def = govMap[state.govActive];
+      document.getElementById("govDetail").innerHTML =
+        '<span class="step-tag">' + def.title + '</span><p>' + def.text + '</p>';
+    }
+  }
+  document.querySelectorAll(".gov-ring").forEach(ring => {
+    ring.addEventListener("click", () => {
+      const key = ring.dataset.ring;
+      state.govActive = key;
+      renderGovRings();
+      renderChecklist();
+      const def = govMap[key];
+      def.items.forEach(idx => {
+        const row = checklistEl.querySelector('[data-idx="' + idx + '"]');
+        if (row) {
+          row.classList.add("glow");
+          setTimeout(() => row.classList.remove("glow"), 2300);
+        }
+      });
+      save();
+    });
+  });
+
+  // ---------- Panel 6: parking lot ----------
+  const lotBody = document.getElementById("lotBody");
+  function renderLot() {
+    lotBody.innerHTML = "";
+    state.lot.forEach((row, idx) => {
+      const tr = document.createElement("tr");
+      const tdA = document.createElement("td");
+      const taA = document.createElement("textarea");
+      taA.value = row.a || "";
+      taA.placeholder = "e.g. Adopt APIM as our AI gateway hub";
+      taA.setAttribute("aria-label", "Decision " + (idx + 1));
+      taA.addEventListener("input", () => { state.lot[idx].a = taA.value; save(); });
+      tdA.appendChild(taA);
+
+      const tdB = document.createElement("td");
+      const taB = document.createElement("textarea");
+      taB.value = row.b || "";
+      taB.placeholder = "e.g. Who owns the MG-scope policy assignment?";
+      taB.setAttribute("aria-label", "Open question " + (idx + 1));
+      taB.addEventListener("input", () => { state.lot[idx].b = taB.value; save(); });
+      tdB.appendChild(taB);
+
+      const tdRm = document.createElement("td");
+      tdRm.className = "rm";
+      const rmBtn = document.createElement("button");
+      rmBtn.innerHTML = "&#10005;";
+      rmBtn.title = "Remove row";
+      rmBtn.setAttribute("aria-label", "Remove decision row " + (idx + 1));
+      rmBtn.addEventListener("click", () => {
+        state.lot.splice(idx, 1);
+        renderLot();
+        save();
+      });
+      tdRm.appendChild(rmBtn);
+
+      tr.appendChild(tdA); tr.appendChild(tdB); tr.appendChild(tdRm);
+      lotBody.appendChild(tr);
+    });
+  }
+  document.getElementById("addRow").addEventListener("click", () => {
+    state.lot.push({ a: "", b: "" });
+    renderLot();
+    save();
+  });
+
+  document.getElementById("exportNotes").addEventListener("click", () => {
+    const lines = ["AI Landing Zone - Decisions & Parking Lot", new Date().toISOString(), ""];
+    state.lot.filter(row => row.a.trim() || row.b.trim()).forEach((row, i) => {
+      lines.push("Item " + (i + 1), "Decision: " + row.a, "Open question: " + row.b, "");
+    });
+    if (lines.length === 3) lines.push("No decisions or open questions recorded.");
+    const url = URL.createObjectURL(new Blob([lines.join("\r\n")], { type: "text/plain;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "AI-Landing-Zone-Decisions.txt";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+
+  const themeButton = document.getElementById("themeToggle");
+  function renderThemeButton() {
+    themeButton.textContent = document.documentElement.dataset.theme === "dark" ? "Light theme" : "Dark theme";
+  }
+  themeButton.addEventListener("click", () => {
+    document.documentElement.dataset.theme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    renderThemeButton();
+  });
+  const fullscreenButton = document.getElementById("fullscreenToggle");
+  fullscreenButton.hidden = !document.fullscreenEnabled;
+  fullscreenButton.addEventListener("click", async () => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await document.documentElement.requestFullscreen();
+    } catch (error) {
+      reportError("Full screen is unavailable in this browser window.", error);
+    }
+  });
+  document.addEventListener("fullscreenchange", () => {
+    fullscreenButton.textContent = document.fullscreenElement ? "Exit full screen" : "Full screen";
+  });
+
+  // Illustrative cases are intentionally separate from persisted customer notes and real telemetry.
+  function buildScenario(id, title, cases, source) {
+    const root = document.getElementById(id);
+    const heading = document.createElement("div");
+    heading.className = "scenario-heading";
+    const h3 = document.createElement("h3");
+    h3.textContent = title;
+    const badge = document.createElement("span");
+    badge.className = "badge";
+    badge.textContent = "Illustrative · No live Azure calls";
+    heading.append(h3, badge);
+    const choices = document.createElement("div");
+    choices.className = "scenario-options";
+    choices.setAttribute("role", "group");
+    choices.setAttribute("aria-label", title + " scenarios");
+    const journey = document.createElement("ol");
+    journey.className = "journey";
+    journey.setAttribute("aria-label", title + " flow");
+    const result = document.createElement("div");
+    result.className = "scenario-result";
+    result.setAttribute("role", "status");
+    root.append(heading, choices, journey, result);
+    const buttons = cases.map((item, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "iconbtn";
+      button.textContent = item.label;
+      button.addEventListener("click", () => render(index));
+      choices.appendChild(button);
+      return button;
+    });
+    function render(index) {
+      const item = cases[index];
+      buttons.forEach((button, i) => button.setAttribute("aria-pressed", String(index === i)));
+      journey.replaceChildren();
+      item.stages.forEach(([title, status, text, appearance], i) => {
+        const node = document.createElement("li");
+        node.className = appearance;
+        const tag = document.createElement("span");
+        tag.className = "stage-status";
+        tag.textContent = (i + 1) + " / " + status;
+        const name = document.createElement("strong");
+        name.textContent = title;
+        const description = document.createElement("small");
+        description.textContent = text;
+        node.append(tag, name, description);
+        journey.appendChild(node);
+      });
+      const title = document.createElement("strong");
+      title.textContent = item.result;
+      const text = document.createElement("p");
+      text.textContent = item.text;
+      result.replaceChildren(title, text);
+    }
+    render(0);
+    const note = document.createElement("p");
+    note.className = "scenario-source";
+    note.textContent = source.text + " ";
+    if (source.url) {
+      const link = document.createElement("a");
+      link.href = source.url;
+      link.textContent = "Microsoft Learn";
+      note.appendChild(link);
+    }
+    root.appendChild(note);
+  }
+
+  buildScenario("gatewayScenario", "One request, different outcomes", [
+    {
+      label: "Allowed request",
+      stages: [
+        ["Identity", "Validated", "Caller identity and access policy accepted.", "passed"],
+        ["Token rate", "Within limit", "Consumer usage is below the configured rate.", "passed"],
+        ["Routing", "Selected", "An approved model backend is selected.", "highlight"],
+        ["Model", "Response", "The backend returns an inference response.", "passed"],
+      ],
+      result: "Request reaches the approved model",
+      text: "Gateway policies provide a consistent entry point. Backend identity, permissions, and network controls must also be configured; a gateway diagram alone does not enforce them.",
+    },
+    {
+      label: "Missing identity",
+      stages: [
+        ["Identity", "Rejected", "Required caller credentials are missing.", "blocked"],
+        ["Token rate", "Not reached", "Identity validation stopped the request.", "skipped"],
+        ["Routing", "Not reached", "No backend is selected.", "skipped"],
+        ["Model", "Not called", "The inference request does not reach the model.", "skipped"],
+      ],
+      result: "Rejected at the gateway",
+      text: "This example assumes identity validation runs first. The configured policy determines the exact error response. Identity checks are distinct from private network access.",
+    },
+    {
+      label: "Token rate exceeded",
+      stages: [
+        ["Identity", "Validated", "The caller is known but has consumed its allowance.", "passed"],
+        ["Token rate", "429", "The configured tokens-per-minute limit is exceeded.", "blocked"],
+        ["Routing", "Not reached", "The gateway stops this request.", "skipped"],
+        ["Model", "Not called", "No inference request is forwarded.", "skipped"],
+      ],
+      result: "429 Too Many Requests",
+      text: "Rate limiting protects shared capacity per consumer. A token quota over a longer period is a different limit: the APIM token-limit policy returns 403 when that quota is exceeded. These controls are not a guaranteed spending cap.",
+    },
+    {
+      label: "Eligible cache hit",
+      stages: [
+        ["Identity", "Validated", "Caller access is checked before response reuse.", "passed"],
+        ["Token rate", "Within limit", "This example checks limits before lookup.", "passed"],
+        ["Semantic cache", "Hit", "A permitted, sufficiently similar response is found.", "highlight"],
+        ["Model inference", "Skipped", "The cached response is returned instead.", "skipped"],
+      ],
+      result: "An eligible cached response avoids this model inference call",
+      text: "Caching is opt-in, not automatic. Configure lookup and store policies, similarity thresholds, isolation, and freshness. Embedding and cache operations may still incur cost. Sensitive or personalized responses need additional safeguards.",
+    },
+  ], { text: "Example policy ordering; not measured performance or billing data.", url: "https://learn.microsoft.com/en-us/azure/api-management/llm-token-limit-policy" });
+
+  buildScenario("workloadScenario", "The workload shapes the dependencies", [
+    {
+      label: "Model-only",
+      stages: [
+        ["Application", "Request", "An authenticated application sends its prompt.", "passed"],
+        ["Orchestration", "Prepare", "The app assembles instructions and context.", "highlight"],
+        ["Retrieval", "Not used", "No enterprise search index is queried in this example.", "skipped"],
+        ["Model", "Generate", "The selected model produces a response.", "passed"],
+      ],
+      result: "Not every AI application needs a search index",
+      text: "Start with the use case. A model call does not automatically require a customer-owned vector database, agent runtime, or state store.",
+    },
+    {
+      label: "Grounded answer (RAG)",
+      stages: [
+        ["Application", "Question", "A user asks about enterprise knowledge.", "passed"],
+        ["Retrieval", "Authorized", "The application retrieves only permitted documents.", "highlight"],
+        ["Model", "Grounded", "Retrieved context accompanies the prompt.", "passed"],
+        ["Answer", "With sources", "The application presents source references for review.", "passed"],
+      ],
+      result: "Grounding adds a retrieval and data-governance responsibility",
+      text: "AI Search is one retrieval option. Private endpoints restrict network reachability; they do not implement document-level authorization. Source references improve traceability but do not guarantee a correct answer.",
+    },
+    {
+      label: "Agent with tools",
+      stages: [
+        ["Agent", "Plan", "The agent proposes a tool operation.", "highlight"],
+        ["Authorization", "Check", "Application controls validate identity and allowed actions.", "passed"],
+        ["Tool / data", "Execute", "An approved operation runs against its service.", "passed"],
+        ["State + trace", "Record", "Configured stores retain execution state and diagnostics.", "passed"],
+      ],
+      result: "Tools expand both capabilities and the control boundary",
+      text: "Least privilege, approval for high-impact actions, and observability belong in the workload design. Runtime and tool choices determine which stores and compute services are needed.",
+    },
+  ], { text: "Conceptual application flows, not a fixed Foundry service dependency list." });
+
+  buildScenario("policyScenario", "Audit is not enforcement", [
+    {
+      label: "Audit · public access",
+      stages: [
+        ["Assignment", "Audit", "A public-access policy is assigned at an ancestor scope.", "highlight"],
+        ["Resource change", "Requested", "A resource requests public network access.", "highlight"],
+        ["Evaluation", "Non-compliant", "The request does not match the policy condition.", "blocked"],
+        ["Outcome", "Not blocked", "Audit records the issue rather than denying the change.", "highlight"],
+      ],
+      result: "Visible non-compliance is not the same as prevention",
+      text: "An audit effect identifies non-compliance. It does not itself block deployment or turn off an existing public endpoint.",
+    },
+    {
+      label: "Deny · public access",
+      stages: [
+        ["Assignment", "Deny", "An applicable deny policy is assigned.", "highlight"],
+        ["Resource change", "Requested", "A resource requests public network access.", "highlight"],
+        ["Evaluation", "Rejected", "The request matches the deny condition.", "blocked"],
+        ["Outcome", "Blocked", "The non-compliant resource change is denied.", "blocked"],
+      ],
+      result: "Prevent the non-compliant change",
+      text: "A deny policy blocks matching create or update requests. It does not automatically remediate existing resources. Applicability, exclusions, exemptions, and supported resource properties matter.",
+    },
+    {
+      label: "Deny · private configuration",
+      stages: [
+        ["Assignment", "Deny", "The same public-access guardrail applies.", "highlight"],
+        ["Resource change", "Private", "Public network access is disabled in the request.", "passed"],
+        ["Evaluation", "Pass", "The deny condition is not matched.", "passed"],
+        ["Outcome", "May proceed", "This policy does not block the change.", "passed"],
+      ],
+      result: "Passing one policy is not a full security assessment",
+      text: "Other policies, permissions, and deployment checks still apply. Disabling public access alone does not create working private endpoints, DNS resolution, or identity permissions.",
+    },
+  ], { text: "Illustrative resource-property policy; independent of the discussion checklist.", url: "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/effect-basics" });
+
+  // ---------- Init ----------
+  renderThemeButton();
+  renderZone();
+  renderSort();
+  renderVnet();
+  renderChecklist();
+  renderGovRings();
+  renderLot();
+  updateProgress();
+  showPanel(state.activePanel || "p1");
+})();
+</script>
+</body>
+</html>
