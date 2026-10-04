@@ -12,6 +12,7 @@ Download or clone this repository and open `index.html` in a modern browser. No 
 
 The dashboard includes:
 
+- A large **visual architecture explorer** at the top of the first tab, with original service illustrations, switchable AI/knowledge/agent architectures, clickable responsibility layers, and animated round-trip request paths.
 - An **AI Landing Zone - High Level** view with a clickable hub/spoke map and supporting enterprise foundation, platform, workload, and operations blueprint.
 - Illustrated **Follow an AI request** journeys for model-only, grounded-answer, and agent-action workloads.
 - **Play / Pause**, **Next step**, and clickable stage illustrations for request, gateway, workload, and policy walkthroughs. Playback is opt-in, stops on navigation or when the browser tab is hidden, and respects reduced-motion preferences.
@@ -34,9 +35,13 @@ The dashboard includes:
 
 ### Optional presentation interactions
 
+Start with **See the architecture come to life**. Switch from **AI application** to **Add company knowledge** or **Add agent actions** to show which components and paths change. Click a service illustration for its responsibility, use **Trace request** for moving request markers, or **Next hop** to narrate at your own pace. **Focus explorer** enlarges the complete interactive scene; Escape returns it to the page with its selections intact. Layer buttons show or hide visual context only, not actual security controls. **Reset explorer** restores the initial diagram and all layers.
+
 In **AI Landing Zone - High Level**, use **Follow an AI request** and one architecture challenge in place of part of the existing discussion, not as additional timed segments. **Play walkthrough** spotlights one illustrated stage at a time; **Next step** or clicking a stage lets you control the pace. **Show overview** clears the spotlight while preserving the selected scenario and its outcome. The same controls appear in the existing gateway, workload, and policy scenarios.
 
 Use **Enlarge diagram** for a room-sized view, then zoom as needed. Where the source diagram supports component details, those remain clickable in the enlarged view. The new illustrations are embedded SVGs, so they work offline without image downloads. Challenges are local discussion aids, not a live audience-voting system; their answers and playback position are not saved to customer notes. The separate DOCX keeps the original 60-minute agenda.
+
+The explorer's scenes are conceptual application flows, not a fixed Foundry runtime topology: retrieval is authorized by the workload, model calls use the illustrated gateway path, and the agent-action example authorizes a tool operation before execution. Request tracing is opt-in, pauses on navigation, backgrounding, or component selection, and ends after one round trip. Reduced-motion users can step through the same flow without moving markers. These are original explanatory illustrations, not official Azure service icons.
 
 ## Important boundaries
 
