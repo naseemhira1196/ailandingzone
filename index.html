@@ -617,11 +617,13 @@ a { color: var(--cp-link); }
 .card h2 { margin-bottom: 12px; padding-bottom: 8px; font-size: 1.2rem; }
 .section-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
 .section-heading h2 { flex: 1; min-width: 0; }
+.section-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 .section-toggle { flex-shrink: 0; font-size: 0.8rem; padding: 5px 10px; }
+.section-move { font-size: 1rem; padding: 5px 9px; }
 .section-body[hidden] { display: none; }
 .section-collapsed > .section-heading h2 { margin-bottom: 0; }
 .section-collapsed > .studio-topline { margin-bottom: 0; }
-.studio-dialog .section-toggle { display: none; }
+.studio-dialog .section-actions { display: none; }
 .browser-note, .studio-footnote { font-size: 0.875rem; color: var(--cp-text-muted); line-height: 1.4; }
 .reference-content { padding: 10px 12px; border: 1px solid var(--cp-border); border-radius: 6px; margin: 10px 0; background: var(--cp-surface); }
 .reference-content summary { cursor: pointer; color: var(--cp-text); font-weight: 600; font-size: 0.9rem; }
@@ -716,6 +718,8 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
   .studio-canvas svg { height: auto; }
 }
 @media (max-width: 700px) {
+  .section-heading { flex-wrap: wrap; }
+  .section-heading h2 { flex-basis: 100%; }
   .content { padding: 12px; }
   .sidebar { flex-wrap: wrap; overflow: visible; }
   .navbtn { min-width: 0; flex: 1 1 45%; }
@@ -3254,6 +3258,7 @@ SOFTWARE</pre>
     for (const button of ["collapseSections", "expandSections"]) {
       document.getElementById(button).setAttribute("aria-controls", id);
     }
+    refreshSectionMoves();
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }
   function movePresentation(offset) {
@@ -3340,6 +3345,34 @@ SOFTWARE</pre>
   setupPresentation();
   function setupCollapsibleSections() {
     const sections = [];
+    const initialOrders = new Map();
+    function orderedCards(parent) {
+      return [...parent.children].filter(child =>
+        child.classList.contains("card") && getComputedStyle(child).display !== "none");
+    }
+    function refreshMoves() {
+      sections.forEach(section => {
+        const siblings = orderedCards(section.parent);
+        const index = siblings.indexOf(section.card);
+        section.up.disabled = index <= 0;
+        section.down.disabled = index < 0 || index === siblings.length - 1;
+      });
+    }
+    function moveSection(section, offset) {
+      const siblings = orderedCards(section.parent);
+      const index = siblings.indexOf(section.card);
+      const target = siblings[index + offset];
+      if (index < 0 || !target) return;
+      pauseWalkthroughs();
+      if (offset < 0) target.before(section.card);
+      else target.after(section.card);
+      refreshMoves();
+      const pressed = offset < 0 ? section.up : section.down;
+      (pressed.disabled ? (offset < 0 ? section.down : section.up) : pressed).focus({ preventScroll: true });
+      const topbar = document.querySelector(".topbar");
+      const inset = getComputedStyle(topbar).position === "sticky" ? topbar.offsetHeight + 12 : 12;
+      window.scrollTo({ top: Math.max(0, section.heading.getBoundingClientRect().top + window.scrollY - inset), behavior: "instant" });
+    }
     function setExpanded(section, expanded) {
       if (!expanded) {
         pauseWalkthroughs();
@@ -3352,6 +3385,8 @@ SOFTWARE</pre>
       section.button.setAttribute("aria-label", (expanded ? "Collapse " : "Expand ") + section.title);
     }
     document.querySelectorAll(".panel > .card, .official-reference-grid > .card").forEach((card, index) => {
+      const parent = card.parentElement;
+      if (!initialOrders.has(parent)) initialOrders.set(parent, [...parent.children]);
       const title = card.querySelector("h2");
       const heading = card.querySelector(":scope > .studio-topline") || document.createElement("div");
       if (!heading.parentElement) {
@@ -3367,11 +3402,26 @@ SOFTWARE</pre>
       button.type = "button";
       button.className = "iconbtn section-toggle";
       button.setAttribute("aria-controls", body.id);
-      heading.append(button);
+      const actions = document.createElement("div");
+      actions.className = "section-actions";
+      const up = document.createElement("button");
+      const down = document.createElement("button");
+      for (const [control, direction, label] of [[up, "up", "↑"], [down, "down", "↓"]]) {
+        control.type = "button";
+        control.className = "iconbtn section-move";
+        control.dataset.direction = direction;
+        control.textContent = label;
+        control.title = "Move " + direction;
+        control.setAttribute("aria-label", "Move " + title.textContent.trim() + " " + direction);
+      }
+      actions.append(button, up, down);
+      heading.append(actions);
       card.append(body);
-      const section = { card, body, button, title: title.textContent.trim() };
+      const section = { card, parent, heading, body, button, up, down, title: title.textContent.trim() };
       sections.push(section);
       button.addEventListener("click", () => setExpanded(section, body.hidden));
+      up.addEventListener("click", () => moveSection(section, -1));
+      down.addEventListener("click", () => moveSection(section, 1));
       setExpanded(section, true);
     });
     for (const [id, expanded] of [["collapseSections", false], ["expandSections", true]]) {
@@ -3381,7 +3431,12 @@ SOFTWARE</pre>
           .forEach(section => setExpanded(section, expanded));
       });
     }
-    demoResets.add(() => sections.forEach(section => setExpanded(section, true)));
+    demoResets.add(() => {
+      initialOrders.forEach((children, parent) => parent.append(...children));
+      sections.forEach(section => setExpanded(section, true));
+      refreshMoves();
+    });
+    return refreshMoves;
   }
   const initialAccordions = [...document.querySelectorAll("details")].map(element => ({ element, open: element.open }));
   document.getElementById("resetDemo").addEventListener("click", async () => {
@@ -3421,7 +3476,7 @@ SOFTWARE</pre>
   // ---------- Init ----------
   setupArchitectureStudio();
   setupDiagramViewer();
-  setupCollapsibleSections();
+  const refreshSectionMoves = setupCollapsibleSections();
   renderThemeButton();
   renderNetworking();
   renderZone();
