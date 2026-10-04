@@ -542,6 +542,10 @@ a { color: var(--cp-link); }
 .studio .studio-topline h2 { border: 0; padding: 0; margin: 0; }
 .studio-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
 .studio-controls .scenario-options { margin: 0; }
+.architecture-view[hidden] { display: none; }
+.architecture-views { margin: 0 0 12px; }
+.architecture-views button[aria-pressed="true"] { background: var(--cp-accent); color: var(--cp-accent-fg); border-color: var(--cp-accent); }
+#studioDialog #highLevelArchitecture > svg { width: 100%; min-width: 0; height: clamp(240px, calc(100dvh - 380px), 460px); }
 .studio-layer-controls { margin-left: auto; }
 .studio-controls button { min-height: 40px; line-height: 1.4; }
 .studio-layer-controls button[aria-pressed="true"] { border-color: var(--cp-accent); color: var(--cp-accent); background: var(--cp-accent-soft); }
@@ -1009,7 +1013,6 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
             <div><strong id="studioStep">AI application</strong><div class="studio-progress" aria-hidden="true"><span id="studioProgress"></span></div></div>
             <p id="studioExplanation">Users reach the assistant through a configured channel. The Azure backend calls approved models through APIM.</p>
           </div>
-          <p class="takeaway">Shared guardrails; workload-owned applications, data access, evaluations and actions.</p>
           <details class="studio-footnote reference-content" id="studioArchitectureNotes"><summary>Architecture details</summary><p>The Agent Landing Zone and AI Gateway Landing Zone can be deployed together or independently. The accelerator is in preview; each Azure service has its own availability status. The connectivity hub and APIM are different responsibilities. Cloud channels do not require this connectivity hub. DNS is not an inline hop; firewall inspection depends on routing. The outline is not a single VNet.</p><p>Copilot Studio is SaaS, not deployed inside the illustrated VNet. It is an optional UX or integration choice, not the primary request path shown here. Channel integration and backend reachability are configured separately.</p><p>The documented Copilot Studio–Foundry agent connection is preview. It supports agents created in the new Foundry portal and requires the Foundry agent’s Activity protocol endpoint to be enabled. That endpoint is not enabled by default and currently requires REST API or Python SDK configuration; it cannot be enabled in the Foundry portal. The default Responses and A2A endpoints alone are insufficient.</p><p>Validate supported agent experience, endpoint configuration, identity, data handling and network reachability; neither platform automatically grants the other access.</p></details>
         </div>
         <div class="card" id="officialArchitectures">
@@ -1070,7 +1073,7 @@ SOFTWARE</pre>
           <p class="browser-note">One private-hybrid pattern, not a required path for cloud channels.</p>
 
           <div class="topo-wrap spacious" id="highLevelArchitecture">
-            <svg viewBox="0 0 1160 500" xmlns="http://www.w3.org/2000/svg" aria-labelledby="architectureTitle architectureDescription">
+            <svg viewBox="0 80 1160 390" xmlns="http://www.w3.org/2000/svg" aria-labelledby="architectureTitle architectureDescription">
               <title id="architectureTitle">On-premises clients reach a connectivity hub before APIM and the Foundry workload</title>
               <desc id="architectureDescription">A private API access example for an on-premises client application. ExpressRoute or VPN connects to the network hub, then routed connectivity reaches a separate APIM gateway. Foundry and its data dependencies are downstream. Firewall inspection is route-dependent; DNS is a supporting service, not a request hop.</desc>
               <defs>
@@ -2110,7 +2113,7 @@ SOFTWARE</pre>
     node.setAttribute("aria-label", Array.from(node.querySelectorAll(".topo-node-label")).map(t => t.textContent).join(" "));
     keyboardClick(node);
     node.addEventListener("click", () => {
-      const scope = node.closest(".path-panel") || node.closest(".panel");
+      const scope = node.closest(".path-panel") || node.closest(".card") || node.closest(".panel");
       const key = node.dataset.detail;
       const detail = document.getElementById("detail-" + key);
       const isShown = detail.classList.contains("show");
@@ -3020,7 +3023,7 @@ SOFTWARE</pre>
       viewerTrace = null;
       viewport.replaceChildren();
       detail.replaceChildren();
-      document.body.style.overflow = "";
+      document.body.style.overflow = document.querySelector("dialog[open]") ? "hidden" : "";
       if (trigger) trigger.focus();
     });
     document.querySelectorAll(".panel .topo-wrap").forEach((wrap, index) => {
@@ -3511,6 +3514,7 @@ SOFTWARE</pre>
         const card = document.querySelector(selector);
         card.querySelector('.section-toggle[aria-expanded="false"]')?.click();
         if (button.dataset.storyStep === "architecture") {
+          document.querySelector('[data-architecture-view="flow"]').click();
           document.querySelector('[data-studio-entry="channels"]').click();
           document.querySelector('[data-studio-mode="model"]').click();
         }
@@ -3550,10 +3554,15 @@ SOFTWARE</pre>
       details.append(note);
     }
     const agentSetup = ["Standard agent setup", "https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/standard-agent-setup"];
-    sources(document.getElementById("studioArchitectureNotes"), [
+    const studioNotes = document.getElementById("studioArchitectureNotes");
+    const officialNotes = document.getElementById("officialArchitectureNotes");
+    [...studioNotes.children].filter(child => child.tagName !== "SUMMARY")
+      .forEach(child => officialNotes.append(child));
+    studioNotes.remove();
+    sources(officialNotes, [
+      agentSetup,
       ["Copilot Studio–Foundry connection (preview)", "https://learn.microsoft.com/en-us/microsoft-copilot-studio/add-agent-foundry-agent"],
     ]);
-    sources(document.getElementById("officialArchitectureNotes"), [agentSetup]);
     const sortBaseline = document.getElementById("sortBaseline");
     const sortSource = reference(sortBaseline.parentElement, [], "Standard setup: documentation and applicability");
     sortSource.id = "standardSetupSources";
@@ -3564,6 +3573,34 @@ SOFTWARE</pre>
       "landingZoneBlueprint", "architectureChallenges", "requestWalkthrough"]) {
       high.append(document.getElementById(id));
     }
+    const studio = document.getElementById("architectureStudio");
+    const flow = document.createElement("div");
+    flow.id = "architectureFlowView";
+    flow.className = "architecture-view";
+    [...studio.children].filter(child => !child.classList.contains("studio-topline"))
+      .forEach(child => flow.append(child));
+    const hybrid = document.getElementById("hybridArchitecture");
+    hybrid.className = "architecture-view";
+    hybrid.querySelector("h2").remove();
+    const views = document.createElement("div");
+    views.className = "scenario-options architecture-views";
+    views.setAttribute("role", "group");
+    views.setAttribute("aria-label", "Architecture view");
+    views.innerHTML = '<button type="button" class="iconbtn" data-architecture-view="flow" aria-controls="architectureFlowView">Workload flow</button>' +
+      '<button type="button" class="iconbtn" data-architecture-view="hybrid" aria-controls="hybridArchitecture">Hub &amp; spoke</button>';
+    studio.append(views, flow, hybrid);
+    function selectArchitectureView(view) {
+      pauseWalkthroughs();
+      flow.hidden = view !== "flow";
+      hybrid.hidden = view !== "hybrid";
+      studio.dataset.architectureView = view;
+      views.querySelectorAll("button").forEach(button =>
+        button.setAttribute("aria-pressed", String(button.dataset.architectureView === view)));
+    }
+    views.querySelectorAll("button").forEach(button =>
+      button.addEventListener("click", () => selectArchitectureView(button.dataset.architectureView)));
+    selectArchitectureView("flow");
+    demoResets.add(() => selectArchitectureView("flow"));
     const ownership = document.createElement("div"); ownership.className = "card"; ownership.id = "ownershipMain";
     ownership.innerHTML = '<h2>One foundation, clear ownership</h2><div class="ownership-grid">' +
       '<article><h3>Shared platform responsibilities</h3><p>Connectivity, shared gateway, applicable policies and shared operational standards.</p><p>Enterprise/platform foundation: identity, hybrid networking, governance and operating standards.</p></article>' +
