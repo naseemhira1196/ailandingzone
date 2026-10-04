@@ -635,6 +635,7 @@ a { color: var(--cp-link); }
           <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2L7 9M7 3H2v11h11V9"></path></svg>
         </a>
         <div class="utility-controls">
+          <button class="iconbtn" type="button" id="resetDemo" title="Restart all activities at the first tab. Keeps decisions, notes, theme, and full screen.">Reset demo</button>
           <button class="iconbtn" id="themeToggle">Dark theme</button>
           <button class="iconbtn" id="fullscreenToggle">Full screen</button>
         </div>
@@ -1639,6 +1640,7 @@ a { color: var(--cp-link); }
   const STORAGE_KEY = "aiLandingZoneDashboard_v1";
   const corePanels = ["p1", "p4", "p2", "p3", "p5", "p6"];
   const playbackStops = new Set();
+  const demoResets = new Set();
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   function pauseWalkthroughs() { playbackStops.forEach(stop => stop()); }
   document.addEventListener("visibilitychange", () => {
@@ -1668,21 +1670,24 @@ a { color: var(--cp-link); }
     { t: "One shared Log Analytics workspace per environment tier", d: "Dev/test/prod. This is what makes cross-service audit joins possible.", icon: "📊" },
   ];
 
-  let state = {
-    activePanel: "p1",
-    visited: { p1: true, p2: false, p3: false, p4: false, p5: false, p6: false },
-    sort: {},          // name -> col
-    sortWhyShown: {},
-    vnetMode: "ms",
-    zone: "hub",
-    networkView: "flows",
-    networkAgent: "hosted",
-    networkSubnet: "24",
-    networkEgress: "approved",
-    govActive: null,
-    checked: {},
-    lot: [{ a: "", b: "" }, { a: "", b: "" }, { a: "", b: "" }],
-  };
+  function createInitialState() {
+    return {
+      activePanel: "p1",
+      visited: { p1: true, p2: false, p3: false, p4: false, p5: false, p6: false },
+      sort: {},          // name -> col
+      sortWhyShown: {},
+      vnetMode: "ms",
+      zone: "hub",
+      networkView: "flows",
+      networkAgent: "hosted",
+      networkSubnet: "24",
+      networkEgress: "approved",
+      govActive: null,
+      checked: {},
+      lot: [{ a: "", b: "" }, { a: "", b: "" }, { a: "", b: "" }],
+    };
+  }
+  let state = createInitialState();
 
   let storageBlocked = false;
   function reportError(message, error) {
@@ -2092,17 +2097,15 @@ a { color: var(--cp-link); }
   };
   function renderGovRings() {
     document.querySelectorAll(".gov-ring").forEach(ring => {
-      ring.setAttribute("role", "button");
-      keyboardClick(ring);
       ring.classList.toggle("active", state.govActive === ring.dataset.ring);
     });
-    if (state.govActive) {
-      const def = govMap[state.govActive];
-      document.getElementById("govDetail").innerHTML =
-        '<span class="step-tag">' + def.title + '</span><p>' + def.text + '</p>';
-    }
+    const def = govMap[state.govActive || "mg"];
+    document.getElementById("govDetail").innerHTML =
+      '<span class="step-tag">' + def.title + '</span><p>' + def.text + '</p>';
   }
   document.querySelectorAll(".gov-ring").forEach(ring => {
+    ring.setAttribute("role", "button");
+    keyboardClick(ring);
     ring.addEventListener("click", () => {
       const key = ring.dataset.ring;
       state.govActive = key;
@@ -2384,11 +2387,13 @@ a { color: var(--cp-link); }
       pauseStudio();
       showHop((hopIndex + 1) % routes[mode].length);
     });
-    root.querySelector("#studioReset").addEventListener("click", () => {
+    function resetStudio() {
       renderMode("model");
       root.querySelectorAll("[data-studio-layer]").forEach(button => button.setAttribute("aria-pressed", "true"));
       root.querySelectorAll("[data-studio-layer-art]").forEach(layer => layer.removeAttribute("hidden"));
-    });
+    }
+    root.querySelector("#studioReset").addEventListener("click", resetStudio);
+    demoResets.add(resetStudio);
     function syncMotion() {
       pauseStudio();
       play.disabled = reducedMotion.matches;
@@ -2689,6 +2694,7 @@ a { color: var(--cp-link); }
       selectStep(-1);
     }
     render(0);
+    demoResets.add(() => render(0));
     syncMotionPreference();
     if (disclaimer) {
       const note = document.createElement("p");
@@ -2807,6 +2813,7 @@ a { color: var(--cp-link); }
     });
   }
   renderChallenge(0);
+  demoResets.add(() => renderChallenge(0));
 
   buildScenario("gatewayScenario", "One request, different outcomes", [
     {
@@ -2926,6 +2933,37 @@ a { color: var(--cp-link); }
       text: "Other policies, permissions, and deployment checks still apply. Disabling public access alone does not create working private endpoints, DNS resolution, or identity permissions.",
     },
   ], "Illustrative resource-property policy; independent of the discussion checklist.");
+
+  const initialAccordions = [...document.querySelectorAll("details")].map(element => ({ element, open: element.open }));
+  document.getElementById("resetDemo").addEventListener("click", async () => {
+    pauseWalkthroughs();
+    await Promise.all([...document.querySelectorAll("dialog[open]")].map(dialog =>
+      new Promise(resolve => {
+        dialog.addEventListener("close", resolve, { once: true });
+        dialog.close();
+      })
+    ));
+    state = { ...createInitialState(), lot: state.lot };
+    demoResets.forEach(reset => reset());
+    document.querySelectorAll(".detail.show").forEach(detail => detail.classList.remove("show"));
+    document.querySelectorAll(".topo-node[data-detail]").forEach(node => {
+      node.setAttribute("aria-expanded", "false");
+      node.querySelector(".topo-node-box").classList.remove("active");
+    });
+    initialAccordions.forEach(({ element, open }) => { element.open = open; });
+    document.querySelectorAll(".dragover").forEach(zone => zone.classList.remove("dragover"));
+    renderNetworking();
+    renderZone();
+    renderSort();
+    renderVnet();
+    renderChecklist();
+    renderGovRings();
+    showPanel("p1");
+    document.querySelectorAll(".content, .sidebar, .topo-wrap, .studio-canvas, .network-table-wrap").forEach(element =>
+      element.scrollTo({ top: 0, left: 0, behavior: "instant" }));
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    document.querySelector('.navbtn[data-panel="p1"]').focus({ preventScroll: true });
+  });
 
   // ---------- Init ----------
   setupArchitectureStudio();

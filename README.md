@@ -26,6 +26,7 @@ The dashboard includes:
 - Spacious network diagrams with separate hybrid-connectivity paths and arrow labels; smaller screens scroll within the diagram instead of squeezing its text.
 - Governance discussion controls and Audit versus Deny scenarios.
 - Locally saved decisions and open questions, with a plain-text export.
+- A header **Reset demo** button that stops playback, restores activities and diagram selections, and returns to the beginning of the first tab. Decisions, parking-lot notes, theme, and full-screen mode are kept.
 - Light/dark themes, full-screen controls, and responsive layouts.
 - A prominent **Deployment accelerator** primary button in the sticky desktop header, expanding to full width on phones. It opens the AI Landing Zones accelerator's AI gateway section in a new tab, leaving the dashboard open. It links to guidance; it does not create Azure resources.
 
