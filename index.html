@@ -615,6 +615,13 @@ a { color: var(--cp-link); }
 .topbar .accelerator-cta svg { width: 14px; height: 14px; }
 .card { padding: 16px; margin-bottom: 12px; }
 .card h2 { margin-bottom: 12px; padding-bottom: 8px; font-size: 1.2rem; }
+.section-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.section-heading h2 { flex: 1; min-width: 0; }
+.section-toggle { flex-shrink: 0; font-size: 0.8rem; padding: 5px 10px; }
+.section-body[hidden] { display: none; }
+.section-collapsed > .section-heading h2 { margin-bottom: 0; }
+.section-collapsed > .studio-topline { margin-bottom: 0; }
+.studio-dialog .section-toggle { display: none; }
 .browser-note, .studio-footnote { font-size: 0.875rem; color: var(--cp-text-muted); line-height: 1.4; }
 .reference-content { padding: 10px 12px; border: 1px solid var(--cp-border); border-radius: 6px; margin: 10px 0; background: var(--cp-surface); }
 .reference-content summary { cursor: pointer; color: var(--cp-text); font-weight: 600; font-size: 0.9rem; }
@@ -765,6 +772,8 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
           <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2L7 9M7 3H2v11h11V9"></path></svg>
         </a>
         <div class="utility-controls">
+          <button class="iconbtn" type="button" id="collapseSections" aria-controls="p0">Collapse all</button>
+          <button class="iconbtn" type="button" id="expandSections" aria-controls="p0">Expand all</button>
           <button class="iconbtn" type="button" id="resetDemo" title="Activity reset; decisions and notes retained">Reset demo</button>
           <button class="iconbtn" id="themeToggle">Dark theme</button>
           <button class="iconbtn" id="fullscreenToggle">Full screen</button>
@@ -2697,6 +2706,7 @@ SOFTWARE</pre>
     expand.addEventListener("click", () => {
       pauseWalkthroughs();
       if (dialog.open) { dialog.close(); return; }
+      root.querySelector('.section-toggle[aria-expanded="false"]')?.click();
       placeholder = document.createComment("Architecture explorer position");
       root.before(placeholder);
       dialog.appendChild(root);
@@ -3241,6 +3251,9 @@ SOFTWARE</pre>
     document.getElementById("previousSection").disabled = first >= 0 && presentationIndex === 0;
     document.getElementById("nextSection").disabled = first >= 0 && presentationIndex === presentationRoute.length - 1;
     document.getElementById("nextSection").textContent = first < 0 ? "Return to main sections" : "Next section";
+    for (const button of ["collapseSections", "expandSections"]) {
+      document.getElementById(button).setAttribute("aria-controls", id);
+    }
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }
   function movePresentation(offset) {
@@ -3325,6 +3338,51 @@ SOFTWARE</pre>
     readiness.forEach(text => promptButton(text, document.getElementById("readinessItems")));
   }
   setupPresentation();
+  function setupCollapsibleSections() {
+    const sections = [];
+    function setExpanded(section, expanded) {
+      if (!expanded) {
+        pauseWalkthroughs();
+        if (section.body.contains(document.activeElement)) section.button.focus();
+      }
+      section.body.hidden = !expanded;
+      section.card.classList.toggle("section-collapsed", !expanded);
+      section.button.textContent = expanded ? "Collapse" : "Expand";
+      section.button.setAttribute("aria-expanded", String(expanded));
+      section.button.setAttribute("aria-label", (expanded ? "Collapse " : "Expand ") + section.title);
+    }
+    document.querySelectorAll(".panel > .card, .official-reference-grid > .card").forEach((card, index) => {
+      const title = card.querySelector("h2");
+      const heading = card.querySelector(":scope > .studio-topline") || document.createElement("div");
+      if (!heading.parentElement) {
+        heading.className = "section-heading";
+        title.before(heading);
+        heading.append(title);
+      }
+      const body = document.createElement("div");
+      body.className = "section-body";
+      body.id = "section-content-" + index;
+      [...card.children].filter(child => child !== heading).forEach(child => body.append(child));
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "iconbtn section-toggle";
+      button.setAttribute("aria-controls", body.id);
+      heading.append(button);
+      card.append(body);
+      const section = { card, body, button, title: title.textContent.trim() };
+      sections.push(section);
+      button.addEventListener("click", () => setExpanded(section, body.hidden));
+      setExpanded(section, true);
+    });
+    for (const [id, expanded] of [["collapseSections", false], ["expandSections", true]]) {
+      document.getElementById(id).addEventListener("click", () => {
+        const panel = document.querySelector(".panel.active");
+        sections.filter(section => section.card.closest(".panel") === panel)
+          .forEach(section => setExpanded(section, expanded));
+      });
+    }
+    demoResets.add(() => sections.forEach(section => setExpanded(section, true)));
+  }
   const initialAccordions = [...document.querySelectorAll("details")].map(element => ({ element, open: element.open }));
   document.getElementById("resetDemo").addEventListener("click", async () => {
     pauseWalkthroughs();
@@ -3363,6 +3421,7 @@ SOFTWARE</pre>
   // ---------- Init ----------
   setupArchitectureStudio();
   setupDiagramViewer();
+  setupCollapsibleSections();
   renderThemeButton();
   renderNetworking();
   renderZone();
