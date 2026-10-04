@@ -507,7 +507,16 @@ a { color: var(--cp-link); }
 @keyframes request-arrow { 50% { transform: translateX(5px); } }
 .walkthrough-detail { margin-bottom: 16px; padding: 14px 18px; border: 1px solid var(--cp-border); border-radius: 8px; line-height: 1.6; }
 .walkthrough-detail:empty { display: none; }
-.diagram-actions { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+.diagram-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; }
+.diagram-actions > [aria-haspopup] { margin-left: auto; }
+.architecture-trace-status { flex-basis: 100%; color: var(--cp-text-muted); font-size: 0.9rem; }
+.trace-ready .topo-edge-flow { animation: none; opacity: 0.35; }
+.architecture-trace { pointer-events: none; }
+.architecture-trace[hidden], .architecture-trace-dot[hidden] { display: none; }
+.architecture-trace-halo, .architecture-trace-line { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.architecture-trace-halo { stroke: var(--cp-accent-soft); stroke-width: 14; }
+.architecture-trace-line { stroke: var(--cp-accent); stroke-width: 4; }
+.architecture-trace-dot { fill: var(--cp-accent); stroke: var(--cp-surface); stroke-width: 2; }
 .diagram-dialog { width: 96vw; max-width: 1800px; max-height: 94vh; padding: 24px; border: 1px solid var(--cp-border); border-radius: 12px; background: var(--cp-surface); color: var(--cp-text); }
 .diagram-dialog::backdrop { background: var(--cp-overlay); }
 .diagram-dialog-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
@@ -2753,6 +2762,217 @@ SOFTWARE</pre>
     return "app";
   }
 
+  function architectureTraceSteps(key, svg) {
+    // Reference PNGs have no vector connectors. Trace component boundaries without inventing traffic paths.
+    const components = {
+      officialAgentArchitecture: [
+        [0.5, 1, 32, 15.5, "Management-group foundation"],
+        [0.5, 51.5, 30, 33, "Shared connectivity"],
+        [45.1, 32, 41.2, 16.3, "Foundry and agent dependencies"],
+        [36.5, 51, 55, 24.2, "Workload networking"],
+        [70.5, 77.7, 16.2, 12.2, "Application services"],
+        [87.2, 30.5, 6.5, 17.5, "Workload operations"],
+        [60, 91, 15, 8.3, "Security and governance"],
+      ],
+      officialGatewayArchitecture: [
+        [4, 37, 28, 20, "Shared connectivity"],
+        [48, 7.5, 39, 10, "Foundry workload"],
+        [74.7, 70, 5.7, 6.7, "Shared API Management"],
+        [64.1, 55.7, 12, 10, "Gateway model backends"],
+        [46.5, 84.5, 25.7, 8.5, "Safety and governance services"],
+        [88.5, 55.5, 6, 10, "Gateway operations"],
+        [64.5, 94, 12, 5, "Security and governance"],
+      ],
+    };
+    if (components[key]) {
+      const { width, height } = svg.viewBox.baseVal;
+      return components[key].map(([left, top, wide, tall, label]) => {
+        const x = width * left / 100, y = height * top / 100;
+        const right = x + width * wide / 100, bottom = y + height * tall / 100;
+        return { d: `M${x},${y} H${right} V${bottom} H${x} Z`, label };
+      });
+    }
+    const connections = {
+      highLevelArchitecture: [
+        [0, "Hybrid connectivity"], [1, "Routed access to the gateway"],
+        [2, "Governed model access"], [3, "Workload dependency access"],
+      ],
+      landingZoneBlueprint: [
+        [0, "Platform governance scope", "M230,88 V124"],
+        [0, "Workload governance scope", "M700,88 V124"],
+        [1, "Shared network reachability"], [2, "Application to AI gateway"],
+        [3, "Gateway to Foundry"], [4, "Workload dependencies"],
+        [5, "Platform operations", "M230,464 V492"],
+        [5, "Workload operations", "M710,464 V492"],
+      ],
+      vnetDiagramMS: [
+        [0, "Managed runtime networking"], [1, "Configured managed private endpoint"],
+        [2, "Supported data service"],
+      ],
+      vnetDiagramBYO: [
+        [0, "Optional hybrid connectivity"], [1, "Runtime VNet integration"],
+        [2, "Separate private endpoint subnet"], [3, "Private Link to data services"],
+      ],
+      hub: [
+        [0, "Consumers to APIM"], [1, "Routing option: spoke A"],
+        [2, "Routing option: spoke B"], [3, "Routing option: additional spokes"],
+        [4, "Supporting shared services", "M340,210 V225"],
+      ],
+      spoke: [
+        [0, "Gateway to private endpoint"], [1, "Private access to Foundry"],
+        [3, "Dependency: AI Search"], [4, "Dependency: Cosmos DB"],
+        [5, "Dependencies: Storage and Key Vault"],
+      ],
+      networkTraffic: [
+        [0, "Authenticated HTTPS request"], [1, "Hosted runtime invocation"],
+        [2, "Registered tool call"], [3, "Prompt-agent tool path"],
+        [4, "Project data proxy"], [5, "Private resource access"],
+      ],
+    };
+    const paths = svg.querySelectorAll("path.topo-edge");
+    return connections[key].filter(([index]) => !paths[index].closest(".network-hidden"))
+      .map(([index, label, d]) => ({ d: d || paths[index].getAttribute("d"), label }));
+  }
+
+  function setupArchitectureTrace(svg, actions, key) {
+    svg.classList.add("trace-ready");
+    const overlay = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    overlay.setAttribute("class", "architecture-trace");
+    overlay.setAttribute("aria-hidden", "true");
+    overlay.innerHTML = '<path class="architecture-trace-halo" vector-effect="non-scaling-stroke"/>' +
+      '<path class="architecture-trace-line" vector-effect="non-scaling-stroke"/>' +
+      '<circle class="architecture-trace-dot" vector-effect="non-scaling-stroke"/>';
+    svg.append(overlay);
+    const halo = overlay.querySelector(".architecture-trace-halo");
+    const line = overlay.querySelector(".architecture-trace-line");
+    const dot = overlay.querySelector("circle");
+    dot.setAttribute("r", String(svg.viewBox.baseVal.width / 150));
+    const controls = document.createElement("div");
+    controls.className = "diagram-actions architecture-trace-controls";
+    controls.innerHTML = '<button type="button" class="iconbtn primary architecture-trace-play">Trace architecture</button>' +
+      '<button type="button" class="iconbtn architecture-trace-next"></button>' +
+      '<button type="button" class="iconbtn architecture-trace-reset">Reset trace</button>' +
+      '<span class="architecture-trace-status" role="status" aria-live="polite"></span>';
+    actions.before(controls);
+    const play = controls.querySelector(".architecture-trace-play");
+    const next = controls.querySelector(".architecture-trace-next");
+    const resetButton = controls.querySelector(".architecture-trace-reset");
+    const status = controls.querySelector(".architecture-trace-status");
+    const componentTour = key.startsWith("official");
+    next.textContent = componentTour ? "Next component" : "Next connection";
+    let steps = [], index = -1, elapsed = 0, frame = 0, running = false, length = 0;
+    const duration = 1600, dwell = 250;
+    function pause() {
+      cancelAnimationFrame(frame);
+      running = false;
+      controls.dataset.running = "false";
+      play.textContent = index < 0 ? "Trace architecture" :
+        index === steps.length - 1 && elapsed >= duration ? "Replay trace" : "Resume trace";
+    }
+    function draw(fraction, moving) {
+      line.style.strokeDasharray = String(length);
+      line.style.strokeDashoffset = String(length * (1 - fraction));
+      const point = line.getPointAtLength(length * fraction);
+      dot.setAttribute("cx", String(point.x));
+      dot.setAttribute("cy", String(point.y));
+      dot.toggleAttribute("hidden", !moving);
+    }
+    function select(value) {
+      index = value;
+      elapsed = 0;
+      const step = steps[index];
+      halo.setAttribute("d", step.d);
+      line.setAttribute("d", step.d);
+      length = line.getTotalLength();
+      overlay.removeAttribute("hidden");
+      status.textContent = `${index + 1} / ${steps.length} · ${step.label}`;
+      controls.dataset.step = String(index);
+      draw(0, false);
+      const viewport = svg.closest("#diagramViewport");
+      if (viewport) {
+        const bounds = line.getBoundingClientRect(), visible = viewport.getBoundingClientRect();
+        viewport.scrollTo({
+          left: viewport.scrollLeft + (bounds.left + bounds.right - visible.left - visible.right) / 2,
+          top: viewport.scrollTop + (bounds.top + bounds.bottom - visible.top - visible.bottom) / 2,
+          behavior: "instant",
+        });
+      }
+    }
+    function reset() {
+      pause();
+      steps = architectureTraceSteps(key, svg);
+      index = -1;
+      elapsed = 0;
+      controls.dataset.step = "-1";
+      overlay.setAttribute("hidden", "");
+      status.textContent = componentTour ? "Architecture components" : "Architecture connections";
+      play.textContent = "Trace architecture";
+    }
+    function animate() {
+      const start = performance.now() - elapsed;
+      function tick(now) {
+        if (!running) return;
+        if (!svg.checkVisibility() || document.hidden) { pause(); return; }
+        elapsed = Math.min(now - start, duration + dwell);
+        draw(Math.min(elapsed / duration, 1), true);
+        if (elapsed < duration + dwell) frame = requestAnimationFrame(tick);
+        else if (index < steps.length - 1) { select(index + 1); animate(); }
+        else {
+          pause();
+          dot.setAttribute("hidden", "");
+          status.textContent = "Complete · " + status.textContent;
+        }
+      }
+      frame = requestAnimationFrame(tick);
+    }
+    play.addEventListener("click", () => {
+      if (running) { pause(); return; }
+      pauseWalkthroughs();
+      if (reducedMotion.matches) return;
+      if (index < 0 || (index === steps.length - 1 && elapsed >= duration)) select(0);
+      else if (elapsed >= duration) select(index + 1);
+      running = true;
+      controls.dataset.running = "true";
+      play.textContent = "Pause trace";
+      animate();
+    });
+    next.addEventListener("click", () => {
+      pauseWalkthroughs();
+      select((index + 1) % steps.length);
+      elapsed = duration;
+      draw(1, false);
+      pause();
+    });
+    resetButton.addEventListener("click", reset);
+    function syncMotion() {
+      pause();
+      play.disabled = reducedMotion.matches;
+      play.title = reducedMotion.matches ? "Use manual steps with reduced motion." : "";
+      if (reducedMotion.matches) dot.setAttribute("hidden", "");
+    }
+    const agentButtons = key === "networkTraffic" ? [...document.querySelectorAll("[data-network-agent]")] : [];
+    agentButtons.forEach(button => button.addEventListener("click", reset));
+    svg.addEventListener("click", pause);
+    playbackStops.add(pause);
+    demoResets.add(reset);
+    reducedMotion.addEventListener("change", syncMotion);
+    reset();
+    syncMotion();
+    return {
+      controls,
+      destroy() {
+        pause();
+        playbackStops.delete(pause);
+        demoResets.delete(reset);
+        reducedMotion.removeEventListener("change", syncMotion);
+        agentButtons.forEach(button => button.removeEventListener("click", reset));
+        svg.removeEventListener("click", pause);
+        controls.remove();
+        overlay.remove();
+      },
+    };
+  }
+
   // The enlarged view is an isolated SVG copy: preserve original diagram state and unique IDs.
   function setupDiagramViewer() {
     const dialog = document.createElement("dialog");
@@ -2773,6 +2993,7 @@ SOFTWARE</pre>
     const zoomOut = dialog.querySelector("#diagramZoomOut");
     let zoom = 100;
     let trigger = null;
+    let viewerTrace = null;
     function renderZoom() {
       viewport.querySelector("svg").style.width = zoom + "%";
       dialog.querySelector("#diagramZoomValue").textContent = zoom + "%";
@@ -2783,6 +3004,8 @@ SOFTWARE</pre>
     zoomOut.addEventListener("click", () => { zoom = Math.max(100, zoom - 25); renderZoom(); });
     dialog.querySelector("#diagramClose").addEventListener("click", () => dialog.close());
     dialog.addEventListener("close", () => {
+      viewerTrace?.destroy();
+      viewerTrace = null;
       viewport.replaceChildren();
       detail.replaceChildren();
       document.body.style.overflow = "";
@@ -2791,6 +3014,7 @@ SOFTWARE</pre>
     document.querySelectorAll(".panel .topo-wrap").forEach((wrap, index) => {
       const source = wrap.querySelector("svg");
       if (!source) return;
+      const traceKey = wrap.id || wrap.closest("#landingZoneBlueprint, #hub, #spoke").id;
       const actions = document.createElement("div");
       actions.className = "diagram-actions";
       const button = document.createElement("button");
@@ -2803,10 +3027,14 @@ SOFTWARE</pre>
       button.setAttribute("aria-label", "Enlarge diagram: " + title);
       actions.appendChild(button);
       wrap.prepend(actions);
+      const trace = setupArchitectureTrace(source, actions, traceKey);
+      trace.controls.insertBefore(button, trace.controls.querySelector(".architecture-trace-status"));
+      actions.remove();
       button.addEventListener("click", () => {
         pauseWalkthroughs();
         trigger = button;
         const copy = source.cloneNode(true);
+        copy.querySelector(".architecture-trace").remove();
         const idMap = new Map();
         [copy, ...copy.querySelectorAll("[id]")].forEach(node => {
           if (node.id) idMap.set(node.id, "enlarged-" + index + "-" + node.id);
@@ -2844,6 +3072,7 @@ SOFTWARE</pre>
         });
         dialog.querySelector("#diagramViewerTitle").textContent = source.querySelector("title")?.textContent || title;
         viewport.replaceChildren(copy);
+        viewerTrace = setupArchitectureTrace(copy, viewport, traceKey);
         detail.replaceChildren();
         zoom = 100;
         renderZoom();

@@ -18,6 +18,7 @@ The dashboard includes:
 - Illustrated **Follow an AI request** journeys for model-only, grounded-answer, and agent-action workloads.
 - **Play / Pause**, **Next step**, and clickable stage illustrations for request, gateway, workload, and policy walkthroughs. Playback is opt-in, stops on navigation or when the browser tab is hidden, and respects reduced-motion preferences.
 - **Enlarge diagram** views with zoom controls and clickable component details. Close or press Escape to return without changing the original diagram.
+- **Trace architecture**, pause/resume, manual steps and reset across all nine supporting architecture diagrams, including enlarged views that follow the active connection or component. Moving markers follow existing connections; the two original reference images use component-outline tours without altering their embedded image bytes or inventing request paths. Traces stop after one pass and pause on navigation, collapse, component selection and backgrounding. Reduced-motion users retain manual steps.
 - Three **You make the architecture call** challenges with immediate explanatory feedback on shared AI access, private data, and policy enforcement.
 - APIM hub and Foundry spoke diagrams with illustrative request and workload scenarios.
 - An optional three-card or full twelve-card service sort for the documented standard Foundry Agent Service setup. Placement controls are available before explanations; baseline match is scenario-specific.
