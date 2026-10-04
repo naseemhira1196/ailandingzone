@@ -47,7 +47,9 @@ Start on **Opening scenario**, then follow **scenario -> evolving architecture -
 
 In the explorer, progress from **AI application** to **Add company knowledge** to **Add agent actions**. Click a service for its responsibility and use **Next hop** to narrate manually. **Trace request** is optional playback. **Focus explorer** enlarges the complete interactive scene; Escape returns it with selections intact. Layer buttons change the illustration, not security controls.
 
-The hub/spoke map, blueprint, additional request walkthrough and challenges are directly visible below the explorer, followed by the original Agent and AI Gateway architectures. Hub/spoke designs and network diagrams are also directly visible in their main sections. The full card sort and networking deep dive remain outside the guided route. **Next step** or clicking a stage controls scenario pacing; **Show overview** clears the spotlight without changing the selected case.
+The High-Level section starts in this order: **architecture explorer -> private-hybrid hub/spoke map -> Agent and AI Gateway architectures -> landing-zone blueprint -> architecture challenges -> request walkthrough**. Reload and Reset restore this order; section arrows still allow temporary rearrangement. Sections remain expanded by default.
+
+The audience view uses short takeaways and focused explanations instead of repeated paragraphs. Architecture and connectivity caveats remain under on-demand details, without hiding diagrams. Request-stage descriptions appear when selected rather than beneath every illustration, and challenge feedback appears only after an answer. Hub/spoke designs and network diagrams remain visible in their main sections; the full card sort and networking deep dive remain outside the guided route.
 
 Use **Enlarge diagram**, then zoom as needed. Supported component details remain clickable. Illustrations are embedded SVGs and work offline. Notes and exercise state are saved only in this browser; this is not shared voting or collaborative notes.
 

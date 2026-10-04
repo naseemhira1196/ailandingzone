@@ -528,6 +528,7 @@ a { color: var(--cp-link); }
 .challenge-feedback[data-correct="true"] { border-color: var(--cp-success); }
 .challenge-feedback[data-correct="false"] { border-color: var(--cp-warning); }
 .challenge-feedback p { margin: 8px 0 0; }
+.challenge-feedback:empty { padding: 0; border: 0; background: none; }
 .studio .studio-topline { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
 .studio .studio-topline h2 { border: 0; padding: 0; margin: 0; }
 .studio-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
@@ -677,7 +678,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
 .scenario-heading { margin-bottom: 6px; }
 .scenario .scenario-options { margin: 8px 0; }
 .scenario .stage-art { width: 44px; height: 44px; margin-bottom: 8px; }
-#gatewayScenario .journey small, #policyScenario .journey small { display: none; }
+#gatewayScenario .journey small, #policyScenario .journey small, #requestScenario .journey small { display: none; }
 #gatewayScenario .journey li, #policyScenario .journey li { min-height: 0; }
 .scenario .walkthrough-controls { margin: 8px 0; }
 .scenario .walkthrough-controls button, .scenario .scenario-options button { min-height: 32px; padding: 6px 10px; }
@@ -821,7 +822,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
               <button class="iconbtn" type="button" data-studio-entry="hybrid" aria-pressed="false">Private hybrid</button>
             </div>
           </div>
-          <p class="studio-supporting" id="studioPlatformContext"><b>Assistant UX: custom app or Copilot Studio.</b> Users can enter through Teams, Microsoft 365 or a web app. Copilot Studio is SaaS, not deployed inside the illustrated VNet. Channel integration and backend reachability are configured separately.</p>
+          <p class="studio-supporting" id="studioPlatformContext"><b>Assistant UX: custom app or Copilot Studio.</b> Cloud channels do not require the connectivity hub.</p>
           <div class="studio-canvas">
             <svg id="studioSvg" viewBox="0 0 1180 300" role="group" aria-labelledby="studioTitle studioDescription">
               <title id="studioTitle">AI access: users, Teams or Microsoft 365 or web, Azure application, APIM and model</title>
@@ -926,19 +927,18 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
           </div>
           <div class="studio-result" role="status" aria-live="polite" aria-atomic="true">
             <div><strong id="studioStep">AI application</strong><div class="studio-progress" aria-hidden="true"><span id="studioProgress"></span></div></div>
-            <p id="studioExplanation">Users can reach the assistant through Teams, Microsoft 365, a web app or a private-hybrid connection. The illustrated Azure backend calls the AI gateway and approved model.</p>
+            <p id="studioExplanation">Users reach the assistant through a configured channel. The Azure backend calls approved models through APIM.</p>
           </div>
-          <p class="takeaway">The platform provides reusable guardrails; the workload owns its application, data access, evaluations and authorized actions.</p>
-          <details class="studio-footnote reference-content"><summary>Applies to this example · responsibilities, not deployment boundaries</summary><p>The Agent Landing Zone and AI Gateway Landing Zone can be deployed together or independently. The accelerator is in preview; each Azure service has its own availability status. The connectivity hub and APIM are different responsibilities. DNS is not an inline hop; firewall inspection depends on routing. The outline is not a single VNet.</p><p>Copilot Studio can connect to supported Foundry agents through a preview integration. This is a separate integration decision, not the illustrated request path. Validate supported agent experience, endpoint configuration, identity, data handling and network reachability; neither platform automatically grants the other access.</p></details>
+          <p class="takeaway">Shared guardrails; workload-owned applications, data access, evaluations and actions.</p>
+          <details class="studio-footnote reference-content" id="studioArchitectureNotes"><summary>Architecture details</summary><p>The Agent Landing Zone and AI Gateway Landing Zone can be deployed together or independently. The accelerator is in preview; each Azure service has its own availability status. The connectivity hub and APIM are different responsibilities. DNS is not an inline hop; firewall inspection depends on routing. The outline is not a single VNet.</p><p>Copilot Studio is SaaS, not deployed inside the illustrated VNet. Channel integration and backend reachability are configured separately. Copilot Studio can connect to supported Foundry agents through a preview integration. This is a separate integration decision, not the illustrated request path. Validate supported agent experience, endpoint configuration, identity, data handling and network reachability; neither platform automatically grants the other access.</p></details>
         </div>
         <div class="card" id="officialArchitectures">
           <h2>Agent Landing Zone &amp; AI Gateway Landing Zone architectures</h2>
-          <p>Agent Landing Zone and AI Gateway Landing Zone reference architectures, with shared connectivity, workload services and governance boundaries.</p>
-          <p class="browser-note">These accelerator reference patterns are not universal service requirements or the simplified request flow. Components can be deployed together or independently. The accelerator is in preview; validate the selected services, region and deployment configuration separately.</p>
+          <p class="browser-note">Deploy together or independently. Accelerator: preview.</p>
           <div class="official-reference-grid">
             <article class="card">
               <h2>Agent Landing Zone</h2>
-              <p>Foundry-based AI applications and agents: platform connectivity, workload networking, standard-setup data resources, application services, governance and operations.</p>
+              <p>Workload-owned Foundry applications and agents.</p>
               <div class="topo-wrap" id="officialAgentArchitecture">
                 <svg viewBox="0 0 2323 1386" role="img" aria-labelledby="officialAgentTitle officialAgentDescription">
                   <title id="officialAgentTitle">Official Agent Landing Zone architecture</title>
@@ -949,7 +949,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
             </article>
             <article class="card">
               <h2>AI Gateway Landing Zone</h2>
-              <p>APIM-based shared model access: the AI gateway subscription, its relationship to the agent landing zone and connectivity hub, and supporting governance services.</p>
+              <p>Shared model access through APIM.</p>
               <div class="topo-wrap" id="officialGatewayArchitecture">
                 <svg viewBox="0 0 2435 2262" role="img" aria-labelledby="officialGatewayTitle officialGatewayDescription">
                   <title id="officialGatewayTitle">Official AI Gateway Landing Zone architecture</title>
@@ -959,7 +959,8 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
               </div>
             </article>
           </div>
-          <details class="reference-content"><summary>Diagram attribution and MIT license</summary>
+          <details class="reference-content" id="officialArchitectureNotes"><summary>Architecture details</summary><p>These accelerator reference patterns are not universal service requirements or the simplified request flow. Validate the selected services, region and deployment configuration separately; each Azure service has its own availability status.</p></details>
+          <details class="reference-content" id="officialLicense"><summary>Diagram attribution and MIT license</summary>
             <p>Copyright (c) Microsoft Corporation. Images copied without modification from revision <code>48e641e696da5ffdeab9c215979704be562fa4f3</code>. This dashboard is not an official Azure product.</p>
             <pre class="official-license">MIT License
 
@@ -984,9 +985,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE</pre>
           </details>
         </div>
-        <div class="card">
+        <div class="card" id="hybridArchitecture">
           <h2>Hub &amp; Spoke Architecture · Private-hybrid example</h2>
-          <p class="browser-note">This is one connectivity pattern, not a requirement for all users. Teams, Microsoft 365 and web channels can use other supported integration paths without traversing this hub.</p>
+          <p class="browser-note">One private-hybrid pattern, not a required path for cloud channels.</p>
 
           <div class="topo-wrap spacious" id="highLevelArchitecture">
             <svg viewBox="0 0 1160 500" xmlns="http://www.w3.org/2000/svg" aria-labelledby="architectureTitle architectureDescription">
@@ -1058,7 +1059,7 @@ SOFTWARE</pre>
               </g>
             </svg>
           </div>
-          <p class="studio-footnote">Private API access from an on-premises client application. For an Azure-hosted user-facing application, follow the explorer above: connectivity hub → application → APIM. The model and data paths shown here are logical; the supported network design depends on service configuration.</p>
+          <details class="studio-footnote reference-content"><summary>Connectivity details</summary><p>This example shows an on-premises client calling APIM through private-hybrid connectivity. Cloud channels use their configured integration paths. The model and data paths are logical; supported networking depends on service configuration.</p></details>
 
           <div class="detail" id="detail-onprem">
             <h3>Clients / On-Premises</h3>
@@ -1225,7 +1226,7 @@ SOFTWARE</pre>
             </ul>
           </div>
         </div>
-        <div class="card">
+        <div class="card" id="requestWalkthrough">
           <h2>Follow an AI request</h2>
           <div id="requestScenario"></div>
         </div>
@@ -2569,9 +2570,9 @@ SOFTWARE</pre>
       return [...entryRoutes[entry].start, ...routes[mode], ...entryRoutes[entry].finish];
     }
     const summaries = {
-      model: ["Three teams, one AI application", "Users enter through a configured Teams, Microsoft 365 or web channel, or a private-hybrid connection. The illustrated Azure backend reaches an approved model through APIM."],
-      rag: ["Company knowledge added", "The same assistant now retrieves permitted company documents. Grounding adds document authorization and answer evaluation responsibilities to the workload."],
-      agent: ["Agent actions added", "The same assistant keeps permitted retrieval and adds approved tools. The workload checks action permissions and approvals before execution; model reasoning is not permission."],
+      model: ["Three teams, one AI application", "Users reach the assistant through a configured channel. The Azure backend calls approved models through APIM."],
+      rag: ["Company knowledge added", "Company knowledge adds permitted document retrieval and grounded-answer evaluation."],
+      agent: ["Agent actions added", "Agents add tools. The workload checks permissions and approvals before any action."],
     };
     function pauseStudio() {
       cancelAnimationFrame(frame);
@@ -3014,8 +3015,8 @@ SOFTWARE</pre>
         ["Model", "Generate", "An approved model deployment generates a response; no enterprise document retrieval is used in this example.", "passed"],
         ["Answer + trace", "Return", "The response travels back through the gateway and application, with configured diagnostics and data-handling controls.", "passed"],
       ],
-      result: "A governed model call is a useful first workload",
-      text: "The platform provides reusable guardrails. The workload still owns prompt design, evaluation, user authorization, and safe handling of the answer.",
+      result: "Approved models, shared controls",
+      text: "The workload owns prompts, permissions and answer quality.",
     },
     {
       label: "Answer grounded in company data",
@@ -3025,8 +3026,8 @@ SOFTWARE</pre>
         ["AI gateway + model", "Generate", "The application sends the question and retrieved context through its governed model-access path.", "passed"],
         ["Answer + sources", "Return", "The application presents an answer with source references and records appropriate diagnostics.", "passed"],
       ],
-      result: "Grounding adds data access, not just another model",
-      text: "Retrieval must enforce document permissions. A private network path alone does not decide which documents the user may see, and source references do not guarantee correctness.",
+      result: "Company knowledge needs document permissions",
+      text: "Enforce document permissions and evaluate the answer; citations are not proof of correctness.",
     },
     {
       label: "Agent takes an action",
@@ -3036,8 +3037,8 @@ SOFTWARE</pre>
         ["Tool + data", "Execute", "The approved tool calls its backend with the correct identity and network connectivity.", "passed"],
         ["Answer + trace", "Record", "The result is returned to the user and the action is captured in the configured audit and operational records.", "passed"],
       ],
-      result: "Actions need an authorization boundary",
-      text: "This is a logical workload flow, not a fixed runtime packet trace. Foundry networking details depend on agent type and tool integration; use the optional Networking Deep Dive for those paths.",
+      result: "Authorize actions before execution",
+      text: "Check permissions, require approvals where needed, and record the outcome.",
     },
   ]);
 
@@ -3091,7 +3092,7 @@ SOFTWARE</pre>
     challengeQuestion.replaceChildren(visualIcon(challenge.icon), prompt);
     challengeAnswers.replaceChildren();
     challengeFeedback.removeAttribute("data-correct");
-    challengeFeedback.textContent = "Architectural trade-offs: access, data boundaries and enforcement.";
+    challengeFeedback.replaceChildren();
     challenge.answers.forEach(([label, icon, correct, explanation]) => {
       const button = document.createElement("button");
       button.type = "button";
@@ -3283,7 +3284,11 @@ SOFTWARE</pre>
       nodes.forEach(node => details.append(node)); panel.append(details);
       return details;
     }
-    document.getElementById("p1").append(document.getElementById("officialArchitectures"));
+    const high = document.getElementById("p1");
+    for (const id of ["architectureStudio", "hybridArchitecture", "officialArchitectures",
+      "landingZoneBlueprint", "architectureChallenges", "requestWalkthrough"]) {
+      high.append(document.getElementById(id));
+    }
     const ownership = document.createElement("div"); ownership.className = "card"; ownership.id = "ownershipMain";
     ownership.innerHTML = '<h2>One foundation, clear ownership</h2><div class="ownership-grid">' +
       '<article><h3>Shared platform responsibilities</h3><p>Connectivity, shared gateway, applicable policies and shared operational standards.</p><p>Enterprise/platform foundation: identity, hybrid networking, governance and operating standards.</p><p>Foundry: approved model access and Azure resource controls. Copilot Studio: environment, connector and data policies, where used.</p></article>' +
