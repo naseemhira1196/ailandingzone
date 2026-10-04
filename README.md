@@ -12,7 +12,7 @@ Download or clone this repository and open `index.html` in a modern browser. No 
 
 The dashboard includes:
 
-- A large **visual architecture explorer** at the top of the first tab, with original service illustrations, switchable AI/knowledge/agent architectures, clickable responsibility layers, and animated round-trip request paths.
+- A large **visual architecture explorer** at the top of the first tab, with original service illustrations, switchable AI/knowledge/agent architectures, clickable responsibility layers, and animated round-trip request paths through an explicit hybrid connectivity hub.
 - An **AI Landing Zone - High Level** view with a clickable hub/spoke map and supporting enterprise foundation, platform, workload, and operations blueprint.
 - Illustrated **Follow an AI request** journeys for model-only, grounded-answer, and agent-action workloads.
 - **Play / Pause**, **Next step**, and clickable stage illustrations for request, gateway, workload, and policy walkthroughs. Playback is opt-in, stops on navigation or when the browser tab is hidden, and respects reduced-motion preferences.
@@ -42,6 +42,8 @@ In **AI Landing Zone - High Level**, use **Follow an AI request** and one archit
 Use **Enlarge diagram** for a room-sized view, then zoom as needed. Where the source diagram supports component details, those remain clickable in the enlarged view. The new illustrations are embedded SVGs, so they work offline without image downloads. Challenges are local discussion aids, not a live audience-voting system; their answers and playback position are not saved to customer notes. The separate DOCX keeps the original 60-minute agenda.
 
 The explorer's scenes are conceptual application flows, not a fixed Foundry runtime topology: retrieval is authorized by the workload, model calls use the illustrated gateway path, and the agent-action example authorizes a tool operation before execution. Request tracing is opt-in, pauses on navigation, backgrounding, or component selection, and ends after one round trip. Reduced-motion users can step through the same flow without moving markers. These are original explanatory illustrations, not official Azure service icons.
+
+The private hybrid example follows **on-premises users → ExpressRoute/VPN → connectivity hub → Azure application → APIM → model**, with the response returning through the hub. Click **Connectivity hub** for hybrid gateway, routing, shared DNS, and route-dependent firewall responsibilities. APIM is a separate API gateway and can live in a shared-services spoke. DNS supports name resolution rather than being an inline request hop. The supporting hub/spoke map shows the related case of an on-premises client application calling APIM directly through the connectivity hub.
 
 ## Important boundaries
 

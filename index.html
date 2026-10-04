@@ -535,7 +535,7 @@ a { color: var(--cp-link); }
 .studio-controls button { min-height: 40px; line-height: 1.4; }
 .studio-layer-controls button[aria-pressed="true"] { border-color: var(--cp-accent); color: var(--cp-accent); background: var(--cp-accent-soft); }
 .studio-canvas { overflow: auto; border: 1px solid var(--cp-border); border-radius: 12px; background: var(--cp-bg-elevated); }
-.studio-canvas svg { display: block; width: 100%; min-width: 940px; height: auto; font-family: "Segoe UI", Aptos, Calibri, sans-serif; }
+.studio-canvas svg { display: block; width: 100%; min-width: 1100px; height: auto; font-family: "Segoe UI", Aptos, Calibri, sans-serif; }
 .studio-surface { fill: var(--cp-surface); stroke: var(--cp-border); stroke-width: 1.5; }
 .studio-art-front { fill: var(--cp-accent-soft); stroke: var(--cp-accent); stroke-width: 2; stroke-linejoin: round; }
 .studio-art-side { fill: var(--cp-accent); stroke: var(--cp-accent); stroke-width: 2; stroke-linejoin: round; }
@@ -659,9 +659,9 @@ a { color: var(--cp-link); }
             </div>
           </div>
           <div class="studio-canvas">
-            <svg id="studioSvg" viewBox="0 0 1120 685" role="group" aria-labelledby="studioTitle studioDescription">
-              <title id="studioTitle">Visual AI landing zone: application, gateway, model, and optional knowledge or tools</title>
-              <desc id="studioDescription">An illustrative application architecture. Select a workload to add knowledge retrieval or tool actions, click a service for its responsibility, or trace the request. Identity, connectivity, and operations are separate cross-cutting layers.</desc>
+            <svg id="studioSvg" viewBox="0 0 1180 685" role="group" aria-labelledby="studioTitle studioDescription">
+              <title id="studioTitle">Hybrid AI access: on-premises users, connectivity hub, Azure application, APIM, and model</title>
+              <desc id="studioDescription">An illustrative private hybrid access pattern. On-premises users reach an Azure-hosted application through ExpressRoute or VPN and a connectivity hub before the application calls APIM. The connectivity hub and AI gateway are separate responsibilities. Select a workload, click a service, or trace the request. DNS supports name resolution; firewall inspection depends on routing.</desc>
               <defs>
                 <pattern id="studioGrid" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="var(--cp-border)"></circle></pattern>
                 <symbol id="studio-person-art" viewBox="0 0 160 125">
@@ -682,6 +682,17 @@ a { color: var(--cp-link); }
                   <path class="studio-art-line" d="m61 55-9 9 9 9m34-18 9 9-9 9m-14-22-9 26"></path>
                   <path class="studio-art-front" d="M30 95h100l20 17H10z"></path>
                   <path class="studio-art-line" d="M63 105h34"></path>
+                </symbol>
+                <symbol id="studio-network-art" viewBox="0 0 160 125">
+                  <ellipse cx="80" cy="114" rx="62" ry="8" fill="var(--cp-border)"></ellipse>
+                  <path class="studio-art-line" d="M80 36V22H28v16m52-16h52v16M80 85v17H28V86m52 16h52V86"></path>
+                  <path class="studio-art-front" d="m80 36 28 15-28 16-28-16zM52 51l28 16v28L52 80z"></path>
+                  <path class="studio-art-side" d="m80 67 28-16v29L80 95z"></path>
+                  <rect x="15" y="38" width="26" height="18" rx="3" class="studio-art-front"></rect>
+                  <rect x="119" y="38" width="26" height="18" rx="3" class="studio-art-front"></rect>
+                  <rect x="15" y="68" width="26" height="18" rx="3" class="studio-art-front"></rect>
+                  <rect x="119" y="68" width="26" height="18" rx="3" class="studio-art-front"></rect>
+                  <path class="studio-art-line" d="M22 47h12m92 0h12M22 77h12m92 0h12"></path>
                 </symbol>
                 <symbol id="studio-gateway-art" viewBox="0 0 160 125">
                   <ellipse cx="80" cy="114" rx="61" ry="8" fill="var(--cp-border)"></ellipse>
@@ -717,32 +728,34 @@ a { color: var(--cp-link); }
                   <path class="studio-art-side" d="M118 10a19 19 0 0 0-23 23L79 49l10 10 17-17a19 19 0 0 0 23-24l-13 13-10-10z"></path>
                 </symbol>
               </defs>
-              <rect x="0" y="0" width="1120" height="685" fill="url(#studioGrid)"></rect>
+              <rect x="0" y="0" width="1180" height="685" fill="url(#studioGrid)"></rect>
               <g data-studio-layer-art="identity">
-                <rect class="studio-band" x="24" y="18" width="1072" height="67" rx="12"></rect>
+                <rect class="studio-band" x="24" y="18" width="1132" height="67" rx="12"></rect>
                 <path class="studio-art-line" d="m58 31 15 6v11c0 11-7 18-15 22-8-4-15-11-15-22V37zM51 48l5 5 11-13"></path>
                 <text class="studio-layer-title" x="90" y="45">Identity + governance</text>
                 <text class="studio-layer-copy" x="90" y="66">Entra ID · Least privilege · Applicable policy guardrails</text>
               </g>
               <g data-studio-layer-art="network">
-                <rect class="studio-boundary" x="240" y="113" width="856" height="472" rx="18"></rect>
-                <text class="studio-zone-label" x="265" y="135">CONNECTIVITY LAYER · PRIVATE PATHS + DNS WHERE SUPPORTED</text>
+                <rect class="studio-boundary" x="210" y="100" width="946" height="485" rx="18"></rect>
+                <text class="studio-zone-label" x="235" y="120">AZURE PRIVATE CONNECTIVITY · MULTIPLE NETWORK / SERVICE BOUNDARIES</text>
               </g>
+              <text class="studio-node-caption" x="207" y="145">ER / VPN</text>
               <g id="studioLanes">
-                <path id="studio-lane-user-app" class="studio-lane" d="M185 244H275"></path>
-                <path id="studio-lane-app-gateway" class="studio-lane" d="M455 244H570"></path>
-                <path id="studio-lane-gateway-model" class="studio-lane" d="M750 244H885"></path>
-                <path id="studio-lane-app-data" class="studio-lane studio-optional" d="M365 328V386" hidden></path>
-                <path id="studio-lane-app-tools" class="studio-lane studio-optional" d="M430 328V358H660V386" hidden></path>
+                <path id="studio-lane-user-network" class="studio-lane" d="M180 244H235"></path>
+                <path id="studio-lane-network-app" class="studio-lane" d="M445 244H500"></path>
+                <path id="studio-lane-app-gateway" class="studio-lane" d="M680 244H735"></path>
+                <path id="studio-lane-gateway-model" class="studio-lane" d="M915 244H970"></path>
+                <path id="studio-lane-app-data" class="studio-lane studio-optional" d="M590 328V386" hidden></path>
+                <path id="studio-lane-app-tools" class="studio-lane studio-optional" d="M655 328V358H825V386" hidden></path>
               </g>
               <g id="studioNodes"></g>
               <g id="studioEmptyWorkload">
-                <text class="studio-node-title" x="660" y="434">Start with the use case.</text>
-                <text class="studio-node-caption" x="660" y="462">Add company knowledge or agent actions to grow the architecture.</text>
-                <path class="studio-art-line" d="M530 500h260" stroke-dasharray="4 8"></path>
+                <text class="studio-node-title" x="785" y="434">Start with the use case.</text>
+                <text class="studio-node-caption" x="785" y="462">Add company knowledge or agent actions to grow the architecture.</text>
+                <path class="studio-art-line" d="M655 500h260" stroke-dasharray="4 8"></path>
               </g>
               <g data-studio-layer-art="operations">
-                <rect class="studio-band" x="24" y="608" width="1072" height="59" rx="12"></rect>
+                <rect class="studio-band" x="24" y="608" width="1132" height="59" rx="12"></rect>
                 <path class="studio-art-line" d="M44 648h30M48 644v-9m10 9v-20m10 20v-14"></path>
                 <text class="studio-layer-title" x="90" y="633">Observe + operate</text>
                 <text class="studio-layer-copy" x="90" y="653">Correlated traces · Evaluations · Cost ownership · Incident response</text>
@@ -762,16 +775,17 @@ a { color: var(--cp-link); }
           </div>
           <div class="studio-result" role="status" aria-live="polite" aria-atomic="true">
             <div><strong id="studioStep">AI application</strong><div class="studio-progress" aria-hidden="true"><span id="studioProgress"></span></div></div>
-            <p id="studioExplanation">A user, an application, a governed model-access gateway, and an approved model. Select an illustration to explore its role.</p>
+            <p id="studioExplanation">On-premises users reach the Azure application through the connectivity hub. The application then calls the AI gateway and approved model.</p>
           </div>
-          <p class="studio-footnote">Illustrative logical flow, not a packet trace or live Azure call. Layer buttons change what is shown, not security configuration. The connectivity outline is not a single VNet or a deployment boundary.</p>
+          <p class="studio-footnote">Private hybrid access example, not a packet trace or live Azure call. APIM can sit in a separate shared-services spoke. DNS resolves names; it is not an inline hop. Firewall inspection depends on routing. Layer buttons change the illustration only; the outline is not a single VNet or deployment boundary.</p>
         </div>
         <div class="card">
           <h2>Hub &amp; Spoke Architecture</h2>
 
           <div class="topo-wrap spacious" id="highLevelArchitecture">
-            <svg viewBox="0 0 1160 260" xmlns="http://www.w3.org/2000/svg" aria-labelledby="architectureTitle">
-              <title id="architectureTitle">Users connect through an APIM hub to a Foundry spoke and private data services</title>
+            <svg viewBox="0 0 1160 500" xmlns="http://www.w3.org/2000/svg" aria-labelledby="architectureTitle architectureDescription">
+              <title id="architectureTitle">On-premises clients reach a connectivity hub before APIM and the Foundry workload</title>
+              <desc id="architectureDescription">A private API access example for an on-premises client application. ExpressRoute or VPN connects to the network hub, then routed connectivity reaches a separate APIM gateway. Foundry and its data dependencies are downstream. Firewall inspection is route-dependent; DNS is a supporting service, not a request hop.</desc>
               <defs>
                 <marker id="lzArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                   <path d="M0,0 L10,5 L0,10 Z" class="topo-arrow-fill"></path>
@@ -783,61 +797,88 @@ a { color: var(--cp-link); }
               <path class="topo-edge-flow" d="M180,158 H306"></path>
               <text class="topo-edge-label" x="245" y="134" text-anchor="middle">ExpressRoute / VPN</text>
 
-              <path class="topo-edge" d="M500,158 H626" marker-end="url(#lzArrow)"></path>
-              <path class="topo-edge-flow" d="M500,158 H626"></path>
-              <text class="topo-edge-label" x="565" y="134" text-anchor="middle">VNet peering</text>
+              <path class="topo-edge" d="M425,216 V326" marker-end="url(#lzArrow)"></path>
+              <path class="topo-edge-flow" d="M425,216 V326"></path>
+              <text class="topo-edge-label" x="441" y="276">Routed connectivity</text>
 
-              <path class="topo-edge" d="M820,158 H946" marker-end="url(#lzArrow)"></path>
-              <path class="topo-edge-flow" d="M820,158 H946"></path>
-              <text class="topo-edge-label" x="885" y="134" text-anchor="middle">Private endpoints</text>
+              <path class="topo-edge" d="M540,388 H626" marker-end="url(#lzArrow)"></path>
+              <path class="topo-edge-flow" d="M540,388 H626"></path>
+              <text class="topo-edge-label" x="585" y="364" text-anchor="middle">Model API</text>
+
+              <path class="topo-edge" d="M820,388 H946" marker-end="url(#lzArrow)"></path>
+              <path class="topo-edge-flow" d="M820,388 H946"></path>
+              <text class="topo-edge-label" x="885" y="364" text-anchor="middle">Private endpoints</text>
 
               <!-- onprem -->
               <g class="topo-node" data-detail="onprem">
                 <rect class="topo-node-box" x="20" y="100" width="160" height="116" rx="14"></rect>
-                <text class="topo-node-label" x="100" y="142" text-anchor="middle">Users /</text>
+                <text class="topo-node-label" x="100" y="142" text-anchor="middle">Clients /</text>
                 <text class="topo-node-label" x="100" y="164" text-anchor="middle">On-Premises</text>
                 <text class="topo-node-sub" x="100" y="190" text-anchor="middle">Enterprise perimeter</text>
               </g>
 
-              <!-- hub -->
+              <g class="topo-node" data-detail="connectivity-hub">
+                <rect class="topo-node-box" x="310" y="100" width="230" height="116" rx="14"></rect>
+                <text class="topo-node-label" x="425" y="130" text-anchor="middle">Connectivity hub</text>
+                <text class="topo-node-sub" x="425" y="154" text-anchor="middle">ER / VPN gateway · Routing</text>
+                <text class="topo-node-sub" x="425" y="178" text-anchor="middle">Shared DNS resolution</text>
+                <text class="topo-node-sub" x="425" y="198" text-anchor="middle">Firewall / NVA (if routed)</text>
+              </g>
+              <text class="topo-node-label" x="630" y="128">Network reachability comes first</text>
+              <text class="topo-node-sub" x="630" y="155">DNS resolves names; it is not an inline request hop.</text>
+              <text class="topo-node-sub" x="630" y="180">Firewall inspection depends on configured routes.</text>
+              <text class="topo-node-sub" x="630" y="205">APIM can live in a separate shared-services spoke.</text>
+
+              <!-- AI gateway -->
               <g class="topo-node" data-detail="hub">
-                <rect class="topo-node-box" x="310" y="100" width="190" height="116" rx="14"></rect>
-                <text class="topo-node-label" x="405" y="130" text-anchor="middle">AI Landing Zone</text>
-                <text class="topo-node-label" x="405" y="152" text-anchor="middle">for APIM — Hub</text>
-                <text class="topo-node-sub" x="405" y="178" text-anchor="middle">Gateway layer</text>
-                <text class="topo-node-sub" x="405" y="198" text-anchor="middle">auth · routing · quotas</text>
+                <rect class="topo-node-box" x="310" y="330" width="230" height="116" rx="14"></rect>
+                <text class="topo-node-label" x="425" y="360" text-anchor="middle">Shared AI gateway</text>
+                <text class="topo-node-label" x="425" y="382" text-anchor="middle">APIM</text>
+                <text class="topo-node-sub" x="425" y="408" text-anchor="middle">API governance, not a network hub</text>
+                <text class="topo-node-sub" x="425" y="428" text-anchor="middle">auth · model routing · quotas</text>
               </g>
 
               <!-- spoke -->
               <g class="topo-node" data-detail="spoke">
-                <rect class="topo-node-box" x="630" y="100" width="190" height="116" rx="14"></rect>
-                <text class="topo-node-label" x="725" y="130" text-anchor="middle">AI Landing Zone</text>
-                <text class="topo-node-label" x="725" y="152" text-anchor="middle">for Foundry — Spoke</text>
-                <text class="topo-node-sub" x="725" y="178" text-anchor="middle">Workload layer</text>
-                <text class="topo-node-sub" x="725" y="198" text-anchor="middle">projects · agents · models</text>
+                <rect class="topo-node-box" x="630" y="330" width="190" height="116" rx="14"></rect>
+                <text class="topo-node-label" x="725" y="360" text-anchor="middle">AI Landing Zone</text>
+                <text class="topo-node-label" x="725" y="382" text-anchor="middle">for Foundry — Spoke</text>
+                <text class="topo-node-sub" x="725" y="408" text-anchor="middle">Workload layer</text>
+                <text class="topo-node-sub" x="725" y="428" text-anchor="middle">projects · agents · models</text>
               </g>
 
               <!-- deps -->
               <g class="topo-node" data-detail="deps">
-                <rect class="topo-node-box" x="950" y="100" width="190" height="116" rx="14"></rect>
-                <text class="topo-node-label" x="1045" y="140" text-anchor="middle">Data + Dependencies</text>
-                <text class="topo-node-sub" x="1045" y="168" text-anchor="middle">Search · Cosmos · Storage</text>
-                <text class="topo-node-sub" x="1045" y="190" text-anchor="middle">Key Vault</text>
+                <rect class="topo-node-box" x="950" y="330" width="190" height="116" rx="14"></rect>
+                <text class="topo-node-label" x="1045" y="370" text-anchor="middle">Data + Dependencies</text>
+                <text class="topo-node-sub" x="1045" y="398" text-anchor="middle">Search · Cosmos · Storage</text>
+                <text class="topo-node-sub" x="1045" y="420" text-anchor="middle">Key Vault</text>
               </g>
             </svg>
           </div>
+          <p class="studio-footnote">Private API access from an on-premises client application. For an Azure-hosted user-facing application, follow the explorer above: connectivity hub → application → APIM. The model and data paths shown here are logical; the supported network design depends on service configuration.</p>
 
           <div class="detail" id="detail-onprem">
-            <h3>Users / On-Premises</h3>
+            <h3>Clients / On-Premises</h3>
             <ul>
               <li>Enterprise apps and users reach Azure through the established hybrid network path — typically ExpressRoute or VPN into the hub VNet.</li>
-              <li>Traffic never needs to traverse the public internet to reach Foundry or its dependent services.</li>
+              <li>ExpressRoute private peering provides private hybrid connectivity; a VPN uses an encrypted tunnel over the internet. Private service access also needs supported endpoint configuration, DNS, routing, and authorization.</li>
               <li>This is the enterprise perimeter — it stays customer-owned regardless of which VNet isolation model Foundry uses.</li>
             </ul>
           </div>
-          <div class="detail" id="detail-hub">
-            <h3>AI Landing Zone for APIM (Hub)</h3>
+          <div class="detail" id="detail-connectivity-hub">
+            <h3>Connectivity hub — shared network services</h3>
             <ul>
+              <li>ExpressRoute or VPN terminates at the hybrid gateway; hub routing provides reachability to connected application and shared-services networks.</li>
+              <li>Shared DNS, often using Azure DNS Private Resolver with private DNS zones, resolves private service names for Azure and on-premises callers. DNS is not an inline request hop.</li>
+              <li>Azure Firewall or an NVA inspects traffic only when the effective routes and supported network policies steer traffic through it.</li>
+              <li>APIM governs API requests. It is separate from the network hub and can be deployed in a shared-services spoke with supported private connectivity.</li>
+            </ul>
+          </div>
+          <div class="detail" id="detail-hub">
+            <h3>Shared AI gateway — APIM</h3>
+            <ul>
+              <li>A logical API gateway hub, not the connectivity hub VNet. Placement may be in a separate shared-services spoke; verify inbound and outbound network support for the selected APIM tier.</li>
               <li>Centralizes access control, token governance, routing, and telemetry across every Foundry spoke.</li>
               <li>Publishes API contracts — a single, governed front door for AI apps and agents.</li>
               <li>Can be one deployment covering prod + non-prod, or split, depending on governance needs.</li>
@@ -2176,12 +2217,13 @@ a { color: var(--cp-link); }
     const play = root.querySelector("#studioPlay");
     const nodeRoot = root.querySelector("#studioNodes");
     const nodeDefinitions = {
-      user: { x: 25, y: 156, w: 160, art: "person", title: "People", caption: "Your business users", text: "The person uses the business application. Their identity and permissions must follow the request; using AI does not expand their access." },
-      app: { x: 275, y: 156, w: 180, art: "app", title: "Your application", caption: "Workload ownership", text: "The workload owns the user experience, orchestration, retrieval authorization, tool approvals, and how answers are evaluated and presented." },
-      gateway: { x: 570, y: 156, w: 180, art: "gateway", title: "Shared AI gateway", caption: "APIM / Model access", text: "An APIM gateway can centralize model routing, caller checks, and configured usage controls. Model backends also need identity and network restrictions to prevent bypass." },
-      model: { x: 885, y: 156, w: 180, art: "model", title: "Foundry model", caption: "Approved deployment", text: "An approved model generates a response or proposes an action. Model output is not an authorization decision and must be evaluated for the workload." },
-      data: { x: 275, y: 386, w: 180, art: "data", title: "Company knowledge", caption: "Authorized retrieval", text: "Grounding adds retrieval from permitted enterprise content, using a service such as AI Search. Enforce document access before passing retrieved content to the model." },
-      tools: { x: 570, y: 386, w: 180, art: "tools", title: "Approved tools", caption: "Authorized actions", text: "Tools execute actions against backend systems. The workload must validate permissions and high-impact approvals before execution; the exact network path depends on the chosen runtime." },
+      user: { x: 20, y: 156, w: 160, art: "person", title: "On-premises", caption: "Enterprise users / clients", text: "This private hybrid example starts with a user on the enterprise network accessing an Azure-hosted application. ExpressRoute or VPN provides the hybrid connection; identity and permissions still apply." },
+      network: { x: 235, y: 156, w: 210, h: 220, art: "network", title: "Connectivity hub", caption: "ER / VPN gateway + routing", details: ["Shared DNS resolution", "Firewall / NVA (if routed)"], text: "The network hub provides hybrid gateway connectivity, routing, and shared DNS resolution to reach connected spokes. DNS is not an inline request hop. Azure Firewall or an NVA inspects traffic only when configured routes steer it there. This is not APIM." },
+      app: { x: 500, y: 156, w: 180, art: "app", title: "Your application", caption: "Azure workload", text: "The Azure-hosted application receives the user request via the hybrid network path, then makes its own model call through APIM. It owns the user experience, orchestration, retrieval authorization, tool approvals, and answer evaluation." },
+      gateway: { x: 735, y: 156, w: 180, art: "gateway", title: "Shared AI gateway", caption: "APIM / Model access", text: "APIM governs API requests; it is not the connectivity hub. It can sit in a shared-services spoke with supported private connectivity. Configured caller checks, model routing, and usage controls apply here; model backends also need identity and network restrictions to prevent bypass." },
+      model: { x: 970, y: 156, w: 180, art: "model", title: "Foundry model", caption: "Approved deployment", text: "An approved model generates a response or proposes an action. Model output is not an authorization decision and must be evaluated for the workload." },
+      data: { x: 500, y: 386, w: 180, art: "data", title: "Company knowledge", caption: "Authorized retrieval", text: "Grounding adds retrieval from permitted enterprise content, using a service such as AI Search. Enforce document access before passing retrieved content to the model." },
+      tools: { x: 735, y: 386, w: 180, art: "tools", title: "Approved tools", caption: "Authorized actions", text: "Tools execute actions against backend systems. The workload must validate permissions and high-impact approvals before execution; the exact network path depends on the chosen runtime." },
     };
     const ns = "http://www.w3.org/2000/svg";
     function makeSvg(tag, attributes, text) {
@@ -2199,11 +2241,14 @@ a { color: var(--cp-link); }
       const group = makeSvg("g", { class: "studio-node", "data-studio-node": key, role: "button",
         "aria-label": node.title + ": " + node.caption, "aria-pressed": "false" });
       group.append(
-        makeSvg("rect", { class: "studio-surface", x: node.x, y: node.y, width: node.w, height: 172, rx: 14 }),
+        makeSvg("rect", { class: "studio-surface", x: node.x, y: node.y, width: node.w, height: node.h || 172, rx: 14 }),
         makeSvg("use", { class: "studio-art", href: "#studio-" + node.art + "-art", x: node.x + (node.w - 140) / 2, y: node.y + 4, width: 140, height: 115, "aria-hidden": "true" }),
         makeSvg("text", { class: "studio-node-title", x: node.x + node.w / 2, y: node.y + 139 }, node.title),
         makeSvg("text", { class: "studio-node-caption", x: node.x + node.w / 2, y: node.y + 160 }, node.caption),
       );
+      (node.details || []).forEach((text, index) => group.appendChild(
+        makeSvg("text", { class: "studio-node-caption", x: node.x + node.w / 2, y: node.y + 182 + index * 20 }, text)
+      ));
       keyboardClick(group);
       group.addEventListener("click", () => {
         pauseStudio();
@@ -2222,30 +2267,34 @@ a { color: var(--cp-link); }
     });
     const hop = (node, label, text, lane = null, reverse = false) => ({ node, label, text, lane, reverse });
     const start = [
-      hop("user", "A business question", "A person asks the application a question using their own access rights."),
-      hop("app", "The application receives it", "The workload establishes the user's identity and prepares the request.", "user-app"),
+      hop("user", "A question from on-premises", "An enterprise user accesses the Azure application over the private hybrid access pattern shown here."),
+      hop("network", "Enter through the connectivity hub", "ExpressRoute or VPN reaches the hub gateway. Shared DNS supports private name resolution; firewall inspection applies only where routing is configured for it.", "user-network"),
+      hop("app", "The Azure application receives it", "Hub-to-spoke connectivity reaches the application. The workload establishes the user's identity, prepares the request, and then calls APIM.", "network-app"),
     ];
     const modelCall = [
       hop("gateway", "Apply model-access controls", "The application calls the gateway; configured identity, routing, and consumer limits are applied.", "app-gateway"),
       hop("model", "Run the approved model", "The selected model processes the request and generates output.", "gateway-model"),
       hop("gateway", "Return through the gateway", "The model response returns through the configured gateway path.", "gateway-model", true),
     ];
-    const finish = hop("user", "Return to the user", "The application presents the result and captures appropriate operational records.", "user-app", true);
+    const finish = [
+      hop("network", "Return through the connectivity hub", "The application's response returns over the configured hybrid network path; the hub provides network connectivity, not API governance.", "network-app", true),
+      hop("user", "Return to the user", "The response reaches the enterprise user over ExpressRoute or VPN. The application captures appropriate operational records.", "user-network", true),
+    ];
     const routes = {
       model: [...start, ...modelCall,
-        hop("app", "Handle the answer", "The workload applies its response-handling and evaluation controls.", "app-gateway", true), finish],
+        hop("app", "Handle the answer", "The workload applies its response-handling and evaluation controls.", "app-gateway", true), ...finish],
       rag: [...start,
         hop("data", "Retrieve permitted knowledge", "The application retrieves only content this user is authorized to access.", "app-data"),
         hop("app", "Assemble grounded context", "Retrieved content returns to the application and is assembled with the question.", "app-data", true),
         ...modelCall,
-        hop("app", "Present an answer with sources", "The application formats the answer with source references; sources do not guarantee correctness.", "app-gateway", true), finish],
+        hop("app", "Present an answer with sources", "The application formats the answer with source references; sources do not guarantee correctness.", "app-gateway", true), ...finish],
       agent: [...start, ...modelCall,
         hop("app", "Authorize the proposed action", "The workload validates the proposed operation and obtains approval when required before executing a tool.", "app-gateway", true),
         hop("tools", "Execute the approved action", "The authorized tool performs its allowed backend operation. This logical example does not depict the Foundry runtime's detailed tool-network path.", "app-tools"),
-        hop("app", "Handle the tool result", "The application receives the result, records the action, and prepares the user-facing response.", "app-tools", true), finish],
+        hop("app", "Handle the tool result", "The application receives the result, records the action, and prepares the user-facing response.", "app-tools", true), ...finish],
     };
     const summaries = {
-      model: ["AI application", "A user, an application, a governed model-access gateway, and an approved model. Select an illustration to explore its role."],
+      model: ["Private hybrid AI application", "On-premises users reach the Azure application through the connectivity hub. The application then calls the separate APIM gateway and approved model. Select an illustration to explore its role."],
       rag: ["Company knowledge added", "Grounding adds authorized retrieval before the model call. The data path belongs to the workload, not automatically to APIM."],
       agent: ["Agent actions added", "Model reasoning can propose an action. The workload authorizes it before the tool executes; reasoning is not permission."],
     };
