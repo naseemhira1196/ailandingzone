@@ -932,6 +932,15 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
                   <path class="studio-art-front" d="M30 95h100l20 17H10z"></path>
                   <path class="studio-art-line" d="M63 105h34"></path>
                 </symbol>
+                <symbol id="studio-agent-art" viewBox="0 0 160 125">
+                  <ellipse cx="80" cy="114" rx="58" ry="8" fill="var(--cp-border)"></ellipse>
+                  <path class="studio-art-side" d="m124 34 14-9v66l-14 14z"></path>
+                  <rect x="30" y="34" width="94" height="71" rx="14" class="studio-art-front"></rect>
+                  <path class="studio-art-line" d="M77 34V19M20 59v26m114-26v26M54 86h46"></path>
+                  <circle cx="77" cy="14" r="6" fill="var(--cp-accent)"></circle>
+                  <circle cx="56" cy="61" r="7" fill="var(--cp-accent)"></circle>
+                  <circle cx="98" cy="61" r="7" fill="var(--cp-accent)"></circle>
+                </symbol>
                 <symbol id="studio-network-art" viewBox="0 0 160 125">
                   <ellipse cx="80" cy="114" rx="62" ry="8" fill="var(--cp-border)"></ellipse>
                   <path class="studio-art-line" d="M80 36V22H28v16m52-16h52v16M80 85v17H28V86m52 16h52V86"></path>
@@ -977,7 +986,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
                   <path class="studio-art-side" d="M118 10a19 19 0 0 0-23 23L79 49l10 10 17-17a19 19 0 0 0 23-24l-13 13-10-10z"></path>
                 </symbol>
               </defs>
-              <rect x="0" y="0" width="1180" height="300" fill="url(#studioGrid)"></rect>
+              <rect id="studioBackdrop" x="0" y="0" width="1180" height="300" fill="url(#studioGrid)"></rect>
               <g data-studio-layer-art="network">
                 <rect class="studio-boundary" x="460" y="1" width="696" height="297" rx="12"></rect>
               </g>
@@ -988,7 +997,10 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
                 <path id="studio-lane-app-gateway" class="studio-lane" d="M680 90H735"></path>
                 <path id="studio-lane-gateway-model" class="studio-lane" d="M915 90H970"></path>
                 <path id="studio-lane-app-data" class="studio-lane studio-optional" d="M590 146V172" hidden></path>
-                <path id="studio-lane-app-tools" class="studio-lane studio-optional" d="M655 146V159H825V172" hidden></path>
+                <path id="studio-lane-app-agent" class="studio-lane studio-optional" d="M680 90H735" hidden></path>
+                <path id="studio-lane-agent-gateway" class="studio-lane studio-optional" d="M915 90H970" hidden></path>
+                <path id="studio-lane-agent-data" class="studio-lane studio-optional" d="M825 146V172" hidden></path>
+                <path id="studio-lane-agent-tools" class="studio-lane studio-optional" d="M890 146V159H1060V172" hidden></path>
               </g>
               <g id="studioNodes"></g>
               <g id="studioEmptyWorkload">
@@ -2491,6 +2503,7 @@ SOFTWARE</pre>
       user: { x: 20, y: 40, w: 160, owner: "People", art: "person", title: "Users", caption: "Three teams", text: "Users can interact through Teams, Microsoft 365 or a web app from any location permitted by their access policy. Private-hybrid access is an option, not a prerequisite. Channel choice does not expand data or action permissions." },
       entry: { x: 235, y: 40, w: 210, ...entryDefinitions.channels },
       app: { x: 500, y: 40, w: 180, owner: "Workload", art: "app", title: "Application", caption: "Assistant backend", text: "The UX can be a custom app or Copilot Studio. This node is the Azure-side backend, not Copilot Studio hosting. The workload owns prompts, authorized retrieval, evaluations and approved actions. The illustrated backend calls APIM; a Copilot Studio integration needs its own supported connectivity and identity configuration." },
+      agent: { x: 735, y: 40, w: 180, owner: "Workload", art: "agent", title: "Agent", caption: "Agent orchestration", text: "The workload-owned agent orchestrates model calls, permitted retrieval and approved tools. The application supplies caller context; the workload enforces authorization and required approvals. This logical example shows one tool action; agents may perform additional model and tool iterations. It is not a fixed Foundry runtime or network topology." },
       gateway: { x: 735, y: 40, w: 180, owner: "Shared AI services", art: "gateway", title: "AI gateway", caption: "APIM", text: "APIM applies configured controls to requests routed through it. Backend identity and network controls prevent unintended bypass; placement can be a shared-services spoke." },
       model: { x: 970, y: 40, w: 180, owner: "Shared AI services", art: "model", title: "Foundry model", caption: "Azure OpenAI", text: "Microsoft Foundry provides the model and agent platform for this example, with Azure OpenAI as the selected model provider. Confirm model compatibility, region and quota. Model output is not permission to act." },
       data: { x: 500, y: 172, w: 180, owner: "", art: "data", title: "Company data", caption: "Permitted retrieval", text: "The same assistant now retrieves permitted company documents. Workload owners enforce document access and evaluate grounded responses." },
@@ -2529,7 +2542,9 @@ SOFTWARE</pre>
           other.setAttribute("aria-pressed", String(other === group));
         });
         step.textContent = node.title;
-        explanation.textContent = node.text;
+        explanation.textContent = key === "app" && mode === "agent"
+          ? "The Azure-side application establishes caller context and delegates orchestration to the agent. Channel integration and user authorization remain workload responsibilities; Copilot Studio is not hosted in this application node."
+          : node.text;
         progress.style.width = "0%";
       });
       nodeRoot.appendChild(group);
@@ -2541,7 +2556,7 @@ SOFTWARE</pre>
         start: [
           hop("user", "A question in the user's chosen channel", "The user interacts through Teams, Microsoft 365 or a web app. Being on-premises is not required."),
           hop("entry", "The channel routes the conversation", "A published agent or application receives the question through its configured channel. User authentication and channel availability depend on the selected integration.", "user-entry"),
-          hop("app", "The Azure backend receives it", "The configured integration reaches the Azure application. Validate endpoint reachability and caller identity; this is not automatically an ExpressRoute, VPN or connectivity-hub path. The illustrated backend then calls APIM.", "entry-app"),
+          hop("app", "The Azure backend receives it", "The configured integration reaches the Azure application. Validate endpoint reachability and caller identity; this is not automatically an ExpressRoute, VPN or connectivity-hub path.", "entry-app"),
         ],
         finish: [
           hop("entry", "Return through the selected channel", "The backend response returns through the configured agent or application integration to the user's channel.", "entry-app", true),
@@ -2552,7 +2567,7 @@ SOFTWARE</pre>
         start: [
           hop("user", "A question over private-hybrid access", "An enterprise client accesses the Azure application over the private-hybrid option. This is one entry pattern, not a requirement for Teams or Microsoft 365."),
           hop("entry", "Enter through the connectivity hub", "ExpressRoute or VPN reaches the hub gateway. Shared DNS supports private name resolution; firewall inspection applies only where routing is configured for it.", "user-entry"),
-          hop("app", "The Azure application receives it", "Hub-to-spoke connectivity reaches the application. The workload establishes the user's identity, prepares the request, and then calls APIM.", "entry-app"),
+          hop("app", "The Azure application receives it", "Hub-to-spoke connectivity reaches the application. The workload establishes the user's identity and prepares the request.", "entry-app"),
         ],
         finish: [
           hop("entry", "Return through the connectivity hub", "The application's response returns over the configured hybrid network path; the hub provides network connectivity, not API governance.", "entry-app", true),
@@ -2574,18 +2589,28 @@ SOFTWARE</pre>
         hop("app", "Handle the answer", "The workload applies its response-handling and evaluation controls.", "app-gateway", true)],
       rag: [...retrieval, ...modelCall,
         hop("app", "Present an answer with sources", "The application formats the answer with source references; sources do not guarantee correctness.", "app-gateway", true)],
-      agent: [...retrieval, ...modelCall,
-        hop("app", "Authorize the proposed action", "The workload validates the proposed operation and obtains approval when required before executing a tool.", "app-gateway", true),
-        hop("tools", "Execute the approved action", "The authorized tool performs its allowed backend operation. This logical example does not depict the Foundry runtime's detailed tool-network path.", "app-tools"),
-        hop("app", "Handle the tool result", "The application receives the result, records the action, and prepares the user-facing response.", "app-tools", true)],
+      agent: [
+        hop("agent", "Delegate to the agent", "The application passes the question and caller context to the workload-owned agent for orchestration.", "app-agent"),
+        hop("data", "Retrieve permitted knowledge", "The agent retrieves only content this user is authorized to access; the workload enforces the data permissions.", "agent-data"),
+        hop("agent", "Assemble the agent context", "Permitted content returns to the agent and is assembled with the question.", "agent-data", true),
+        { ...modelCall[0], text: "The agent calls the shared gateway for governed model access. Configured identity, routing and consumer limits apply.", lane: "agent-gateway" },
+        ...modelCall.slice(1),
+        hop("agent", "Authorize the proposed action", "The workload validates the agent's proposed operation and obtains approval when required before executing a tool.", "agent-gateway", true),
+        hop("tools", "Execute the approved action", "The authorized tool performs its allowed backend operation. This logical example does not depict the Foundry runtime's detailed tool-network path.", "agent-tools"),
+        hop("agent", "Handle the tool result", "The tool result returns to the agent. The workload records the action and prepares a response; other agent designs may make further model calls.", "agent-tools", true),
+        hop("app", "Return the agent response", "The application receives the agent's result and returns the authorized response through the configured user channel.", "app-agent", true),
+      ],
     };
     function currentRoute() {
-      return [...entryRoutes[entry].start, ...routes[mode], ...entryRoutes[entry].finish];
+      const start = entryRoutes[entry].start.map(item => item.node === "app"
+        ? { ...item, text: item.text + (mode === "agent" ? " It delegates orchestration to the agent." : " The application then calls APIM.") }
+        : item);
+      return [...start, ...routes[mode], ...entryRoutes[entry].finish];
     }
     const summaries = {
       model: ["A shared path to approved models", "The landing zone provides reusable access controls. The example application owns its prompts, permissions and answer quality."],
       rag: ["New data, the same foundation", "Shared identity and connectivity remain. The workload owns document permissions and grounded-answer evaluation."],
-      agent: ["More capability, the same guardrails", "The foundation supports the workload as it grows. The workload still authorizes tools and checks required approvals."],
+      agent: ["Agent orchestration, the same guardrails", "The shared foundation supports the workload-owned agent. The agent retrieves permitted data and uses approved tools; the workload enforces authorization and approvals."],
     };
     function pauseStudio() {
       cancelAnimationFrame(frame);
@@ -2639,11 +2664,33 @@ SOFTWARE</pre>
       root.dataset.mode = mode;
       root.querySelectorAll("[data-studio-mode]").forEach(button =>
         button.setAttribute("aria-pressed", String(button.dataset.studioMode === mode)));
-      for (const [key, visible] of [["data", mode !== "model"], ["tools", mode === "agent"]]) {
+      const agentMode = mode === "agent";
+      const offset = agentMode ? 235 : 0;
+      svg.setAttribute("viewBox", `0 0 ${1180 + offset} 300`);
+      root.querySelector("#studioBackdrop").setAttribute("width", String(1180 + offset));
+      root.querySelector(".studio-boundary").setAttribute("width", String((entry === "channels" ? 696 : 946) + offset));
+      root.querySelector("#studioTitle").textContent = "AI access: users, " + entryDefinitions[entry].title +
+        ", Azure application, " + (agentMode ? "agent, " : "") + "APIM and model";
+      root.querySelector("#studioDescription").textContent = entryDefinitions[entry].text +
+        (agentMode ? " The application delegates to a workload-owned agent that orchestrates permitted retrieval, governed model calls and approved tools." : "");
+      for (const key of ["gateway", "model", "data", "tools"]) {
+        const node = nodes[key], definition = nodeDefinitions[key], x = definition.x + offset;
+        node.querySelector("rect").setAttribute("x", String(x));
+        node.querySelector("use").setAttribute("x", String(x + (definition.w - 72) / 2));
+        node.querySelectorAll("text").forEach(text => text.setAttribute("x", String(x + definition.w / 2)));
+        root.querySelector('[data-studio-owner="' + key + '"]')?.setAttribute("x", String(x + definition.w / 2));
+      }
+      for (const [key, visible] of [["data", mode !== "model"], ["tools", agentMode], ["agent", agentMode]]) {
         nodes[key].toggleAttribute("hidden", !visible);
         nodes[key].tabIndex = visible ? 0 : -1;
-        document.getElementById("studio-lane-app-" + key).toggleAttribute("hidden", !visible);
       }
+      root.querySelector('[data-studio-owner="agent"]').toggleAttribute("hidden", !agentMode);
+      root.querySelector("#studio-lane-app-data").toggleAttribute("hidden", mode !== "rag");
+      root.querySelector("#studio-lane-app-gateway").toggleAttribute("hidden", agentMode);
+      for (const lane of ["app-agent", "agent-gateway", "agent-data", "agent-tools"]) {
+        root.querySelector("#studio-lane-" + lane).toggleAttribute("hidden", !agentMode);
+      }
+      root.querySelector("#studio-lane-gateway-model").setAttribute("d", `M${915 + offset} 90H${970 + offset}`);
       root.querySelector("#studioEmptyWorkload").toggleAttribute("hidden", mode !== "model");
       Object.values(nodes).forEach(node => {
         node.classList.remove("is-current");
