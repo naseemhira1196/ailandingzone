@@ -758,13 +758,12 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
     <button class="navbtn" data-panel="p4" data-route="gateway"><span class="num">4</span> Gateway outcome</button>
     <button class="navbtn" data-panel="p3" data-route="network"><span class="num">5</span> Network decision</button>
     <button class="navbtn" data-panel="p5" data-route="policy"><span class="num">6</span> Audit versus Deny</button>
-    <button class="navbtn" data-panel="p6" data-route="decisions"><span class="num">7</span> Decisions</button>
     <button class="navbtn nav-reference" data-panel="p2"><span class="num">R</span> Day-1 Services Sort · Optional</button>
     <button class="navbtn nav-reference" data-panel="p7"><span class="num" aria-hidden="true">R</span><span>Networking Deep Dive<small>Optional reference</small></span></button>
     <div class="sidebar-footer">
       <div class="progress-label">45-minute walkthrough</div>
       <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-      <div class="progress-label" id="progressLabel">0 / 7 steps visited</div>
+      <div class="progress-label" id="progressLabel">0 / 6 steps visited</div>
     </div>
   </nav>
 
@@ -793,7 +792,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
               <button class="iconbtn" type="button" id="expandSections" aria-controls="p0">Expand all</button>
             </div>
           </details>
-          <button class="iconbtn" type="button" id="resetDemo" title="Activity reset; decisions and notes retained">Reset demo</button>
+          <button class="iconbtn" type="button" id="resetDemo" title="Reset presentation activities and layout">Reset demo</button>
           <button class="iconbtn" id="themeToggle">Dark theme</button>
           <button class="iconbtn" id="fullscreenToggle">Full screen</button>
           <a class="iconbtn" id="downloadOffline" href="index.html" download="AI-Landing-Zone-Offline.html">Offline copy</a>
@@ -814,7 +813,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
             <span><b>Use case</b> Internal assistant</span><span><b>Experience / agent</b> New Foundry · Prompt agent, standard resources</span><span><b>Network</b> Channel-specific ingress; compare managed/BYO agent egress</span><span><b>Model choice</b> Azure OpenAI · agent-compatible model to confirm</span><span><b>Target region</b> Canada East candidate · validate availability and quota</span>
           </div>
           <p class="takeaway">These diagrams explain responsibilities and logical flows; deployment details depend on the selected services and configuration.</p>
-          <p class="browser-note">Notes and exercise state are saved only in this browser. This is not a shared voting or collaborative notes session.</p>
+          <p class="browser-note">Exercise state is saved only in this browser. This is not a shared voting session.</p>
         </div>
       </section>
 
@@ -1682,22 +1681,6 @@ SOFTWARE</pre>
         </div>
       </section>
 
-      <!-- PANEL 6: Parking lot -->
-      <section class="panel" id="p6">
-        <div class="card">
-          <h2>Decisions &amp; Parking Lot</h2>
-          <p class="browser-note">Notes and exercise state are saved only in this browser. This is not a shared voting or collaborative notes session.</p>
-          <div class="scenario-options" id="decisionPrompts" aria-label="Decision prompts"></div>
-          <details class="reference-content" id="readinessCheckpoint"><summary>Production-readiness checkpoint — decisions to resolve, not automatic capabilities</summary><div class="readiness-grid" id="readinessItems"></div></details>
-          <div id="lotBody" role="list" aria-label="Decisions and open questions"></div>
-          <div class="footerbar">
-            <button class="iconbtn primary" id="addRow">+ Add Row</button>
-            <button class="iconbtn" id="exportNotes">Export decisions</button>
-            <span class="savehint" id="saveStatus" role="status">Stored in this browser only.</span>
-          </div>
-        </div>
-      </section>
-
       <section class="panel" id="p7" aria-label="Networking Deep Dive">
         <div class="card">
           <h2>Networking Deep Dive</h2>
@@ -1859,7 +1842,7 @@ SOFTWARE</pre>
 <script>
 (() => {
   const STORAGE_KEY = "aiLandingZoneDashboard_v1";
-  const corePanels = ["p0", "p1", "p4", "p3", "p5", "p6"];
+  const corePanels = ["p0", "p1", "p4", "p3", "p5"];
   const allPanels = [...corePanels, "p2", "p7"];
   const playbackStops = new Set();
   const demoResets = new Set();
@@ -1899,13 +1882,12 @@ SOFTWARE</pre>
     { panel: "p4", key: "gateway", title: "Gateway outcome" },
     { panel: "p3", key: "network", title: "Network decision" },
     { panel: "p5", key: "policy", title: "Audit versus Deny" },
-    { panel: "p6", key: "decisions", title: "Decisions" },
   ];
   function createInitialState() {
     return {
       schemaVersion: 2,
       activePanel: "p0",
-      visited: { p0: true, p1: false, p3: false, p4: false, p5: false, p6: false },
+      visited: { p0: true, p1: false, p3: false, p4: false, p5: false },
       visitedSteps: Object.fromEntries(presentationRoute.map(step => [step.key, step.key === "scenario"])),
       sortMode: "short",
       sort: {},          // name -> col
@@ -1918,7 +1900,7 @@ SOFTWARE</pre>
       networkEgress: "approved",
       govActive: null,
       checked: {},
-      lot: Array.from({ length: 3 }, () => emptyDecision()),
+      lot: [], // Retain legacy browser notes without exposing the retired notes UI.
     };
   }
   let state = createInitialState();
@@ -1941,7 +1923,7 @@ SOFTWARE</pre>
         if (!record(saved)) throw new Error("Invalid saved session");
         const restored = { ...state };
         for (const [key, allowed] of Object.entries({
-          activePanel: allPanels, sortMode: ["short", "full"],
+          activePanel: [...allPanels, "p6"], sortMode: ["short", "full"],
           vnetMode: ["ms", "byo"], zone: ["hub", "spoke"],
           networkView: ["flows", "capacity", "egress", "operations"],
           networkAgent: ["hosted", "prompt"],
@@ -1955,8 +1937,8 @@ SOFTWARE</pre>
           }
         }
         for (const [key, keys] of Object.entries({
-          visited: allPanels,
-          visitedSteps: presentationRoute.map(step => step.key),
+          visited: [...allPanels, "p6"],
+          visitedSteps: [...presentationRoute.map(step => step.key), "decisions"],
           checked: policyItems.map((_, i) => String(i)),
           sortWhyShown: services.map(s => s.name),
           sort: services.map(s => s.name),
@@ -1968,7 +1950,9 @@ SOFTWARE</pre>
             if (!keys.includes(name) || (key === "sort"
               ? !["Required", "Depends", "Optional"].includes(value)
               : typeof value !== "boolean")) throw new Error("Invalid saved " + key);
-            if (key !== "visited" || corePanels.includes(name)) restored[key][name] = value;
+            if (key === "visited" && !corePanels.includes(name)) continue;
+            if (key === "visitedSteps" && name === "decisions") continue;
+            restored[key][name] = value;
           }
         }
         if ("lot" in saved) {
@@ -1984,6 +1968,7 @@ SOFTWARE</pre>
           });
         }
         restored.govActive = { lz: "rg", deploy: "resource" }[restored.govActive] || restored.govActive;
+        if (restored.activePanel === "p6") restored.activePanel = "p0";
         if (saved.schemaVersion !== 2) {
           restored.sort = {}; restored.sortWhyShown = {}; restored.checked = {};
         }
@@ -1991,19 +1976,16 @@ SOFTWARE</pre>
       }
     } catch (error) {
       storageBlocked = true;
-      document.getElementById("saveStatus").textContent = "Not saved. Export decisions before closing.";
-      reportError("Saved session could not be loaded. Existing storage has not been overwritten. New changes remain in this page; export decisions before closing.", error);
+      reportError("Saved session could not be loaded. Existing storage has not been overwritten. New activity changes remain in this page only.", error);
     }
   }
   function save() {
     if (storageBlocked) return;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      document.getElementById("saveStatus").textContent = "Saved in this browser only.";
     } catch (error) {
       storageBlocked = true;
-      document.getElementById("saveStatus").textContent = "Not saved. Export decisions before closing.";
-      reportError("Browser storage is unavailable. Changes remain in this page; export decisions before closing.", error);
+      reportError("Browser storage is unavailable. Activity changes remain in this page but will not be saved for later.", error);
     }
   }
 
@@ -2019,7 +2001,6 @@ SOFTWARE</pre>
     p3: "Choose your network model",
     p4: "Hub & Spoke Landing Zones",
     p5: "Policy Baseline",
-    p6: "Decisions & Parking Lot",
     p7: "Networking Deep Dive",
   };
 
@@ -2399,70 +2380,6 @@ SOFTWARE</pre>
       });
       save();
     });
-  });
-
-  // ---------- Panel 6: parking lot ----------
-  const lotBody = document.getElementById("lotBody");
-  function renderLot() {
-    lotBody.innerHTML = "";
-    state.lot.forEach((row, idx) => {
-      const article = document.createElement("article");
-      article.className = "decision-entry"; article.setAttribute("role", "listitem");
-      for (const [field, title, type] of [
-        ["a", "Decision", "textarea"], ["b", "Open question", "textarea"],
-        ["owner", "Owner", "text"], ["nextAction", "Next action", "text"],
-        ["targetDate", "Target date", "date"], ["status", "Status", "select"],
-      ]) {
-        const label = document.createElement("label");
-        label.textContent = title;
-        const control = document.createElement(type === "textarea" || type === "select" ? type : "input");
-        if (control.tagName === "INPUT") control.type = type;
-        if (type === "select") {
-          for (const value of ["Proposal", "Agreed", "In progress", "Blocked", "Done"]) {
-            const option = document.createElement("option"); option.value = value; option.textContent = value; control.append(option);
-          }
-        }
-        control.value = row[field]; control.setAttribute("aria-label", title + " " + (idx + 1));
-        if (field === "a") control.placeholder = "What is proposed or agreed?";
-        if (field === "b") control.placeholder = "What remains unresolved?";
-        control.addEventListener("input", () => { state.lot[idx][field] = control.value; save(); });
-        label.append(control); article.append(label);
-      }
-      const rmBtn = document.createElement("button");
-      rmBtn.className = "iconbtn"; rmBtn.type = "button";
-      rmBtn.innerHTML = "&#10005;";
-      rmBtn.title = "Remove row";
-      rmBtn.setAttribute("aria-label", "Remove decision row " + (idx + 1));
-      rmBtn.addEventListener("click", () => {
-        state.lot.splice(idx, 1);
-        renderLot();
-        save();
-      });
-      article.appendChild(rmBtn);
-      lotBody.appendChild(article);
-    });
-  }
-  document.getElementById("addRow").addEventListener("click", () => {
-    state.lot.push(emptyDecision());
-    renderLot();
-    save();
-  });
-
-  document.getElementById("exportNotes").addEventListener("click", () => {
-    const lines = ["AI Landing Zone - Decisions & Parking Lot", new Date().toISOString(), ""];
-    state.lot.filter(row => ["a", "b", "owner", "nextAction", "targetDate"].some(field => row[field].trim())).forEach((row, i) => {
-      lines.push("Item " + (i + 1), "Status: " + row.status, "Decision: " + row.a, "Open question: " + row.b,
-        "Owner: " + row.owner, "Next action: " + row.nextAction, "Target date: " + row.targetDate, "");
-    });
-    if (lines.length === 3) lines.push("No decisions or open questions recorded.");
-    const url = URL.createObjectURL(new Blob([lines.join("\r\n")], { type: "text/plain;charset=utf-8" }));
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "AI-Landing-Zone-Decisions.txt";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
   });
 
   const themeButton = document.getElementById("themeToggle");
@@ -3399,18 +3316,6 @@ SOFTWARE</pre>
     const governanceBoundary = document.createElement("p"); governanceBoundary.id = "policyPlatformBoundary";
     governanceBoundary.textContent = "Azure Policy here governs supported Azure resources, including Foundry resources. Copilot Studio environment settings, connectors and data policies require separate Copilot Studio / Power Platform governance; Azure Policy assignments do not replace those controls.";
     recommendations.append(governanceBoundary);
-    const prompts = ["First workload", "Optional Copilot Studio integration", "Shared gateway ownership", "Network approach", "Policy ownership", "Remaining prerequisites"];
-    const readiness = ["Region / model availability", "Quota and capacity", "Cost ownership", "Evaluations and acceptance criteria", "Safety / privacy and action authorization", "Recovery expectations", "Monitoring and alerting", "Support ownership"];
-    function promptButton(text, target) {
-      const button = document.createElement("button"); button.type = "button"; button.className = "iconbtn"; button.textContent = text;
-      button.addEventListener("click", () => {
-        const row = emptyDecision(); row.b = "Resolve: " + text;
-        state.lot.push(row); renderLot(); save();
-        lotBody.lastElementChild.querySelector("textarea").focus();
-      }); target.append(button);
-    }
-    prompts.forEach(text => promptButton(text, document.getElementById("decisionPrompts")));
-    readiness.forEach(text => promptButton(text, document.getElementById("readinessItems")));
   }
   setupPresentation();
   function setupCollapsibleSections() {
@@ -3573,7 +3478,6 @@ SOFTWARE</pre>
   renderVnet();
   renderChecklist();
   renderGovRings();
-  renderLot();
   updateProgress();
   showPanel("p0");
 })();

@@ -26,10 +26,10 @@ The dashboard includes:
 - An optional **Networking Deep Dive** reference tab with hosted/prompt traffic paths, clickable ownership details, subnet address budgets, managed outbound modes, private DNS examples, and troubleshooting checks.
 - Responsive primary views designed for a 1366x768 presentation, with diagrams, manual-step explanations and navigation visible together. Only the main explorer starts open in the architecture step; other architecture cards are collapsed optional reference.
 - The actual **Management group -> Subscription -> Resource group -> Resource** hierarchy, Audit versus Deny scenarios, and named policy recommendations with supported effects, coverage, ownership and exception handling.
-- Browser-local decisions with **Owner, Next action, Target date and Status**, migrated legacy notes, readiness prompts and plain-text export. A proposal is not an agreed decision.
+- The Decisions & Parking Lot tab and note-editing/export controls have been removed. Legacy browser-saved notes are retained without being displayed or edited.
 - A header **Reset demo** button that stops playback, restores activities, default order and presentation-friendly expansion, exits layout editing, and returns to **Opening scenario**. Decisions, parking-lot notes, theme, and full-screen mode are kept.
 - Light/dark themes, full-screen controls, and responsive layouts.
-- Primary **Previous / Next section** navigation, sidebar numbers, page titles and progress use one seven-step route. **Shared/workload ownership** and **Gateway outcome** have separate sidebar entries and visits, even though they share an underlying panel. Optional references do not increase guided progress.
+- Primary **Previous / Next section** navigation, sidebar numbers, page titles and progress use one six-step route ending at **Audit versus Deny**. **Shared/workload ownership** and **Gateway outcome** have separate sidebar entries and visits, even though they share an underlying panel. Optional references do not increase guided progress.
 - **Collapse / Expand** controls remain on cards. **Layout options** contains the secondary **Collapse all / Expand all** actions. The private-hybrid map, official architecture group, blueprint, challenge and extra request walkthrough start collapsed; the official image cards inside their closed group remain ready to view. **AI Landing Zones in Detail** also starts collapsed. Reset restores these defaults rather than expanding everything.
 - **Layout options > Edit layout** reveals card-reordering arrows; **Finish editing** hides them. They are hidden initially and after Reset. Moves preserve selections, notes and collapsed state, and pause playback. Reload or Reset restores the requested default order. **Focus explorer** fully obscures the background and restores the explorer to its previous position when closed.
 - Clear **Microsoft Foundry** and **Microsoft Copilot Studio** role callouts across the opening, architecture, ownership, networking, governance and decision prompts. The conversational UX can be a custom app or Copilot Studio; the illustrated application node is the Azure-side backend. Copilot Studio is SaaS, not an agent subnet deployment, and its supported integration path is separate from the illustrated hybrid route.
@@ -44,7 +44,7 @@ The published dashboard contains customer-facing architecture content and intera
 
 ### Optional presentation interactions
 
-Start on **Opening scenario**, then follow **Evolving architecture -> Shared/workload ownership -> Gateway outcome -> Network decision -> Audit versus Deny -> Decisions**. Use **Next section** rather than navigating through every reference card. Ownership shows the ownership card; the gateway stop shows the **Missing identity** demonstration. **AI Landing Zones in Detail** stays collapsed unless explicitly opened. **More outcomes**, including safely configured caching, is available for questions.
+Start on **Opening scenario**, then follow **Evolving architecture -> Shared/workload ownership -> Gateway outcome -> Network decision -> Audit versus Deny**. Use **Next section** rather than navigating through every reference card. Ownership shows the ownership card; the gateway stop shows the **Missing identity** demonstration. **AI Landing Zones in Detail** stays collapsed unless explicitly opened. **More outcomes**, including safely configured caching, is available for questions.
 
 In the explorer, progress from **AI application** to **Add company knowledge** to **Add agent actions**. Click a service for its responsibility and use **Next hop** to narrate manually. **Trace request** is optional playback. **Focus explorer** enlarges the complete interactive scene; Escape returns it with selections intact. Layer buttons change the illustration, not security controls.
 
@@ -54,7 +54,7 @@ The primary story is one custom application backed by Foundry: approved model ac
 
 The documented Copilot Studio–Foundry connection is preview, supports agents created in the new Foundry portal, and requires the Activity protocol endpoint. It is not enabled by default and currently requires REST API or Python SDK configuration, not a portal setting. The documented default Responses and A2A endpoints alone are insufficient. The source link and last-reviewed date are in **Architecture details**.
 
-Use **Enlarge diagram**, then zoom as needed. Supported component details remain clickable. Illustrations are embedded SVGs and work offline. Notes and exercise state are saved only in this browser; this is not shared voting or collaborative notes.
+Use **Enlarge diagram**, then zoom as needed. Supported component details remain clickable. Illustrations are embedded SVGs and work offline. Exercise state is saved only in this browser; this is not shared voting.
 
 The explorer's scenes are conceptual application flows, not a fixed Foundry runtime topology: retrieval is authorized by the workload, model calls use the illustrated gateway path, and the agent-action example authorizes a tool operation before execution. Request tracing is opt-in, pauses on navigation, backgrounding, or component selection, and ends after one round trip. Reduced-motion users can step through the same flow without moving markers. These are original explanatory illustrations, not official Azure service icons.
 
@@ -66,12 +66,12 @@ The explorer starts with **Users → Teams / M365 / web → Azure backend → AP
 
 - Scenarios are local illustrations, not live Azure calls, telemetry, policy evaluations, or cost measurements.
 - Service classifications are a workshop reference baseline, not universal deployment requirements. Validate current service, SKU, region, and hosting-mode support before implementing an architecture.
-- Decisions are stored in the current browser's local storage, not synchronized to a shared service. Export them before switching browsers or clearing browser data. Storage failures are displayed in the dashboard.
+- Activity state is stored in the current browser, not synchronized to a shared service. Storage failures are displayed in the dashboard. Retiring the notes tab does not delete any legacy notes already saved there.
 - Microsoft/Azure-inspired styling does not make this an official Azure portal or Microsoft product.
 
 ## Optional networking reference
 
-**Networking Deep Dive** is outside the seven-stop guided route (which spans six sections) and does not affect section progress. Its topic, agent-path, subnet-size and outbound-mode selections are saved locally. Use it for specific questions.
+**Networking Deep Dive** is outside the six-stop guided route (which spans five panels) and does not affect section progress. Its topic, agent-path, subnet-size and outbound-mode selections are saved locally. Use it for specific questions.
 
 Technical guidance was reviewed on October 4, 2026. The reference acknowledges conflicting address-range guidance and uses non-overlapping RFC1918 space for the example. Confirm other ranges against the selected deployment path before allocation. Capability hosts and newer capability settings are not one universal provisioning flow.
 
