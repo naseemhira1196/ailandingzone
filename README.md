@@ -13,7 +13,7 @@ Download or clone this repository and open `index.html` in a modern browser. No 
 The dashboard includes:
 
 - An **Opening scenario** with a landing-zone definition, session purpose and explicit use-case, Foundry experience, networking, model and region assumptions.
-- A **visual architecture explorer** that evolves the same three-team internal assistant from model access to permitted company knowledge, then approved actions. Agent actions retain the knowledge path.
+- A **visual architecture explorer** that evolves the same three-team internal assistant from model access to permitted company knowledge, then approved actions. Agent actions retain the knowledge path. User entry starts with **Teams / M365 / web**; **Private hybrid** is a separate selectable path, not a prerequisite.
 - An **AI Landing Zone - High Level** view with a clickable hub/spoke map and supporting enterprise foundation, platform, workload, and operations blueprint.
 - Illustrated **Follow an AI request** journeys for model-only, grounded-answer, and agent-action workloads.
 - **Play / Pause**, **Next step**, and clickable stage illustrations for request, gateway, workload, and policy walkthroughs. Playback is opt-in, stops on navigation or when the browser tab is hidden, and respects reduced-motion preferences.
@@ -51,7 +51,9 @@ Use **Enlarge diagram**, then zoom as needed. Supported component details remain
 
 The explorer's scenes are conceptual application flows, not a fixed Foundry runtime topology: retrieval is authorized by the workload, model calls use the illustrated gateway path, and the agent-action example authorizes a tool operation before execution. Request tracing is opt-in, pauses on navigation, backgrounding, or component selection, and ends after one round trip. Reduced-motion users can step through the same flow without moving markers. These are original explanatory illustrations, not official Azure service icons.
 
-The private hybrid example follows **on-premises users → ExpressRoute/VPN → connectivity hub → Azure application → APIM → model**, with the response returning through the hub. Click **Connectivity hub** for hybrid gateway, routing, shared DNS, and route-dependent firewall responsibilities. APIM is a separate API gateway and can live in a shared-services spoke. DNS supports name resolution rather than being an inline request hop. The supporting hub/spoke map shows the related case of an on-premises client application calling APIM directly through the connectivity hub.
+The explorer starts with **Users → Teams / M365 / web → Azure backend → APIM → model**, showing logical integrations rather than a fixed network path. Cloud/web channels remain outside the Azure boundary. Publishing, caller identity and backend endpoint reachability need configuration; the diagram does not imply that all Teams or Microsoft 365 requests use APIM.
+
+**Private hybrid** changes the entry to **Users → connectivity hub (ExpressRoute/VPN) → Azure application → APIM → model**, including the return through the hub. It changes the entry illustration without resetting the selected workload; changing entry pauses playback, and Reset restores the cloud/web entry. The separate hub/spoke map is explicitly a private-hybrid example. APIM is a separate API gateway; DNS is not an inline request hop, and firewall inspection depends on routing.
 
 ## Important boundaries
 

@@ -780,10 +780,10 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
           <h2>One internal assistant, three teams</h2>
           <p class="opening-definition">An AI landing zone is a repeatable foundation for deploying and operating AI workloads with enterprise identity, connectivity, governance and operational controls.</p>
           <p>Today we’ll identify what is shared, what each workload owns, and the decisions needed to onboard our first AI workload.</p>
-          <p id="platformChoices"><b>Microsoft Foundry</b> supports custom AI applications and agents on Azure. <b>Microsoft Copilot Studio</b> can provide the conversational user experience (UX), with low-code agents and workflows. The UX can be a custom app or Copilot Studio, connected to Azure-side services through supported integrations.</p>
+          <p id="platformChoices"><b>Microsoft Foundry</b> supports custom AI applications and agents on Azure. <b>Microsoft Copilot Studio</b> can provide the conversational user experience (UX), with low-code agents and workflows. A custom app or Copilot Studio can surface the experience through Teams, Microsoft 365 or web channels with supported integrations; users do not need to be on-premises.</p>
           <blockquote>Three teams need an internal assistant. They need approved models, access to permitted company documents, and eventually the ability to perform approved actions.</blockquote>
           <div class="assumptions-strip" aria-label="Example assumptions">
-            <span><b>Use case</b> Internal assistant</span><span><b>Experience / agent</b> New Foundry · Prompt agent, standard resources</span><span><b>Network</b> Private hybrid access; compare managed/BYO egress</span><span><b>Model choice</b> Azure OpenAI · agent-compatible model to confirm</span><span><b>Target region</b> Canada East candidate · validate availability and quota</span>
+            <span><b>Use case</b> Internal assistant</span><span><b>Experience / agent</b> New Foundry · Prompt agent, standard resources</span><span><b>Network</b> Channel-specific ingress; compare managed/BYO agent egress</span><span><b>Model choice</b> Azure OpenAI · agent-compatible model to confirm</span><span><b>Target region</b> Canada East candidate · validate availability and quota</span>
           </div>
           <p class="takeaway">These diagrams explain responsibilities and logical flows; deployment details depend on the selected services and configuration.</p>
           <p class="browser-note">Notes and exercise state are saved only in this browser. This is not a shared voting or collaborative notes session.</p>
@@ -803,12 +803,16 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
               <button class="iconbtn" type="button" data-studio-mode="rag" aria-pressed="false">Add company knowledge</button>
               <button class="iconbtn" type="button" data-studio-mode="agent" aria-pressed="false">Add agent actions</button>
             </div>
+            <div class="scenario-options" role="group" aria-label="User entry path">
+              <button class="iconbtn" type="button" data-studio-entry="channels" aria-pressed="true">Teams / M365 / web</button>
+              <button class="iconbtn" type="button" data-studio-entry="hybrid" aria-pressed="false">Private hybrid</button>
+            </div>
           </div>
-          <p class="studio-supporting" id="studioPlatformContext"><b>Assistant UX: custom app or Copilot Studio.</b> Foundry provides the Azure-side AI services. Copilot Studio is SaaS, not deployed inside the illustrated VNet; its integration path is separate from the hybrid route shown.</p>
+          <p class="studio-supporting" id="studioPlatformContext"><b>Assistant UX: custom app or Copilot Studio.</b> Users can enter through Teams, Microsoft 365 or a web app. Copilot Studio is SaaS, not deployed inside the illustrated VNet. Channel integration and backend reachability are configured separately.</p>
           <div class="studio-canvas">
             <svg id="studioSvg" viewBox="0 0 1180 300" role="group" aria-labelledby="studioTitle studioDescription">
-              <title id="studioTitle">Hybrid AI access: on-premises users, connectivity hub, Azure application, APIM, and model</title>
-              <desc id="studioDescription">An illustrative private hybrid access pattern. On-premises users reach an Azure-hosted application through ExpressRoute or VPN and a connectivity hub before the application calls APIM. The connectivity hub and AI gateway are separate responsibilities. DNS supports name resolution; firewall inspection depends on routing.</desc>
+              <title id="studioTitle">AI access: users, Teams or Microsoft 365 or web, Azure application, APIM and model</title>
+              <desc id="studioDescription">Users access an assistant through a configured cloud or web channel. Channel integration reaches the Azure backend through supported endpoints and identity configuration, not automatically through a connectivity hub. Private hybrid is a separate entry option.</desc>
               <defs>
                 <pattern id="studioGrid" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="var(--cp-border)"></circle></pattern>
                 <symbol id="studio-person-art" viewBox="0 0 160 125">
@@ -877,12 +881,12 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
               </defs>
               <rect x="0" y="0" width="1180" height="300" fill="url(#studioGrid)"></rect>
               <g data-studio-layer-art="network">
-                <rect class="studio-boundary" x="210" y="1" width="946" height="297" rx="12"></rect>
+                <rect class="studio-boundary" x="460" y="1" width="696" height="297" rx="12"></rect>
               </g>
-              <text class="studio-node-caption" x="100" y="178">ExpressRoute / VPN</text>
+              <text class="studio-node-caption" id="studioEntryLabel" x="100" y="178">Cloud / web access</text>
               <g id="studioLanes">
-                <path id="studio-lane-user-network" class="studio-lane" d="M180 90H235"></path>
-                <path id="studio-lane-network-app" class="studio-lane" d="M445 90H500"></path>
+                <path id="studio-lane-user-entry" class="studio-lane" d="M180 90H235"></path>
+                <path id="studio-lane-entry-app" class="studio-lane" d="M445 90H500"></path>
                 <path id="studio-lane-app-gateway" class="studio-lane" d="M680 90H735"></path>
                 <path id="studio-lane-gateway-model" class="studio-lane" d="M915 90H970"></path>
                 <path id="studio-lane-app-data" class="studio-lane studio-optional" d="M590 146V172" hidden></path>
@@ -909,7 +913,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
           </div>
           <div class="studio-result" role="status" aria-live="polite" aria-atomic="true">
             <div><strong id="studioStep">AI application</strong><div class="studio-progress" aria-hidden="true"><span id="studioProgress"></span></div></div>
-            <p id="studioExplanation">On-premises users reach the Azure application through the connectivity hub. The application then calls the AI gateway and approved model.</p>
+            <p id="studioExplanation">Users can reach the assistant through Teams, Microsoft 365, a web app or a private-hybrid connection. The illustrated Azure backend calls the AI gateway and approved model.</p>
           </div>
           <p class="takeaway">The platform provides reusable guardrails; the workload owns its application, data access, evaluations and authorized actions.</p>
           <details class="studio-footnote reference-content"><summary>Applies to this example · responsibilities, not deployment boundaries</summary><p>The Agent Landing Zone and AI Gateway Landing Zone can be deployed together or independently. The accelerator is in preview; each Azure service has its own availability status. The connectivity hub and APIM are different responsibilities. DNS is not an inline hop; firewall inspection depends on routing. The outline is not a single VNet.</p><p>Copilot Studio can connect to supported Foundry agents through a preview integration. This is a separate integration decision, not the illustrated request path. Validate supported agent experience, endpoint configuration, identity, data handling and network reachability; neither platform automatically grants the other access.</p></details>
@@ -968,7 +972,8 @@ SOFTWARE</pre>
           </details>
         </div>
         <div class="card">
-          <h2>Hub &amp; Spoke Architecture</h2>
+          <h2>Hub &amp; Spoke Architecture · Private-hybrid example</h2>
+          <p class="browser-note">This is one connectivity pattern, not a requirement for all users. Teams, Microsoft 365 and web channels can use other supported integration paths without traversing this hub.</p>
 
           <div class="topo-wrap spacious" id="highLevelArchitecture">
             <svg viewBox="0 0 1160 500" xmlns="http://www.w3.org/2000/svg" aria-labelledby="architectureTitle architectureDescription">
@@ -2451,9 +2456,13 @@ SOFTWARE</pre>
     const progress = root.querySelector("#studioProgress");
     const play = root.querySelector("#studioPlay");
     const nodeRoot = root.querySelector("#studioNodes");
+    const entryDefinitions = {
+      channels: { owner: "Cloud / web channel", art: "app", title: "Teams / M365", caption: "Or a web app", text: "Users can access the assistant in Teams, Microsoft 365 or a web app. Channel publishing, user authentication and integration with the backend must be configured. These channels do not inherently traverse a connectivity hub.", label: "Cloud / web access" },
+      hybrid: { owner: "Platform foundation", art: "network", title: "Connectivity hub", caption: "Routes / DNS", text: "For the private-hybrid option, the platform owns hybrid connectivity, routing and shared DNS. Firewall inspection depends on configured routes. This network hub is not APIM and is not a required hop for cloud channels.", label: "ExpressRoute / VPN" },
+    };
     const nodeDefinitions = {
-      user: { x: 20, y: 40, w: 160, owner: "Enterprise", art: "person", title: "On-premises", caption: "Three teams", text: "Three teams access the same internal assistant through the enterprise network. Hybrid connectivity does not expand their permissions." },
-      network: { x: 235, y: 40, w: 210, owner: "Platform foundation", art: "network", title: "Connectivity hub", caption: "Routes / DNS", text: "The platform owns hybrid connectivity, routing and shared DNS. Firewall inspection depends on configured routes. This network hub is not APIM." },
+      user: { x: 20, y: 40, w: 160, owner: "People", art: "person", title: "Users", caption: "Three teams", text: "Users can interact through Teams, Microsoft 365 or a web app from any location permitted by their access policy. Private-hybrid access is an option, not a prerequisite. Channel choice does not expand data or action permissions." },
+      entry: { x: 235, y: 40, w: 210, ...entryDefinitions.channels },
       app: { x: 500, y: 40, w: 180, owner: "Workload", art: "app", title: "Application", caption: "Assistant backend", text: "The UX can be a custom app or Copilot Studio. This node is the Azure-side backend, not Copilot Studio hosting. The workload owns prompts, authorized retrieval, evaluations and approved actions. The illustrated backend calls APIM; a Copilot Studio integration needs its own supported connectivity and identity configuration." },
       gateway: { x: 735, y: 40, w: 180, owner: "Shared AI services", art: "gateway", title: "AI gateway", caption: "APIM", text: "APIM applies configured controls to requests routed through it. Backend identity and network controls prevent unintended bypass; placement can be a shared-services spoke." },
       model: { x: 970, y: 40, w: 180, owner: "Shared AI services", art: "model", title: "Foundry model", caption: "Azure OpenAI", text: "Microsoft Foundry provides the model and agent platform for this example, with Azure OpenAI as the selected model provider. Confirm model compatibility, region and quota. Model output is not permission to act." },
@@ -2468,6 +2477,7 @@ SOFTWARE</pre>
       return element;
     }
     let mode = "model";
+    let entry = "channels";
     let hopIndex = -1;
     let frame = null;
     let running = false;
@@ -2481,7 +2491,7 @@ SOFTWARE</pre>
         makeSvg("text", { class: "studio-node-title", x: node.x + node.w / 2, y: node.y + 68 }, node.title),
         makeSvg("text", { class: "studio-node-caption", x: node.x + node.w / 2, y: node.y + 92 }, node.caption),
       );
-      if (node.owner) nodeRoot.appendChild(makeSvg("text", { class: "studio-owner", x: node.x + node.w / 2, y: node.y - 12 }, node.owner));
+      if (node.owner) nodeRoot.appendChild(makeSvg("text", { class: "studio-owner", "data-studio-owner": key, x: node.x + node.w / 2, y: node.y - 12 }, node.owner));
       keyboardClick(group);
       group.addEventListener("click", () => {
         pauseStudio();
@@ -2499,36 +2509,54 @@ SOFTWARE</pre>
       nodes[key] = group;
     });
     const hop = (node, label, text, lane = null, reverse = false) => ({ node, label, text, lane, reverse });
-    const start = [
-      hop("user", "A question from on-premises", "An enterprise user accesses the Azure application over the private hybrid access pattern shown here."),
-      hop("network", "Enter through the connectivity hub", "ExpressRoute or VPN reaches the hub gateway. Shared DNS supports private name resolution; firewall inspection applies only where routing is configured for it.", "user-network"),
-      hop("app", "The Azure application receives it", "Hub-to-spoke connectivity reaches the application. The workload establishes the user's identity, prepares the request, and then calls APIM.", "network-app"),
-    ];
+    const entryRoutes = {
+      channels: {
+        start: [
+          hop("user", "A question in the user's chosen channel", "The user interacts through Teams, Microsoft 365 or a web app. Being on-premises is not required."),
+          hop("entry", "The channel routes the conversation", "A published agent or application receives the question through its configured channel. User authentication and channel availability depend on the selected integration.", "user-entry"),
+          hop("app", "The Azure backend receives it", "The configured integration reaches the Azure application. Validate endpoint reachability and caller identity; this is not automatically an ExpressRoute, VPN or connectivity-hub path. The illustrated backend then calls APIM.", "entry-app"),
+        ],
+        finish: [
+          hop("entry", "Return through the selected channel", "The backend response returns through the configured agent or application integration to the user's channel.", "entry-app", true),
+          hop("user", "An answer in Teams, Microsoft 365 or web", "The authorized response appears in the chosen experience. The workload captures appropriate operational records; channel access does not grant extra data permissions.", "user-entry", true),
+        ],
+      },
+      hybrid: {
+        start: [
+          hop("user", "A question over private-hybrid access", "An enterprise client accesses the Azure application over the private-hybrid option. This is one entry pattern, not a requirement for Teams or Microsoft 365."),
+          hop("entry", "Enter through the connectivity hub", "ExpressRoute or VPN reaches the hub gateway. Shared DNS supports private name resolution; firewall inspection applies only where routing is configured for it.", "user-entry"),
+          hop("app", "The Azure application receives it", "Hub-to-spoke connectivity reaches the application. The workload establishes the user's identity, prepares the request, and then calls APIM.", "entry-app"),
+        ],
+        finish: [
+          hop("entry", "Return through the connectivity hub", "The application's response returns over the configured hybrid network path; the hub provides network connectivity, not API governance.", "entry-app", true),
+          hop("user", "Return to the enterprise client", "The response reaches the enterprise client over ExpressRoute or VPN in this private-hybrid option. The application captures appropriate operational records.", "user-entry", true),
+        ],
+      },
+    };
     const modelCall = [
       hop("gateway", "Apply model-access controls", "The application calls the gateway; configured identity, routing, and consumer limits are applied.", "app-gateway"),
       hop("model", "Run the approved model", "The selected model processes the request and generates output.", "gateway-model"),
       hop("gateway", "Return through the gateway", "The model response returns through the configured gateway path.", "gateway-model", true),
-    ];
-    const finish = [
-      hop("network", "Return through the connectivity hub", "The application's response returns over the configured hybrid network path; the hub provides network connectivity, not API governance.", "network-app", true),
-      hop("user", "Return to the user", "The response reaches the enterprise user over ExpressRoute or VPN. The application captures appropriate operational records.", "user-network", true),
     ];
     const retrieval = [
       hop("data", "Retrieve permitted knowledge", "The application retrieves only content this user is authorized to access.", "app-data"),
       hop("app", "Assemble grounded context", "Retrieved content returns to the application and is assembled with the question.", "app-data", true),
     ];
     const routes = {
-      model: [...start, ...modelCall,
-        hop("app", "Handle the answer", "The workload applies its response-handling and evaluation controls.", "app-gateway", true), ...finish],
-      rag: [...start, ...retrieval, ...modelCall,
-        hop("app", "Present an answer with sources", "The application formats the answer with source references; sources do not guarantee correctness.", "app-gateway", true), ...finish],
-      agent: [...start, ...retrieval, ...modelCall,
+      model: [...modelCall,
+        hop("app", "Handle the answer", "The workload applies its response-handling and evaluation controls.", "app-gateway", true)],
+      rag: [...retrieval, ...modelCall,
+        hop("app", "Present an answer with sources", "The application formats the answer with source references; sources do not guarantee correctness.", "app-gateway", true)],
+      agent: [...retrieval, ...modelCall,
         hop("app", "Authorize the proposed action", "The workload validates the proposed operation and obtains approval when required before executing a tool.", "app-gateway", true),
         hop("tools", "Execute the approved action", "The authorized tool performs its allowed backend operation. This logical example does not depict the Foundry runtime's detailed tool-network path.", "app-tools"),
-        hop("app", "Handle the tool result", "The application receives the result, records the action, and prepares the user-facing response.", "app-tools", true), ...finish],
+        hop("app", "Handle the tool result", "The application receives the result, records the action, and prepares the user-facing response.", "app-tools", true)],
     };
+    function currentRoute() {
+      return [...entryRoutes[entry].start, ...routes[mode], ...entryRoutes[entry].finish];
+    }
     const summaries = {
-      model: ["Three teams, one AI application", "The internal assistant reaches an approved model through APIM. The connectivity hub supplies the network path, not API governance."],
+      model: ["Three teams, one AI application", "Users enter through a configured Teams, Microsoft 365 or web channel, or a private-hybrid connection. The illustrated Azure backend reaches an approved model through APIM."],
       rag: ["Company knowledge added", "The same assistant now retrieves permitted company documents. Grounding adds document authorization and answer evaluation responsibilities to the workload."],
       agent: ["Agent actions added", "The same assistant keeps permitted retrieval and adds approved tools. The workload checks action permissions and approvals before execution; model reasoning is not permission."],
     };
@@ -2542,7 +2570,7 @@ SOFTWARE</pre>
     playbackStops.add(pauseStudio);
     function showHop(index) {
       hopIndex = index;
-      const route = routes[mode];
+      const route = currentRoute();
       const item = route[index];
       Object.entries(nodes).forEach(([key, node]) => {
         node.classList.toggle("is-current", key === item.node);
@@ -2555,8 +2583,9 @@ SOFTWARE</pre>
       progress.style.width = ((index + 1) / route.length * 100) + "%";
     }
     function animateNextHop() {
-      if (hopIndex >= routes[mode].length - 1) { pauseStudio(); return; }
-      const item = routes[mode][hopIndex + 1];
+      const route = currentRoute();
+      if (hopIndex >= route.length - 1) { pauseStudio(); return; }
+      const item = route[hopIndex + 1];
       const lane = document.getElementById("studio-lane-" + item.lane);
       const length = lane.getTotalLength();
       const began = performance.now();
@@ -2599,6 +2628,28 @@ SOFTWARE</pre>
     }
     root.querySelectorAll("[data-studio-mode]").forEach(button =>
       button.addEventListener("click", () => renderMode(button.dataset.studioMode)));
+    function renderEntry(nextEntry) {
+      entry = nextEntry;
+      root.dataset.entry = entry;
+      const definition = entryDefinitions[entry];
+      Object.assign(nodeDefinitions.entry, definition);
+      const node = nodes.entry;
+      node.querySelector(".studio-node-title").textContent = definition.title;
+      node.querySelector(".studio-node-caption").textContent = definition.caption;
+      node.querySelector("use").setAttribute("href", "#studio-" + definition.art + "-art");
+      node.setAttribute("aria-label", definition.title + ": " + definition.caption);
+      root.querySelector('[data-studio-owner="entry"]').textContent = definition.owner;
+      root.querySelector("#studioEntryLabel").textContent = definition.label;
+      root.querySelector(".studio-boundary").setAttribute("x", entry === "channels" ? "460" : "210");
+      root.querySelector(".studio-boundary").setAttribute("width", entry === "channels" ? "696" : "946");
+      root.querySelector("#studioTitle").textContent = "AI access: users, " + definition.title + ", Azure application, APIM and model";
+      root.querySelector("#studioDescription").textContent = definition.text;
+      root.querySelectorAll("[data-studio-entry]").forEach(button =>
+        button.setAttribute("aria-pressed", String(button.dataset.studioEntry === entry)));
+      renderMode(mode);
+    }
+    root.querySelectorAll("[data-studio-entry]").forEach(button =>
+      button.addEventListener("click", () => renderEntry(button.dataset.studioEntry)));
     root.querySelectorAll("[data-studio-layer]").forEach(button => {
       button.addEventListener("click", () => {
         pauseStudio();
@@ -2613,17 +2664,18 @@ SOFTWARE</pre>
       if (running) { pauseStudio(); return; }
       pauseWalkthroughs();
       if (reducedMotion.matches) return;
-      if (hopIndex < 0 || hopIndex >= routes[mode].length - 1) showHop(0);
+      if (hopIndex < 0 || hopIndex >= currentRoute().length - 1) showHop(0);
       running = true;
       play.textContent = "Pause trace";
       animateNextHop();
     });
     root.querySelector("#studioNext").addEventListener("click", () => {
       pauseStudio();
-      showHop((hopIndex + 1) % routes[mode].length);
+      showHop((hopIndex + 1) % currentRoute().length);
     });
     function resetStudio() {
-      renderMode("model");
+      mode = "model";
+      renderEntry("channels");
       root.querySelectorAll("[data-studio-layer]").forEach(button => button.setAttribute("aria-pressed", "true"));
       root.querySelectorAll("[data-studio-layer-art]").forEach(layer => layer.removeAttribute("hidden"));
     }
@@ -2661,7 +2713,7 @@ SOFTWARE</pre>
       expand.textContent = "Focus explorer";
       expand.focus();
     });
-    renderMode("model");
+    renderEntry("channels");
     syncMotion();
   }
 
