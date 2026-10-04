@@ -617,12 +617,12 @@ a { color: var(--cp-link); }
 }
 .sidebar-hidden .sidebar { display: none; }
 .main { min-width: 0; }
-.content { padding: 12px 20px 28px; overflow: visible; }
+.content { display: flex; flex-direction: column; padding: 20px; overflow: visible; }
 .topbar { padding: 12px 20px; gap: 16px; }
 .topbar h1 { font-size: 1.2rem; margin: 0 0 6px; }
 .presentation-nav { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .presentation-nav #nextSection { background: var(--cp-shell-text); color: var(--cp-shell); border-color: var(--cp-shell-text); font-weight: 700; }
-.panel { max-width: 1320px; }
+.panel { width: 100%; max-width: 1320px; margin: auto; flex-shrink: 0; }
 #sectionIndicator { font-weight: 600; min-width: 180px; font-size: 0.9rem; }
 .toolbar { gap: 6px; align-items: flex-end; flex-direction: column; }
 .topbar .accelerator-cta, .utility-controls .iconbtn { font-size: 0.8rem; padding: 5px 8px; min-height: 30px; box-shadow: none; background: var(--cp-surface); color: var(--cp-text-muted); border-color: var(--cp-border); }
