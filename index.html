@@ -837,11 +837,23 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
           <h2>AI Landing Zones</h2>
           <div class="opening-team-story">
             <svg viewBox="0 0 176 64" aria-hidden="true" focusable="false">
-              <g fill="var(--cp-accent-soft)" stroke="currentColor" stroke-width="2">
-                <circle cx="28" cy="19" r="10"/><path d="M8 56V46a20 20 0 0 1 40 0v10Z"/>
-                <circle cx="88" cy="15" r="12"/><path d="M64 56V44a24 24 0 0 1 48 0v12Z"/>
-                <circle cx="148" cy="19" r="10"/><path d="M128 56V46a20 20 0 0 1 40 0v10Z"/>
+              <defs>
+                <g id="openingTeam" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
+                  <rect x="0" y="2" width="48" height="40" rx="8" fill="var(--cp-surface)"/>
+                  <g fill="var(--cp-accent-soft)">
+                    <circle cx="12" cy="17" r="4"/><path d="M5 33v-5a7 7 0 0 1 14 0v5Z"/>
+                    <circle cx="36" cy="17" r="4"/><path d="M29 33v-5a7 7 0 0 1 14 0v5Z"/>
+                  </g>
+                  <g fill="var(--cp-accent)">
+                    <circle cx="24" cy="13" r="4.5"/><path d="M16 34v-6a8 8 0 0 1 16 0v6Z"/>
+                  </g>
+                </g>
+              </defs>
+              <g stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+                <path d="M28 42v7h120v-7M88 42v12" fill="none"/>
+                <rect x="52" y="54" width="72" height="8" rx="4" fill="var(--cp-accent-soft)"/>
               </g>
+              <use href="#openingTeam" x="4"/><use href="#openingTeam" x="64"/><use href="#openingTeam" x="124"/>
             </svg>
             <div><strong>Three teams. One reusable foundation.</strong><span>What should every AI workload inherit?</span></div>
           </div>
