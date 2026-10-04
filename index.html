@@ -807,7 +807,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
         <h1 id="topTitle">Why AI landing zones?</h1>
         <div class="presentation-nav" aria-label="Section navigation">
           <button class="iconbtn" id="sidebarToggle" aria-controls="sectionSidebar" aria-expanded="false">Show sections</button>
-          <button class="iconbtn" id="previousSection">Previous section</button>
+          <button class="iconbtn" id="previousSection" aria-keyshortcuts="ArrowLeft" title="Previous section (Left arrow)">Previous section</button>
           <span id="sectionIndicator" role="status"></span>
           <button class="iconbtn" id="nextSection">Next section</button>
         </div>
@@ -1013,7 +1013,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
           <div class="studio-supporting"><span data-studio-layer-art="identity">Identity: Entra ID + applicable policy.</span> <span data-studio-layer-art="operations">Operations: configured telemetry + evaluations.</span></div>
           <div class="studio-controls" style="margin-top:16px;">
             <button class="iconbtn" type="button" id="studioPlay">Trace request</button>
-            <button class="iconbtn primary" type="button" id="studioNext">Next hop</button>
+            <button class="iconbtn primary" type="button" id="studioNext" title="In Focus explorer: Left / Right arrows move backward / forward">Next hop</button>
             <button class="iconbtn" type="button" id="studioReset">Reset explorer</button>
             <div class="studio-controls studio-layer-controls" role="group" aria-label="Architecture layers">
               <button class="iconbtn" type="button" data-studio-layer="identity" aria-pressed="true">Identity + policy</button>
@@ -1928,6 +1928,7 @@ SOFTWARE</pre>
   const allPanels = [...corePanels, "p2", "p7"];
   const playbackStops = new Set();
   const demoResets = new Set();
+  const keyboardSteps = new WeakMap();
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   function pauseWalkthroughs() { playbackStops.forEach(stop => stop()); }
   document.addEventListener("visibilitychange", () => {
@@ -2747,6 +2748,11 @@ SOFTWARE</pre>
       pauseStudio();
       showHop((hopIndex + 1) % currentRoute().length);
     });
+    keyboardSteps.set(root, offset => {
+      pauseWalkthroughs();
+      if (hopIndex < 0 && offset < 0) return;
+      showHop(Math.max(0, Math.min(currentRoute().length - 1, hopIndex + offset)));
+    });
     function resetStudio() {
       mode = "model";
       renderEntry("channels");
@@ -2765,6 +2771,7 @@ SOFTWARE</pre>
     dialog.id = "studioDialog";
     dialog.className = "studio-dialog";
     dialog.setAttribute("aria-labelledby", "studioHeading");
+    dialog.setAttribute("aria-keyshortcuts", "ArrowLeft ArrowRight");
     document.body.appendChild(dialog);
     const expand = root.querySelector("#studioExpand");
     let placeholder = null;
@@ -3005,6 +3012,14 @@ SOFTWARE</pre>
       draw(1, false);
       pause();
     });
+    keyboardSteps.set(controls, offset => {
+      pauseWalkthroughs();
+      if (index < 0 && offset < 0) return;
+      select(Math.max(0, Math.min(steps.length - 1, index + offset)));
+      elapsed = duration;
+      draw(1, false);
+      pause();
+    });
     resetButton.addEventListener("click", reset);
     function syncMotion() {
       pause();
@@ -3029,6 +3044,7 @@ SOFTWARE</pre>
         reducedMotion.removeEventListener("change", syncMotion);
         agentButtons.forEach(button => button.removeEventListener("click", reset));
         svg.removeEventListener("click", pause);
+        keyboardSteps.delete(controls);
         controls.remove();
         overlay.remove();
       },
@@ -3546,6 +3562,41 @@ SOFTWARE</pre>
   }
   document.getElementById("previousSection").addEventListener("click", () => movePresentation(-1));
   document.getElementById("nextSection").addEventListener("click", () => movePresentation(1));
+  document.getElementById("nextSection").setAttribute("aria-keyshortcuts", "ArrowRight");
+  document.getElementById("nextSection").title = "Next section (Right arrow)";
+  document.addEventListener("keydown", event => {
+    if (!["ArrowLeft", "ArrowRight"].includes(event.key) || event.defaultPrevented ||
+        event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.isComposing) return;
+    const target = event.target;
+    if (target instanceof Element && (target.isContentEditable || target.closest(
+      'input, textarea, select, [role="textbox"], [role="slider"], [role="spinbutton"], ' +
+      '[role="combobox"], [role="listbox"], [role="menu"], [role="menubar"], [role="tablist"], [role="tree"], [role="grid"], [role="radiogroup"]'
+    ))) return;
+    const offset = event.key === "ArrowRight" ? 1 : -1;
+    const dialogs = [...document.querySelectorAll("dialog[open]")];
+    if (dialogs.length) {
+      const dialog = dialogs.at(-1);
+      const trace = [...dialog.querySelectorAll(".architecture-trace-controls")]
+        .find(controls => controls.checkVisibility());
+      const root = trace || (dialog.id === "studioDialog" &&
+        dialog.querySelector('#architectureStudio[data-architecture-view="flow"]'));
+      const step = root && keyboardSteps.get(root);
+      if (!step) return;
+      event.preventDefault();
+      if (!event.repeat) step(offset);
+      return;
+    }
+    event.preventDefault();
+    if (event.repeat) return;
+    const button = document.getElementById(offset > 0 ? "nextSection" : "previousSection");
+    if (button.disabled) return;
+    button.click();
+    const heading = [...document.querySelectorAll(".panel.active h2")].find(h => h.checkVisibility());
+    if (heading) {
+      heading.tabIndex = -1;
+      heading.focus({ preventScroll: true });
+    }
+  });
   document.getElementById("sidebarToggle").addEventListener("click", () => {
     const hidden = document.body.classList.toggle("sidebar-hidden");
     document.getElementById("sidebarToggle").setAttribute("aria-expanded", String(!hidden));
