@@ -24,14 +24,14 @@ The dashboard includes:
 - Microsoft-managed and customer-managed networking comparisons.
 - A BYO VNet diagram that separates the delegated agent runtime subnet from the nondelegated private endpoint subnet, with explicit firewall-placement guidance.
 - An optional **Networking Deep Dive** reference tab with hosted/prompt traffic paths, clickable ownership details, subnet address budgets, managed outbound modes, private DNS examples, and troubleshooting checks.
-- Responsive primary views designed for a 1366x768 presentation, with diagrams, manual-step explanations and navigation visible together. Supporting diagrams and detailed reference material are collapsed.
+- Responsive primary views designed for a 1366x768 presentation, with diagrams, manual-step explanations and navigation visible together. Architecture maps, blueprints, visual walkthroughs and network diagrams are visible in the main sections, not hidden in Reference accordions. Technical notes and policy details can still be expanded separately.
 - The actual **Management group -> Subscription -> Resource group -> Resource** hierarchy, Audit versus Deny scenarios, and named policy recommendations with supported effects, coverage, ownership and exception handling.
 - Browser-local decisions with **Owner, Next action, Target date and Status**, migrated legacy notes, readiness prompts and plain-text export. A proposal is not an agreed decision.
 - A header **Reset demo** button that stops playback, restores activities and diagram selections, and returns to **Opening scenario**. Decisions, parking-lot notes, theme, and full-screen mode are kept.
 - Light/dark themes, full-screen controls, and responsive layouts.
 - Primary **Previous / Next section** navigation and a seven-stop current-section indicator; the sidebar can be hidden. The accelerator link, reset and theme controls are secondary.
 - Clear **Microsoft Foundry** and **Microsoft Copilot Studio** role callouts across the opening, architecture, ownership, networking, governance and decision prompts. The conversational UX can be a custom app or Copilot Studio; the illustrated application node is the Azure-side backend. Copilot Studio is SaaS, not an agent subnet deployment, and its supported integration path is separate from the illustrated hybrid route.
-- Both original **Agent Landing Zone** and **AI Gateway Landing Zone** architecture diagrams from Azure/AI-Landing-Zones, under **AI Landing Zone - High Level -> Official reference architectures**. They are embedded for offline use, with enlargement/zoom controls and the Microsoft MIT license notice. Presentation source footnotes and citation links are omitted.
+- Both original **Agent Landing Zone** and **AI Gateway Landing Zone** architecture diagrams from Azure/AI-Landing-Zones are visible in **AI Landing Zone - High Level**. They are embedded for offline use, with enlargement/zoom controls and the Microsoft MIT license notice. Presentation source footnotes and citation links are omitted.
 
 ## Presenter notes
 
@@ -45,9 +45,9 @@ Start on **Opening scenario**, then follow **scenario -> evolving architecture -
 
 In the explorer, progress from **AI application** to **Add company knowledge** to **Add agent actions**. Click a service for its responsibility and use **Next hop** to narrate manually. **Trace request** is optional playback. **Focus explorer** enlarges the complete interactive scene; Escape returns it with selections intact. Layer buttons change the illustration, not security controls.
 
-The supporting hub/spoke map, blueprint, additional request walkthrough and challenges are collapsed reference content. The full card sort and networking deep dive are outside the guided route. **Next step** or clicking a stage controls scenario pacing; **Show overview** clears the spotlight without changing the selected case.
+The hub/spoke map, blueprint, additional request walkthrough and challenges are directly visible below the explorer, followed by the original Agent and AI Gateway architectures. Hub/spoke designs and network diagrams are also directly visible in their main sections. The full card sort and networking deep dive remain outside the guided route. **Next step** or clicking a stage controls scenario pacing; **Show overview** clears the spotlight without changing the selected case.
 
-Use **Enlarge diagram** for reference diagrams, then zoom as needed. Supported component details remain clickable. Illustrations are embedded SVGs and work offline. Notes and exercise state are saved only in this browser; this is not shared voting or collaborative notes.
+Use **Enlarge diagram**, then zoom as needed. Supported component details remain clickable. Illustrations are embedded SVGs and work offline. Notes and exercise state are saved only in this browser; this is not shared voting or collaborative notes.
 
 The explorer's scenes are conceptual application flows, not a fixed Foundry runtime topology: retrieval is authorized by the workload, model calls use the illustrated gateway path, and the agent-action example authorizes a tool operation before execution. Request tracing is opt-in, pauses on navigation, backgrounding, or component selection, and ends after one round trip. Reduced-motion users can step through the same flow without moving markers. These are original explanatory illustrations, not official Azure service icons.
 

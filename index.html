@@ -914,8 +914,8 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
           <p class="takeaway">The platform provides reusable guardrails; the workload owns its application, data access, evaluations and authorized actions.</p>
           <details class="studio-footnote reference-content"><summary>Applies to this example · responsibilities, not deployment boundaries</summary><p>The Agent Landing Zone and AI Gateway Landing Zone can be deployed together or independently. The accelerator is in preview; each Azure service has its own availability status. The connectivity hub and APIM are different responsibilities. DNS is not an inline hop; firewall inspection depends on routing. The outline is not a single VNet.</p><p>Copilot Studio can connect to supported Foundry agents through a preview integration. This is a separate integration decision, not the illustrated request path. Validate supported agent experience, endpoint configuration, identity, data handling and network reachability; neither platform automatically grants the other access.</p></details>
         </div>
-        <details class="reference-content" id="officialArchitectures">
-          <summary>Official reference architectures: Agent Landing Zone + AI Gateway Landing Zone</summary>
+        <div class="card" id="officialArchitectures">
+          <h2>Agent Landing Zone &amp; AI Gateway Landing Zone architectures</h2>
           <p>Agent Landing Zone and AI Gateway Landing Zone reference architectures, with shared connectivity, workload services and governance boundaries.</p>
           <p class="browser-note">These accelerator reference patterns are not universal service requirements or the simplified request flow. Components can be deployed together or independently. The accelerator is in preview; validate the selected services, region and deployment configuration separately.</p>
           <div class="official-reference-grid">
@@ -966,7 +966,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE</pre>
           </details>
-        </details>
+        </div>
         <div class="card">
           <h2>Hub &amp; Spoke Architecture</h2>
 
@@ -3213,16 +3213,13 @@ SOFTWARE</pre>
       nodes.forEach(node => details.append(node)); panel.append(details);
       return details;
     }
-    const high = document.getElementById("p1");
-    reference(high, [...high.children].filter(node => !["architectureStudio", "officialArchitectures"].includes(node.id)),
-      "Reference: Hub & Spoke Architecture, AI Landing Zone Blueprint and additional walkthroughs");
+    document.getElementById("p1").append(document.getElementById("officialArchitectures"));
     const ownership = document.createElement("div"); ownership.className = "card"; ownership.id = "ownershipMain";
     ownership.innerHTML = '<h2>One foundation, clear ownership</h2><div class="ownership-grid">' +
       '<article><h3>Shared platform responsibilities</h3><p>Connectivity, shared gateway, applicable policies and shared operational standards.</p><p>Enterprise/platform foundation: identity, hybrid networking, governance and operating standards.</p><p>Foundry: approved model access and Azure resource controls. Copilot Studio: environment, connector and data policies, where used.</p></article>' +
       '<article><h3>Workload responsibilities</h3><p>Application, prompts, authorized retrieval, tools, evaluations, workload costs and support.</p><p>The three teams retain their own document permissions. Sharing a gateway does not grant access to another team’s data or actions.</p></article></div>' +
       '<p class="takeaway">The Agent Landing Zone and AI Gateway Landing Zone can be deployed together or independently.</p><p>Accelerator: preview. Individual Azure services: check their own availability and selected features.</p>';
     const zones = document.getElementById("p4");
-    const originalZones = [...zones.children];
     const gateway = document.createElement("div"); gateway.className = "card"; gateway.id = "gatewayMain";
     gateway.innerHTML = '<h2>One gateway outcome: missing identity</h2><p>A shared enforcement point for requests routed through the gateway, with backend identity and network controls configured to prevent unintended bypass.</p>';
     const gatewayScenario = document.getElementById("gatewayScenario");
@@ -3238,9 +3235,7 @@ SOFTWARE</pre>
     }
     resetGateway(); demoResets.add(resetGateway);
     zones.prepend(ownership, gateway);
-    reference(zones, originalZones, "Reference: hub / spoke diagrams, private-access design and other workload flows");
     const network = document.getElementById("p3");
-    const originalNetwork = [...network.children];
     const comparison = document.createElement("div"); comparison.className = "card"; comparison.id = "networkMain";
     comparison.innerHTML = '<h2>Choose your network model</h2><p class="takeaway">Private connectivity alone does not require BYO networking; customer-controlled routing and inspection may.</p>';
     comparison.append(document.getElementById("vnetToggle").parentElement);
@@ -3256,10 +3251,9 @@ SOFTWARE</pre>
     const platformBoundary = document.createElement("p"); platformBoundary.className = "browser-note"; platformBoundary.id = "networkPlatformBoundary";
     platformBoundary.textContent = "These are Foundry networking choices. Copilot Studio is a separate SaaS platform, not a workload deployed into this agent subnet. Validate supported connectivity for each integration.";
     comparison.append(platformBoundary); network.prepend(comparison);
-    const networkReference = reference(network, originalNetwork, "Reference: network diagrams, BYO sizing and deployment-path-specific capability configuration");
     const capability = document.createElement("p");
     capability.textContent = "Deployment-path-specific capability configuration: classic capability hosts and newer Foundry capability settings are different provisioning paths. Confirm the selected experience, API/tooling version, supported region and required caller permissions; do not apply one universal CapHost creation sequence.";
-    networkReference.append(capability);
+    reference(network, [capability], "Deployment-path-specific capability configuration");
     document.querySelector("#p5 .card").append(document.getElementById("policyRecommendations"));
     const recommendations = document.getElementById("policyRecommendations");
     const governanceBoundary = document.createElement("p"); governanceBoundary.id = "policyPlatformBoundary";
