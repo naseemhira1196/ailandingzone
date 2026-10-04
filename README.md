@@ -31,6 +31,7 @@ The dashboard includes:
 - Light/dark themes, full-screen controls, and responsive layouts.
 - Primary **Previous / Next section** navigation and a seven-stop current-section indicator; the sidebar can be hidden. The accelerator link, reset and theme controls are secondary.
 - Contextual **Source / Applies to / Last reviewed** references beside technical guidance. Source links require internet; illustrations and exercises do not.
+- Both original **Agent Landing Zone** and **AI Gateway Landing Zone** architecture diagrams from Azure/AI-Landing-Zones, under **AI Landing Zone - High Level -> Official reference architectures**. They are embedded for offline use, with enlargement/zoom controls, pinned source links and the Microsoft MIT license notice.
 
 ## Presenter notes
 
