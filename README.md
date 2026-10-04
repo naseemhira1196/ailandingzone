@@ -35,11 +35,13 @@ The dashboard includes:
 
 ## Presenter notes
 
+The published dashboard contains customer-facing architecture content and interactive controls, not presenter preparation or how-to guidance. Rehearsal and fallback guidance stays here in the README.
+
 `AI-Landing-Zone-Dashboard-Talk-Track.docx` is a **legacy presenter guide** and has not been revised for this guided route or the latest technical corrections. Use the current in-app scenario and explanations for this workshop. The DOCX is not published on the Azure site.
 
 ### Optional presentation interactions
 
-Start on **Opening scenario**, then follow **scenario -> evolving architecture -> shared/workload ownership -> one gateway outcome -> network decision -> Audit versus Deny -> decisions**. Use **Next section** rather than navigating through every reference panel. The main gateway example starts with **Missing identity**; additional outcomes, including safely configured caching, are available for questions.
+Start on **Opening scenario**, then follow **scenario -> evolving architecture -> shared/workload ownership -> one gateway outcome -> network decision -> Audit versus Deny -> decisions**. Use **Next section** rather than navigating through every reference panel. The main gateway example starts with **Missing identity**; **More outcomes**, including safely configured caching, is available for questions.
 
 In the explorer, progress from **AI application** to **Add company knowledge** to **Add agent actions**. Click a service for its responsibility and use **Next hop** to narrate manually. **Trace request** is optional playback. **Focus explorer** enlarges the complete interactive scene; Escape returns it with selections intact. Layer buttons change the illustration, not security controls.
 
@@ -156,7 +158,7 @@ The dashboard requires browser JavaScript. If your hosting environment enforces 
 
 ### Offline presentation
 
-Use **Opening scenario -> Presentation preparation and offline fallback -> Download offline dashboard**, or copy `index.html`, then open the downloaded file directly in a modern browser. The dashboard and diagrams work without a network connection; the accelerator link requires internet.
+Use **Offline copy** in the header, or copy `index.html`, then open the downloaded file directly in a modern browser. The dashboard and diagrams work without a network connection; the accelerator link requires internet. The download action is hidden when a local file is already open.
 
 Before presenting, rehearse at the actual sharing resolution, use manual stepping and review retained notes. Every launch and **Reset demo** starts on the opening scenario. Reset does not delete decisions. Export decisions before closing or switching between the live site and offline copy; these have separate browser-local storage.
 

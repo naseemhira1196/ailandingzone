@@ -752,7 +752,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
     <div class="topbar">
       <div>
         <h1 id="topTitle">Opening scenario</h1>
-        <div class="presentation-nav" aria-label="Presentation navigation">
+        <div class="presentation-nav" aria-label="Section navigation">
           <button class="iconbtn" id="sidebarToggle" aria-controls="sectionSidebar" aria-expanded="false">Show sections</button>
           <button class="iconbtn" id="previousSection">Previous section</button>
           <span id="sectionIndicator" role="status"></span>
@@ -765,9 +765,10 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
           <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2L7 9M7 3H2v11h11V9"></path></svg>
         </a>
         <div class="utility-controls">
-          <button class="iconbtn" type="button" id="resetDemo" title="Restart all activities at the first tab. Keeps decisions, notes, theme, and full screen.">Reset demo</button>
+          <button class="iconbtn" type="button" id="resetDemo" title="Activity reset; decisions and notes retained">Reset demo</button>
           <button class="iconbtn" id="themeToggle">Dark theme</button>
           <button class="iconbtn" id="fullscreenToggle">Full screen</button>
+          <a class="iconbtn" id="downloadOffline" href="index.html" download="AI-Landing-Zone-Offline.html">Offline copy</a>
         </div>
       </div>
     </div>
@@ -786,7 +787,6 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
           </div>
           <p class="takeaway">These diagrams explain responsibilities and logical flows; deployment details depend on the selected services and configuration.</p>
           <p class="browser-note">Notes and exercise state are saved only in this browser. This is not a shared voting or collaborative notes session.</p>
-          <details class="reference-content"><summary>Presentation preparation and offline fallback</summary><p>Use manual Next hop / Next step controls. Rehearse at 1366×768 or the actual sharing resolution. Export decisions before closing. Download the dashboard and open it locally as the offline fallback; the accelerator link needs internet. Reset demo keeps existing decision notes: review them before a new audience. The offline file and live site have separate browser-local notes.</p><a class="iconbtn" id="downloadOffline" href="index.html" download="AI-Landing-Zone-Offline.html">Download offline dashboard</a><span id="offlineReady" hidden>Offline file open. Keep this file available for the presentation.</span></details>
         </div>
       </section>
 
@@ -808,7 +808,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
           <div class="studio-canvas">
             <svg id="studioSvg" viewBox="0 0 1180 300" role="group" aria-labelledby="studioTitle studioDescription">
               <title id="studioTitle">Hybrid AI access: on-premises users, connectivity hub, Azure application, APIM, and model</title>
-              <desc id="studioDescription">An illustrative private hybrid access pattern. On-premises users reach an Azure-hosted application through ExpressRoute or VPN and a connectivity hub before the application calls APIM. The connectivity hub and AI gateway are separate responsibilities. Select a workload, click a service, or trace the request. DNS supports name resolution; firewall inspection depends on routing.</desc>
+              <desc id="studioDescription">An illustrative private hybrid access pattern. On-premises users reach an Azure-hosted application through ExpressRoute or VPN and a connectivity hub before the application calls APIM. The connectivity hub and AI gateway are separate responsibilities. DNS supports name resolution; firewall inspection depends on routing.</desc>
               <defs>
                 <pattern id="studioGrid" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="var(--cp-border)"></circle></pattern>
                 <symbol id="studio-person-art" viewBox="0 0 160 125">
@@ -916,8 +916,8 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
         </div>
         <details class="reference-content" id="officialArchitectures">
           <summary>Official reference architectures: Agent Landing Zone + AI Gateway Landing Zone</summary>
-          <p>Original Azure AI Landing Zones diagrams, preserved as published. Use Enlarge diagram and zoom to read service labels; scroll within the enlarged view to explore the full architecture. Both diagrams are included in the offline dashboard.</p>
-          <p class="browser-note">These accelerator reference patterns are not universal service requirements or the simplified workshop request flow. Components can be deployed together or independently. The accelerator is in preview; validate the selected services, region and deployment configuration separately.</p>
+          <p>Agent Landing Zone and AI Gateway Landing Zone reference architectures, with shared connectivity, workload services and governance boundaries.</p>
+          <p class="browser-note">These accelerator reference patterns are not universal service requirements or the simplified request flow. Components can be deployed together or independently. The accelerator is in preview; validate the selected services, region and deployment configuration separately.</p>
           <div class="official-reference-grid">
             <article class="card">
               <h2>Agent Landing Zone</h2>
@@ -943,7 +943,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
             </article>
           </div>
           <details class="reference-content"><summary>Diagram attribution and MIT license</summary>
-            <p>Copyright (c) Microsoft Corporation. Images copied without modification from revision <code>48e641e696da5ffdeab9c215979704be562fa4f3</code>. The dashboard is a workshop aid, not an official Azure product.</p>
+            <p>Copyright (c) Microsoft Corporation. Images copied without modification from revision <code>48e641e696da5ffdeab9c215979704be562fa4f3</code>. This dashboard is not an official Azure product.</p>
             <pre class="official-license">MIT License
 
 Copyright (c) Microsoft Corporation.
@@ -1652,7 +1652,7 @@ SOFTWARE</pre>
       <section class="panel" id="p6">
         <div class="card">
           <h2>Decisions &amp; Parking Lot</h2>
-          <p class="browser-note">Notes and exercise state are saved only in this browser. This is not a shared voting or collaborative notes session. Reset demo preserves these notes.</p>
+          <p class="browser-note">Notes and exercise state are saved only in this browser. This is not a shared voting or collaborative notes session.</p>
           <div class="scenario-options" id="decisionPrompts" aria-label="Decision prompts"></div>
           <details class="reference-content" id="readinessCheckpoint"><summary>Production-readiness checkpoint — decisions to resolve, not automatic capabilities</summary><div class="readiness-grid" id="readinessItems"></div></details>
           <div id="lotBody" role="list" aria-label="Decisions and open questions"></div>
@@ -1684,7 +1684,7 @@ SOFTWARE</pre>
             <div class="topo-wrap spacious" id="networkTraffic">
               <svg viewBox="0 0 1160 380" role="group" aria-labelledby="networkTrafficTitle networkTrafficDesc">
                 <title id="networkTrafficTitle">Hosted agent request and tool path</title>
-                <desc id="networkTrafficDesc">Client to Foundry endpoint, Micro VM, Tools Service, per-project data proxy, then customer resources through private endpoints. Select a component for its responsibilities.</desc>
+                <desc id="networkTrafficDesc">Client to Foundry endpoint, Micro VM, Tools Service, per-project data proxy, then customer resources through private endpoints.</desc>
                 <defs><marker id="networkArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="var(--cp-border-strong)"></path></marker></defs>
                 <path class="topo-edge" d="M200 100 H330" marker-end="url(#networkArrow)"></path>
                 <text class="topo-edge-label" x="265" y="85" text-anchor="middle">HTTPS 443</text>
@@ -1837,7 +1837,7 @@ SOFTWARE</pre>
 
   const services = [
     { name: "Microsoft Foundry", icon: "🧭", col: "Required", why: "Required for this selected Foundry-based standard setup, not every Azure AI application." },
-    { name: "Azure OpenAI", icon: "🧠", col: "Required", why: "Selected model provider in this workshop baseline; other model choices change this requirement." },
+    { name: "Azure OpenAI", icon: "🧠", col: "Required", why: "Selected model provider in this scenario; other model choices change this requirement." },
     { name: "AI Search", icon: "🔎", col: "Required", why: "Required for this documented standard setup: customer-owned vector stores. This is more than an optional RAG addition." },
     { name: "Storage Account", icon: "🗄️", col: "Required", why: "Required for this standard setup: files uploaded by developers and users, and intermediate data." },
     { name: "Key Vault", icon: "🔑", col: "Required", why: "Required in the documented setup being illustrated for secrets and connection information; resource need is not explained by encryption-key defaults." },
@@ -2631,7 +2631,7 @@ SOFTWARE</pre>
     function syncMotion() {
       pauseStudio();
       play.disabled = reducedMotion.matches;
-      play.title = reducedMotion.matches ? "Reduced motion is enabled. Use Next hop for a static walkthrough." : "";
+      play.title = reducedMotion.matches ? "Automatic playback disabled by reduced-motion preference." : "";
     }
     reducedMotion.addEventListener("change", syncMotion);
     const dialog = document.createElement("dialog");
@@ -2881,7 +2881,7 @@ SOFTWARE</pre>
     function syncMotionPreference() {
       pause();
       play.disabled = reducedMotion.matches;
-      play.title = reducedMotion.matches ? "Automatic playback is disabled by your reduced-motion preference. Use Next step." : "";
+      play.title = reducedMotion.matches ? "Automatic playback disabled by reduced-motion preference." : "";
       selectStep(currentStep);
     }
     reducedMotion.addEventListener("change", syncMotionPreference);
@@ -3024,7 +3024,7 @@ SOFTWARE</pre>
     challengeQuestion.replaceChildren(visualIcon(challenge.icon), prompt);
     challengeAnswers.replaceChildren();
     challengeFeedback.removeAttribute("data-correct");
-    challengeFeedback.textContent = "Choose an approach to see its architectural consequences.";
+    challengeFeedback.textContent = "Architectural trade-offs: access, data boundaries and enforcement.";
     challenge.answers.forEach(([label, icon, correct, explanation]) => {
       const button = document.createElement("button");
       button.type = "button";
@@ -3187,7 +3187,7 @@ SOFTWARE</pre>
       ? "Optional reference" : (presentationIndex + 1) + " / " + presentationRoute.length + " · " + step.title;
     document.getElementById("previousSection").disabled = first >= 0 && presentationIndex === 0;
     document.getElementById("nextSection").disabled = first >= 0 && presentationIndex === presentationRoute.length - 1;
-    document.getElementById("nextSection").textContent = first < 0 ? "Return to presentation" : "Next section";
+    document.getElementById("nextSection").textContent = first < 0 ? "Return to main sections" : "Next section";
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }
   function movePresentation(offset) {
@@ -3205,7 +3205,6 @@ SOFTWARE</pre>
   function setupPresentation() {
     if (location.protocol === "file:") {
       document.getElementById("downloadOffline").hidden = true;
-      document.getElementById("offlineReady").hidden = false;
     }
     function reference(panel, nodes, label) {
       const details = document.createElement("details"); details.className = "reference-content";
@@ -3227,7 +3226,7 @@ SOFTWARE</pre>
     gateway.innerHTML = '<h2>One gateway outcome: missing identity</h2><p>A shared enforcement point for requests routed through the gateway, with backend identity and network controls configured to prevent unintended bypass.</p>';
     const gatewayScenario = document.getElementById("gatewayScenario");
     gateway.append(gatewayScenario);
-    const more = document.createElement("button"); more.type = "button"; more.className = "iconbtn"; more.textContent = "More outcomes (questions)"; more.setAttribute("aria-expanded", "false");
+    const more = document.createElement("button"); more.type = "button"; more.className = "iconbtn"; more.textContent = "More outcomes"; more.setAttribute("aria-expanded", "false");
     more.addEventListener("click", () => {
       more.setAttribute("aria-expanded", String(gateway.classList.toggle("all-outcomes")));
     });
