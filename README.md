@@ -13,6 +13,10 @@ Download or clone this repository and open `index.html` in a modern browser. No 
 The dashboard includes:
 
 - An **AI Landing Zone - High Level** view with a clickable hub/spoke map and supporting enterprise foundation, platform, workload, and operations blueprint.
+- Illustrated **Follow an AI request** journeys for model-only, grounded-answer, and agent-action workloads.
+- **Play / Pause**, **Next step**, and clickable stage illustrations for request, gateway, workload, and policy walkthroughs. Playback is opt-in, stops on navigation or when the browser tab is hidden, and respects reduced-motion preferences.
+- **Enlarge diagram** views with zoom controls and clickable component details. Close or press Escape to return without changing the original diagram.
+- Three **You make the architecture call** challenges with immediate explanatory feedback on shared AI access, private data, and policy enforcement.
 - APIM hub and Foundry spoke diagrams with illustrative request and workload scenarios.
 - A drag-and-drop service sort with immediate baseline feedback and keyboard-friendly placement controls.
 - Microsoft-managed and customer-managed networking comparisons.
@@ -27,6 +31,12 @@ The dashboard includes:
 ## Presenter notes
 
 `AI-Landing-Zone-Dashboard-Talk-Track.docx` contains the one-hour agenda, talking points, click cues, and discussion prompts. It matches the current **AI Landing Zone - High Level** tab, seven-part blueprint, revised networking diagrams, and **Deployment accelerator** button. The blueprint walkthrough and accelerator visit fit within the existing 60 minutes. Keep this document separate from the customer-facing dashboard during presentation; it is not published on the Azure site.
+
+### Optional presentation interactions
+
+In **AI Landing Zone - High Level**, use **Follow an AI request** and one architecture challenge in place of part of the existing discussion, not as additional timed segments. **Play walkthrough** spotlights one illustrated stage at a time; **Next step** or clicking a stage lets you control the pace. **Show overview** clears the spotlight while preserving the selected scenario and its outcome. The same controls appear in the existing gateway, workload, and policy scenarios.
+
+Use **Enlarge diagram** for a room-sized view, then zoom as needed. Where the source diagram supports component details, those remain clickable in the enlarged view. The new illustrations are embedded SVGs, so they work offline without image downloads. Challenges are local discussion aids, not a live audience-voting system; their answers and playback position are not saved to customer notes. The separate DOCX keeps the original 60-minute agenda.
 
 ## Important boundaries
 

@@ -492,6 +492,41 @@ a { color: var(--cp-link); }
 .network-table th, .network-table td { padding: 14px; border-bottom: 1px solid var(--cp-border); vertical-align: top; line-height: 1.6; }
 .network-table th { background: var(--cp-bg-elevated); }
 .network-table code { overflow-wrap: anywhere; }
+.walkthrough-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 20px; }
+.walkthrough-controls button, .diagram-actions button { min-height: 40px; line-height: 1.4; }
+.walkthrough-controls .walkthrough-status { flex: 1 1 230px; color: var(--cp-text-muted); font-size: 0.85rem; line-height: 1.5; }
+.iconbtn:disabled { opacity: 0.55; cursor: not-allowed; }
+.journey .stage-select { width: 100%; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; border-radius: 4px; }
+.stage-art { display: block; width: 72px; height: 72px; color: var(--cp-accent); margin: 0 0 12px; }
+.journey li { transition: box-shadow 0.2s ease, background 0.2s ease; }
+.journey li.current-step { box-shadow: 0 0 0 3px var(--cp-accent); background: var(--cp-accent-soft); }
+.journey li.current-step .stage-art { animation: stage-arrive 0.35s ease-out; }
+.journey li.current-step:not(:last-child)::after { color: var(--cp-accent); font-weight: 700; animation: request-arrow 0.9s ease-in-out 2; }
+@keyframes stage-arrive { from { transform: translateY(8px) scale(0.92); } to { transform: translateY(0) scale(1); } }
+@keyframes request-arrow { 50% { transform: translateX(5px); } }
+.walkthrough-detail { margin-bottom: 16px; padding: 14px 18px; border: 1px solid var(--cp-border); border-radius: 8px; line-height: 1.6; }
+.walkthrough-detail:empty { display: none; }
+.diagram-actions { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+.diagram-dialog { width: 96vw; max-width: 1800px; max-height: 94vh; padding: 24px; border: 1px solid var(--cp-border); border-radius: 12px; background: var(--cp-surface); color: var(--cp-text); }
+.diagram-dialog::backdrop { background: var(--cp-overlay); }
+.diagram-dialog-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.diagram-dialog-header h2 { margin: 0; font-size: 1.2rem; }
+.diagram-dialog .topo-wrap { margin: 0; max-height: 62vh; overflow: auto; }
+.diagram-dialog .topo-wrap svg { min-width: 1040px; }
+.diagram-dialog .detail { display: block; font-size: 1rem; }
+.diagram-dialog .detail:empty { display: none; }
+.challenge-question { display: flex; gap: 20px; align-items: center; margin: 16px 0 24px; }
+.challenge-question .stage-art { width: 88px; height: 88px; flex-shrink: 0; margin: 0; }
+.challenge-question p { margin: 0; font-size: 1.05rem; line-height: 1.6; }
+.challenge-answers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; }
+.challenge-answer { display: flex; gap: 12px; align-items: center; border: 2px solid var(--cp-border); padding: 20px; background: var(--cp-bg-elevated); color: var(--cp-text); border-radius: 8px; text-align: left; font: inherit; line-height: 1.5; cursor: pointer; }
+.challenge-answer:hover { border-color: var(--cp-accent); }
+.challenge-answer[aria-pressed="true"] { border-color: var(--cp-accent); background: var(--cp-accent-soft); }
+.challenge-answer .stage-art { width: 48px; height: 48px; flex-shrink: 0; margin: 0; }
+.challenge-feedback { padding: 20px; border-left: 4px solid var(--cp-accent); background: var(--cp-accent-soft); line-height: 1.6; }
+.challenge-feedback[data-correct="true"] { border-color: var(--cp-success); }
+.challenge-feedback[data-correct="false"] { border-color: var(--cp-warning); }
+.challenge-feedback p { margin: 8px 0 0; }
 @media (max-width: 1100px) {
   .feature-grid, .journey { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .journey li::after { display: none; }
@@ -510,6 +545,8 @@ a { color: var(--cp-link); }
   .gov-ring[data-level] { max-width: 100%; }
   .nav-reference { margin-top: 0; border-top-color: transparent; }
   .network-grid { grid-template-columns: 1fr; }
+  .challenge-answers { grid-template-columns: 1fr; }
+  .diagram-dialog { padding: 16px; }
 }
 @media (max-width: 480px) {
   .feature-grid, .journey { grid-template-columns: 1fr; }
@@ -780,6 +817,17 @@ a { color: var(--cp-link); }
               <li>Use infrastructure as code for repeatable environments. Assign budgets and cost ownership; budget alerts alone do not stop spending.</li>
             </ul>
           </div>
+        </div>
+        <div class="card">
+          <h2>Follow an AI request</h2>
+          <div id="requestScenario"></div>
+        </div>
+        <div class="card" id="architectureChallenges">
+          <h2>You make the architecture call</h2>
+          <div class="scenario-options" id="challengeTopics" role="group" aria-label="Architecture challenges"></div>
+          <div class="challenge-question" id="challengeQuestion"></div>
+          <div class="challenge-answers" id="challengeAnswers" role="group" aria-label="Choose an architecture approach"></div>
+          <div class="challenge-feedback" id="challengeFeedback" role="status" aria-live="polite"></div>
         </div>
       </section>
 
@@ -1390,6 +1438,12 @@ a { color: var(--cp-link); }
 (() => {
   const STORAGE_KEY = "aiLandingZoneDashboard_v1";
   const corePanels = ["p1", "p4", "p2", "p3", "p5", "p6"];
+  const playbackStops = new Set();
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  function pauseWalkthroughs() { playbackStops.forEach(stop => stop()); }
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) pauseWalkthroughs();
+  });
 
   const services = [
     { name: "Microsoft Foundry", icon: "🧭", col: "Required", why: "Unified control plane for AI apps and agents" },
@@ -1516,6 +1570,7 @@ a { color: var(--cp-link); }
   };
 
   function showPanel(id) {
+    pauseWalkthroughs();
     panels.forEach(p => p.classList.toggle("active", p.id === id));
     navButtons.forEach(b => {
       b.classList.toggle("active", b.dataset.panel === id);
@@ -1574,6 +1629,7 @@ a { color: var(--cp-link); }
 
   // Reference choices persist independently of the six workshop segments.
   function renderNetworking() {
+    pauseWalkthroughs();
     const groups = [
       ["view", state.networkView], ["agent", state.networkAgent],
       ["subnet", state.networkSubnet], ["egress", state.networkEgress],
@@ -1749,6 +1805,7 @@ a { color: var(--cp-link); }
 
   // ---------- Panel 3: VNet showdown ----------
   function renderVnet() {
+    pauseWalkthroughs();
     const isByo = state.vnetMode === "byo";
     document.getElementById("vnetToggle").classList.toggle("right", isByo);
     document.querySelectorAll("#vnetToggle .toggle-opt").forEach(opt => {
@@ -1768,6 +1825,7 @@ a { color: var(--cp-link); }
 
   // ---------- Panel 4: Hub & Spoke tabs ----------
   function renderZone() {
+    pauseWalkthroughs();
     document.querySelectorAll("#p4 .tab").forEach(tab => {
       const active = tab.dataset.tab === state.zone;
       tab.classList.toggle("active", active);
@@ -1945,6 +2003,140 @@ a { color: var(--cp-link); }
     fullscreenButton.textContent = document.fullscreenElement ? "Exit full screen" : "Full screen";
   });
 
+  function visualIcon(kind) {
+    const paths = {
+      app: '<rect x="12" y="15" width="40" height="31" rx="4"/><path d="M12 24h40M25 53h14M32 46v7"/><path d="m25 30-5 5 5 5m14-10 5 5-5 5"/>',
+      shield: '<path d="m32 9 19 8v14c0 11-8 19-19 24-11-5-19-13-19-24V17z"/><path d="m23 32 6 6 13-14"/>',
+      gateway: '<rect x="23" y="13" width="18" height="38" rx="4"/><path d="M5 32h18m18 0h18M12 25l7 7-7 7m35-14 7 7-7 7M29 23h6m-6 9h6m-6 9h6"/>',
+      model: '<path d="m32 8 22 12v24L32 56 10 44V20zM10 20l22 12 22-12M32 32v24"/><path d="m21 14 22 12"/>',
+      data: '<ellipse cx="32" cy="16" rx="19" ry="8"/><path d="M13 16v31c0 11 38 11 38 0V16M13 31c0 11 38 11 38 0M13 43c0 11 38 11 38 0"/>',
+      search: '<circle cx="28" cy="27" r="16"/><path d="m40 39 14 15M20 23h16m-16 8h10"/>',
+      tools: '<path d="M38 11a15 15 0 0 0-18 19L9 41a8 8 0 0 0 11 11l12-12a15 15 0 0 0 19-18L40 33l-9-9z"/>',
+      network: '<rect x="23" y="8" width="18" height="15" rx="3"/><rect x="5" y="43" width="18" height="14" rx="3"/><rect x="41" y="43" width="18" height="14" rx="3"/><path d="M32 23v10M14 43V33h36v10"/>',
+      meter: '<path d="M12 48a24 24 0 1 1 40 0M32 14v6M14 30l6 3m30-3-6 3M32 40l12-14"/><circle cx="32" cy="40" r="4"/>',
+      document: '<path d="M15 8h24l11 11v37H15zM39 8v13h11M23 31h19m-19 9h19m-19 9h12"/>',
+    };
+    const template = document.createElement("template");
+    template.innerHTML = '<svg class="stage-art" viewBox="0 0 64 64" aria-hidden="true" focusable="false">' +
+      '<circle cx="32" cy="32" r="31" fill="var(--cp-accent-soft)"/>' +
+      '<g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+      paths[kind] + '</g></svg>';
+    return template.content.firstElementChild;
+  }
+  function stageIcon(title) {
+    if (/identity|auth|policy|evaluation|assignment/i.test(title)) return "shield";
+    if (/token|rate/i.test(title)) return "meter";
+    if (/retrieval|cache/i.test(title)) return "search";
+    if (/gateway|routing/i.test(title)) return "gateway";
+    if (/model|foundry/i.test(title)) return "model";
+    if (/tool|agent|orchestration/i.test(title)) return "tools";
+    if (/state|data/i.test(title)) return "data";
+    if (/answer|outcome|trace/i.test(title)) return "document";
+    return "app";
+  }
+
+  // The enlarged view is an isolated SVG copy: preserve original diagram state and unique IDs.
+  function setupDiagramViewer() {
+    const dialog = document.createElement("dialog");
+    dialog.className = "diagram-dialog";
+    dialog.id = "diagramViewer";
+    dialog.setAttribute("aria-labelledby", "diagramViewerTitle");
+    dialog.innerHTML = '<div class="diagram-dialog-header"><h2 id="diagramViewerTitle"></h2>' +
+      '<div class="walkthrough-controls"><button type="button" class="iconbtn" id="diagramZoomOut" aria-label="Zoom out">−</button>' +
+      '<output id="diagramZoomValue" aria-live="polite">100%</output>' +
+      '<button type="button" class="iconbtn" id="diagramZoomIn" aria-label="Zoom in">+</button>' +
+      '<button type="button" class="iconbtn primary" id="diagramClose" autofocus>Close diagram</button></div></div>' +
+      '<div class="topo-wrap spacious" id="diagramViewport"></div>' +
+      '<div class="detail" id="diagramViewerDetail" role="status"></div>';
+    document.body.appendChild(dialog);
+    const viewport = dialog.querySelector("#diagramViewport");
+    const detail = dialog.querySelector("#diagramViewerDetail");
+    const zoomIn = dialog.querySelector("#diagramZoomIn");
+    const zoomOut = dialog.querySelector("#diagramZoomOut");
+    let zoom = 100;
+    let trigger = null;
+    function renderZoom() {
+      viewport.querySelector("svg").style.width = zoom + "%";
+      dialog.querySelector("#diagramZoomValue").textContent = zoom + "%";
+      zoomOut.disabled = zoom === 100;
+      zoomIn.disabled = zoom === 200;
+    }
+    zoomIn.addEventListener("click", () => { zoom = Math.min(200, zoom + 25); renderZoom(); });
+    zoomOut.addEventListener("click", () => { zoom = Math.max(100, zoom - 25); renderZoom(); });
+    dialog.querySelector("#diagramClose").addEventListener("click", () => dialog.close());
+    dialog.addEventListener("close", () => {
+      viewport.replaceChildren();
+      detail.replaceChildren();
+      document.body.style.overflow = "";
+      if (trigger) trigger.focus();
+    });
+    document.querySelectorAll(".panel .topo-wrap").forEach((wrap, index) => {
+      const source = wrap.querySelector("svg");
+      if (!source) return;
+      const actions = document.createElement("div");
+      actions.className = "diagram-actions";
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "iconbtn";
+      button.textContent = "Enlarge diagram";
+      button.setAttribute("aria-haspopup", "dialog");
+      const title = source.querySelector("title")?.textContent ||
+        wrap.closest(".card").querySelector("h2").textContent;
+      button.setAttribute("aria-label", "Enlarge diagram: " + title);
+      actions.appendChild(button);
+      wrap.prepend(actions);
+      button.addEventListener("click", () => {
+        pauseWalkthroughs();
+        trigger = button;
+        const copy = source.cloneNode(true);
+        const idMap = new Map();
+        [copy, ...copy.querySelectorAll("[id]")].forEach(node => {
+          if (node.id) idMap.set(node.id, "enlarged-" + index + "-" + node.id);
+        });
+        [copy, ...copy.querySelectorAll("*")].forEach(node => {
+          for (const attr of [...node.attributes]) {
+            let value = attr.value;
+            if (attr.name === "id") value = idMap.get(value);
+            else if (attr.name.startsWith("aria-")) value = value.split(" ").map(id => idMap.get(id) || id).join(" ");
+            else {
+              value = value.replace(/url\(#([^)]+)\)/g, (_, id) => "url(#" + (idMap.get(id) || id) + ")");
+              if (value.startsWith("#") && idMap.has(value.slice(1))) value = "#" + idMap.get(value.slice(1));
+            }
+            node.setAttribute(attr.name, value);
+          }
+        });
+        copy.querySelectorAll(".topo-node-box.active").forEach(box => box.classList.remove("active"));
+        copy.querySelectorAll(".topo-node[data-detail]").forEach(node => {
+          node.setAttribute("aria-expanded", "false");
+          node.setAttribute("aria-controls", "diagramViewerDetail");
+          keyboardClick(node);
+          node.addEventListener("click", () => {
+            const wasOpen = node.getAttribute("aria-expanded") === "true";
+            copy.querySelectorAll(".topo-node[data-detail]").forEach(other => {
+              const active = !wasOpen && other.dataset.detail === node.dataset.detail;
+              other.setAttribute("aria-expanded", String(active));
+              other.querySelector(".topo-node-box").classList.toggle("active", active);
+            });
+            detail.replaceChildren();
+            if (!wasOpen) {
+              const original = document.getElementById("detail-" + node.dataset.detail);
+              [...original.children].forEach(child => detail.appendChild(child.cloneNode(true)));
+            }
+          });
+        });
+        dialog.querySelector("#diagramViewerTitle").textContent = source.querySelector("title")?.textContent || title;
+        viewport.replaceChildren(copy);
+        detail.replaceChildren();
+        zoom = 100;
+        renderZoom();
+        dialog.showModal();
+        viewport.scrollTo(0, 0);
+        dialog.scrollTop = 0;
+        document.body.style.overflow = "hidden";
+      });
+    });
+  }
+
   // Illustrative cases are intentionally separate from persisted customer notes and real telemetry.
   function buildScenario(id, title, cases, disclaimer) {
     const root = document.getElementById(id);
@@ -1966,7 +2158,73 @@ a { color: var(--cp-link); }
     const result = document.createElement("div");
     result.className = "scenario-result";
     result.setAttribute("role", "status");
-    root.append(heading, choices, journey, result);
+    const controls = document.createElement("div");
+    controls.className = "walkthrough-controls";
+    controls.innerHTML = '<button type="button" class="iconbtn primary walkthrough-play">Play walkthrough</button>' +
+      '<button type="button" class="iconbtn walkthrough-next">Next step</button>' +
+      '<button type="button" class="iconbtn walkthrough-overview">Show overview</button>' +
+      '<span class="walkthrough-status" role="status" aria-live="polite"></span>';
+    const play = controls.querySelector(".walkthrough-play");
+    const next = controls.querySelector(".walkthrough-next");
+    const overview = controls.querySelector(".walkthrough-overview");
+    const status = controls.querySelector(".walkthrough-status");
+    const stageDetail = document.createElement("div");
+    stageDetail.className = "walkthrough-detail";
+    let activeCase = 0;
+    let currentStep = -1;
+    let timer = null;
+    function pause() {
+      clearTimeout(timer);
+      timer = null;
+      play.textContent = "Play walkthrough";
+    }
+    playbackStops.add(pause);
+    function selectStep(index) {
+      currentStep = index;
+      const item = cases[activeCase];
+      [...journey.children].forEach((node, i) => {
+        node.classList.toggle("current-step", index === i);
+        const button = node.querySelector("button");
+        if (i === index) button.setAttribute("aria-current", "step");
+        else button.removeAttribute("aria-current");
+      });
+      if (index < 0) {
+        status.textContent = reducedMotion.matches ? "Reduced motion · Manual stepping available" : "Overview · " + item.stages.length + " stages";
+        stageDetail.textContent = "";
+      } else {
+        const [name, outcome, text] = item.stages[index];
+        status.textContent = "Step " + (index + 1) + " of " + item.stages.length + " · " + name + " · " + outcome;
+        stageDetail.textContent = name + ": " + text;
+      }
+    }
+    function scheduleStep() {
+      timer = setTimeout(() => {
+        if (document.hidden || !root.getClientRects().length || reducedMotion.matches) { pause(); return; }
+        if (currentStep === cases[activeCase].stages.length - 1) { pause(); return; }
+        selectStep(currentStep + 1);
+        scheduleStep();
+      }, 1800);
+    }
+    play.addEventListener("click", () => {
+      if (timer !== null) { pause(); return; }
+      pauseWalkthroughs();
+      if (currentStep < 0 || currentStep === cases[activeCase].stages.length - 1) selectStep(0);
+      play.textContent = "Pause walkthrough";
+      scheduleStep();
+    });
+    next.addEventListener("click", () => {
+      pause();
+      selectStep((currentStep + 1) % cases[activeCase].stages.length);
+    });
+    overview.addEventListener("click", () => { pause(); selectStep(-1); });
+    function syncMotionPreference() {
+      pause();
+      play.disabled = reducedMotion.matches;
+      play.title = reducedMotion.matches ? "Automatic playback is disabled by your reduced-motion preference. Use Next step." : "";
+      selectStep(currentStep);
+    }
+    reducedMotion.addEventListener("change", syncMotionPreference);
+    root.append(heading, choices, controls, journey, stageDetail, result);
     const buttons = cases.map((item, index) => {
       const button = document.createElement("button");
       button.type = "button";
@@ -1977,12 +2235,19 @@ a { color: var(--cp-link); }
       return button;
     });
     function render(index) {
+      pause();
+      activeCase = index;
       const item = cases[index];
       buttons.forEach((button, i) => button.setAttribute("aria-pressed", String(index === i)));
       journey.replaceChildren();
       item.stages.forEach(([title, status, text, appearance], i) => {
         const node = document.createElement("li");
         node.className = appearance;
+        const stepButton = document.createElement("button");
+        stepButton.type = "button";
+        stepButton.className = "stage-select";
+        stepButton.setAttribute("aria-label", "Step " + (i + 1) + ": " + title + " — " + status);
+        stepButton.addEventListener("click", () => { pause(); selectStep(i); });
         const tag = document.createElement("span");
         tag.className = "stage-status";
         tag.textContent = (i + 1) + " / " + status;
@@ -1990,7 +2255,8 @@ a { color: var(--cp-link); }
         name.textContent = title;
         const description = document.createElement("small");
         description.textContent = text;
-        node.append(tag, name, description);
+        stepButton.append(visualIcon(stageIcon(title)), tag, name, description);
+        node.append(stepButton);
         journey.appendChild(node);
       });
       const title = document.createElement("strong");
@@ -1998,8 +2264,10 @@ a { color: var(--cp-link); }
       const text = document.createElement("p");
       text.textContent = item.text;
       result.replaceChildren(title, text);
+      selectStep(-1);
     }
     render(0);
+    syncMotionPreference();
     if (disclaimer) {
       const note = document.createElement("p");
       note.className = "scenario-source";
@@ -2007,6 +2275,116 @@ a { color: var(--cp-link); }
       root.appendChild(note);
     }
   }
+
+  buildScenario("requestScenario", "From a question to a governed answer", [
+    {
+      label: "Model-only answer",
+      stages: [
+        ["Application", "Question", "An authenticated user asks a question through the workload application.", "passed"],
+        ["AI gateway", "Govern", "The application calls the shared APIM gateway for identity checks, routing, and configured usage controls.", "highlight"],
+        ["Model", "Generate", "An approved model deployment generates a response; no enterprise document retrieval is used in this example.", "passed"],
+        ["Answer + trace", "Return", "The response travels back through the gateway and application, with configured diagnostics and data-handling controls.", "passed"],
+      ],
+      result: "A governed model call is a useful first workload",
+      text: "The platform provides reusable guardrails. The workload still owns prompt design, evaluation, user authorization, and safe handling of the answer.",
+    },
+    {
+      label: "Answer grounded in company data",
+      stages: [
+        ["Application", "Question", "The application receives the question and establishes the user's identity and access scope.", "passed"],
+        ["Retrieval", "Authorized context", "The workload retrieves permitted enterprise content and assembles grounded context.", "highlight"],
+        ["AI gateway + model", "Generate", "The application sends the question and retrieved context through its governed model-access path.", "passed"],
+        ["Answer + sources", "Return", "The application presents an answer with source references and records appropriate diagnostics.", "passed"],
+      ],
+      result: "Grounding adds data access, not just another model",
+      text: "Retrieval must enforce document permissions. A private network path alone does not decide which documents the user may see, and source references do not guarantee correctness.",
+    },
+    {
+      label: "Agent takes an action",
+      stages: [
+        ["Agent", "Propose", "An agent uses model reasoning to propose a tool operation.", "highlight"],
+        ["Authorization", "Approve", "The workload checks allowed actions and obtains approval for high-impact operations where required.", "passed"],
+        ["Tool + data", "Execute", "The approved tool calls its backend with the correct identity and network connectivity.", "passed"],
+        ["Answer + trace", "Record", "The result is returned to the user and the action is captured in the configured audit and operational records.", "passed"],
+      ],
+      result: "Actions need an authorization boundary",
+      text: "This is a logical workload flow, not a fixed runtime packet trace. Foundry networking details depend on agent type and tool integration; use the optional Networking Deep Dive for those paths.",
+    },
+  ]);
+
+  const architectureChallenges = [
+    {
+      label: "Shared AI access", icon: "gateway",
+      question: "Three teams need access to approved models with consistent consumer quotas. Where should the shared model-access controls live?",
+      answers: [
+        ["APIM gateway + backend controls", "gateway", true, "A shared gateway can centralize model routing and consumer limits. Keep backend identity and network restrictions aligned so callers cannot simply bypass it."],
+        ["A private endpoint alone", "network", false, "A private endpoint provides private reachability; it does not apply per-consumer token quotas or model-routing policies."],
+        ["Separate keys for every application", "shield", false, "Keys alone do not create a consistent policy boundary or identity-based accountability across teams."],
+      ],
+    },
+    {
+      label: "Private data", icon: "data",
+      question: "An application resolves a storage endpoint to a private IP. Is that enough to let it read confidential documents?",
+      answers: [
+        ["Yes, the private IP grants access", "network", false, "Network reachability and authorization are different controls. A private IP does not grant permission to the resource or its documents."],
+        ["Add identity and data permissions", "shield", true, "Validate the calling identity and data-plane permissions as well as network reachability. The retrieval layer must also enforce document-level access where needed."],
+        ["Only add a bigger subnet", "data", false, "Additional address capacity does not solve missing permissions or enforce document authorization."],
+      ],
+    },
+    {
+      label: "Policy enforcement", icon: "shield",
+      question: "A team must block new resources that enable public access. Which policy effect fits that requirement?",
+      answers: [
+        ["Audit", "document", false, "Audit records non-compliance but does not block the matching create or update request."],
+        ["Deny", "shield", true, "An applicable Deny policy can block matching create or update requests. Check scope, exemptions, supported properties, and how existing resources will be remediated."],
+        ["A budget alert", "meter", false, "Budget alerts notify about spending. They do not enforce the resource's public-access configuration."],
+      ],
+    },
+  ];
+  const challengeTopics = document.getElementById("challengeTopics");
+  const challengeQuestion = document.getElementById("challengeQuestion");
+  const challengeAnswers = document.getElementById("challengeAnswers");
+  const challengeFeedback = document.getElementById("challengeFeedback");
+  const challengeButtons = architectureChallenges.map((challenge, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "iconbtn";
+    button.textContent = challenge.label;
+    button.addEventListener("click", () => renderChallenge(index));
+    challengeTopics.appendChild(button);
+    return button;
+  });
+  function renderChallenge(index) {
+    const challenge = architectureChallenges[index];
+    challengeButtons.forEach((button, i) => button.setAttribute("aria-pressed", String(i === index)));
+    const prompt = document.createElement("p");
+    prompt.textContent = challenge.question;
+    challengeQuestion.replaceChildren(visualIcon(challenge.icon), prompt);
+    challengeAnswers.replaceChildren();
+    challengeFeedback.removeAttribute("data-correct");
+    challengeFeedback.textContent = "Choose an approach to see its architectural consequences.";
+    challenge.answers.forEach(([label, icon, correct, explanation]) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "challenge-answer";
+      button.setAttribute("aria-pressed", "false");
+      const name = document.createElement("span");
+      name.textContent = label;
+      button.append(visualIcon(icon), name);
+      button.addEventListener("click", () => {
+        challengeAnswers.querySelectorAll("button").forEach(option =>
+          option.setAttribute("aria-pressed", String(option === button)));
+        const heading = document.createElement("strong");
+        heading.textContent = correct ? "Fits this requirement" : "Revisit this choice";
+        const text = document.createElement("p");
+        text.textContent = explanation;
+        challengeFeedback.dataset.correct = String(correct);
+        challengeFeedback.replaceChildren(heading, text);
+      });
+      challengeAnswers.appendChild(button);
+    });
+  }
+  renderChallenge(0);
 
   buildScenario("gatewayScenario", "One request, different outcomes", [
     {
@@ -2128,6 +2506,7 @@ a { color: var(--cp-link); }
   ], "Illustrative resource-property policy; independent of the discussion checklist.");
 
   // ---------- Init ----------
+  setupDiagramViewer();
   renderThemeButton();
   renderNetworking();
   renderZone();
