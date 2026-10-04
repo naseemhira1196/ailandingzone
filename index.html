@@ -828,8 +828,8 @@ a { color: var(--cp-link); }
               <!-- AI gateway -->
               <g class="topo-node" data-detail="hub">
                 <rect class="topo-node-box" x="310" y="330" width="230" height="116" rx="14"></rect>
-                <text class="topo-node-label" x="425" y="360" text-anchor="middle">Shared AI gateway</text>
-                <text class="topo-node-label" x="425" y="382" text-anchor="middle">APIM</text>
+                <text class="topo-node-label" x="425" y="360" text-anchor="middle">AI Gateway Landing Zone</text>
+                <text class="topo-node-label" x="425" y="382" text-anchor="middle">- hub for models</text>
                 <text class="topo-node-sub" x="425" y="408" text-anchor="middle">API governance, not a network hub</text>
                 <text class="topo-node-sub" x="425" y="428" text-anchor="middle">auth · model routing · quotas</text>
               </g>
@@ -837,8 +837,8 @@ a { color: var(--cp-link); }
               <!-- spoke -->
               <g class="topo-node" data-detail="spoke">
                 <rect class="topo-node-box" x="630" y="330" width="190" height="116" rx="14"></rect>
-                <text class="topo-node-label" x="725" y="360" text-anchor="middle">AI Landing Zone</text>
-                <text class="topo-node-label" x="725" y="382" text-anchor="middle">for Foundry — Spoke</text>
+                <text class="topo-node-label" x="725" y="360" text-anchor="middle">Agent Landing Zone</text>
+                <text class="topo-node-label" x="725" y="382" text-anchor="middle">- spoke for agents</text>
                 <text class="topo-node-sub" x="725" y="408" text-anchor="middle">Workload layer</text>
                 <text class="topo-node-sub" x="725" y="428" text-anchor="middle">projects · agents · models</text>
               </g>
@@ -872,7 +872,7 @@ a { color: var(--cp-link); }
             </ul>
           </div>
           <div class="detail" id="detail-hub">
-            <h3>Shared AI gateway — APIM</h3>
+            <h3>AI Gateway Landing Zone - hub for models</h3>
             <ul>
               <li>A logical API gateway hub, not the connectivity hub VNet. Placement may be in a separate shared-services spoke; verify inbound and outbound network support for the selected APIM tier.</li>
               <li>Centralizes access control, token governance, routing, and telemetry across every Foundry spoke.</li>
@@ -882,7 +882,7 @@ a { color: var(--cp-link); }
             </ul>
           </div>
           <div class="detail" id="detail-spoke">
-            <h3>AI Landing Zone for Foundry (Spoke)</h3>
+            <h3>Agent Landing Zone - spoke for agents</h3>
             <ul>
               <li>Each business unit or use case gets its own Foundry deployment: projects, agents, models.</li>
               <li>Isolation for model deployments, quotas, cost tracking, and operational ownership.</li>
