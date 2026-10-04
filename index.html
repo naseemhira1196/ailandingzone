@@ -737,16 +737,16 @@ a { color: var(--cp-link); }
               </g>
               <g data-studio-layer-art="network">
                 <rect class="studio-boundary" x="210" y="100" width="946" height="485" rx="18"></rect>
-                <text class="studio-zone-label" x="235" y="120">AZURE PRIVATE CONNECTIVITY · MULTIPLE NETWORK / SERVICE BOUNDARIES</text>
+                <text class="studio-zone-label" x="235" y="128">AZURE PRIVATE CONNECTIVITY · MULTIPLE NETWORK / SERVICE BOUNDARIES</text>
               </g>
-              <text class="studio-node-caption" x="207" y="145">ER / VPN</text>
+              <text class="studio-node-caption" x="100" y="128">ExpressRoute / VPN</text>
               <g id="studioLanes">
                 <path id="studio-lane-user-network" class="studio-lane" d="M180 244H235"></path>
                 <path id="studio-lane-network-app" class="studio-lane" d="M445 244H500"></path>
                 <path id="studio-lane-app-gateway" class="studio-lane" d="M680 244H735"></path>
                 <path id="studio-lane-gateway-model" class="studio-lane" d="M915 244H970"></path>
-                <path id="studio-lane-app-data" class="studio-lane studio-optional" d="M590 328V386" hidden></path>
-                <path id="studio-lane-app-tools" class="studio-lane studio-optional" d="M655 328V358H825V386" hidden></path>
+                <path id="studio-lane-app-data" class="studio-lane studio-optional" d="M590 340V386" hidden></path>
+                <path id="studio-lane-app-tools" class="studio-lane studio-optional" d="M655 340V364H825V386" hidden></path>
               </g>
               <g id="studioNodes"></g>
               <g id="studioEmptyWorkload">
@@ -755,7 +755,7 @@ a { color: var(--cp-link); }
                 <path class="studio-art-line" d="M655 500h260" stroke-dasharray="4 8"></path>
               </g>
               <g data-studio-layer-art="operations">
-                <rect class="studio-band" x="24" y="608" width="1132" height="59" rx="12"></rect>
+                <rect class="studio-band" x="24" y="600" width="1132" height="67" rx="12"></rect>
                 <path class="studio-art-line" d="M44 648h30M48 644v-9m10 9v-20m10 20v-14"></path>
                 <text class="studio-layer-title" x="90" y="633">Observe + operate</text>
                 <text class="studio-layer-copy" x="90" y="653">Correlated traces · Evaluations · Cost ownership · Incident response</text>
@@ -2237,7 +2237,7 @@ a { color: var(--cp-link); }
       const group = makeSvg("g", { class: "studio-node", "data-studio-node": key, role: "button",
         "aria-label": node.title + ": " + node.caption, "aria-pressed": "false" });
       group.append(
-        makeSvg("rect", { class: "studio-surface", x: node.x, y: node.y, width: node.w, height: node.h || 172, rx: 14 }),
+        makeSvg("rect", { class: "studio-surface", x: node.x, y: node.y, width: node.w, height: node.h || 184, rx: 14 }),
         makeSvg("use", { class: "studio-art", href: "#studio-" + node.art + "-art", x: node.x + (node.w - 140) / 2, y: node.y + 4, width: 140, height: 115, "aria-hidden": "true" }),
         makeSvg("text", { class: "studio-node-title", x: node.x + node.w / 2, y: node.y + 139 }, node.title),
         makeSvg("text", { class: "studio-node-caption", x: node.x + node.w / 2, y: node.y + 160 }, node.caption),
