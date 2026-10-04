@@ -30,7 +30,7 @@ The dashboard includes:
 - A header **Reset demo** button that stops playback, restores activities and diagram selections, and returns to **Opening scenario**. Decisions, parking-lot notes, theme, and full-screen mode are kept.
 - Light/dark themes, full-screen controls, and responsive layouts.
 - Primary **Previous / Next section** navigation and a seven-stop current-section indicator; the sidebar can be hidden. The accelerator link, reset and theme controls are secondary.
-- Clear **Microsoft Foundry** and **Microsoft Copilot Studio** role callouts across the opening, architecture, ownership, networking, governance and decision prompts. The illustrated Azure workload uses Foundry; Copilot Studio is a separate low-code platform, not an agent subnet deployment.
+- Clear **Microsoft Foundry** and **Microsoft Copilot Studio** role callouts across the opening, architecture, ownership, networking, governance and decision prompts. The conversational UX can be a custom app or Copilot Studio; the illustrated application node is the Azure-side backend. Copilot Studio is SaaS, not an agent subnet deployment, and its supported integration path is separate from the illustrated hybrid route.
 - Both original **Agent Landing Zone** and **AI Gateway Landing Zone** architecture diagrams from Azure/AI-Landing-Zones, under **AI Landing Zone - High Level -> Official reference architectures**. They are embedded for offline use, with enlargement/zoom controls and the Microsoft MIT license notice. Presentation source footnotes and citation links are omitted.
 
 ## Presenter notes

@@ -780,7 +780,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
           <h2>One internal assistant, three teams</h2>
           <p class="opening-definition">An AI landing zone is a repeatable foundation for deploying and operating AI workloads with enterprise identity, connectivity, governance and operational controls.</p>
           <p>Today we’ll identify what is shared, what each workload owns, and the decisions needed to onboard our first AI workload.</p>
-          <p id="platformChoices"><b>Microsoft Foundry</b> supports custom AI applications and agents on Azure. <b>Microsoft Copilot Studio</b> is a low-code platform for business agents and workflows. They can complement each other; this example uses Foundry.</p>
+          <p id="platformChoices"><b>Microsoft Foundry</b> supports custom AI applications and agents on Azure. <b>Microsoft Copilot Studio</b> can provide the conversational user experience (UX), with low-code agents and workflows. The UX can be a custom app or Copilot Studio, connected to Azure-side services through supported integrations.</p>
           <blockquote>Three teams need an internal assistant. They need approved models, access to permitted company documents, and eventually the ability to perform approved actions.</blockquote>
           <div class="assumptions-strip" aria-label="Example assumptions">
             <span><b>Use case</b> Internal assistant</span><span><b>Experience / agent</b> New Foundry · Prompt agent, standard resources</span><span><b>Network</b> Private hybrid access; compare managed/BYO egress</span><span><b>Model choice</b> Azure OpenAI · agent-compatible model to confirm</span><span><b>Target region</b> Canada East candidate · validate availability and quota</span>
@@ -804,7 +804,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
               <button class="iconbtn" type="button" data-studio-mode="agent" aria-pressed="false">Add agent actions</button>
             </div>
           </div>
-          <p class="studio-supporting" id="studioPlatformContext">Foundry powers this example. Copilot Studio is a separate low-code agent platform; it is not deployed inside the illustrated VNet.</p>
+          <p class="studio-supporting" id="studioPlatformContext"><b>Assistant UX: custom app or Copilot Studio.</b> Foundry provides the Azure-side AI services. Copilot Studio is SaaS, not deployed inside the illustrated VNet; its integration path is separate from the hybrid route shown.</p>
           <div class="studio-canvas">
             <svg id="studioSvg" viewBox="0 0 1180 300" role="group" aria-labelledby="studioTitle studioDescription">
               <title id="studioTitle">Hybrid AI access: on-premises users, connectivity hub, Azure application, APIM, and model</title>
@@ -1130,7 +1130,7 @@ SOFTWARE</pre>
               <g class="topo-node" data-detail="blueprint-application">
                 <rect class="topo-node-box" x="524" y="196" width="372" height="64" rx="12"></rect>
                 <text class="topo-node-label" x="710" y="221" text-anchor="middle">AI application / orchestration</text>
-                <text class="topo-node-sub" x="710" y="244" text-anchor="middle">User experience · Retrieval · Tool authorization</text>
+                <text class="topo-node-sub" x="710" y="244" text-anchor="middle">Backend · Retrieval · Tool authorization</text>
               </g>
               <path class="topo-edge" d="M524,228 H468 V364 H420" marker-end="url(#blueprintArrow)"></path>
               <text class="topo-edge-label" x="710" y="283" text-anchor="middle">Model request via gateway</text>
@@ -1180,6 +1180,7 @@ SOFTWARE</pre>
           <div class="detail" id="detail-blueprint-application">
             <h3>The application owns the user-facing workflow</h3>
             <ul>
+              <li>The conversational UX can be a custom app or Copilot Studio. Copilot Studio runs outside the Azure landing zone and connects through supported integrations; the box here represents Azure-side backend orchestration.</li>
               <li>Application orchestration assembles prompts, retrieves authorized context, and controls which tools or actions may run.</li>
               <li>Document permissions and approval for high-impact actions belong in the application design, not merely in a network diagram.</li>
             </ul>
@@ -2453,7 +2454,7 @@ SOFTWARE</pre>
     const nodeDefinitions = {
       user: { x: 20, y: 40, w: 160, owner: "Enterprise", art: "person", title: "On-premises", caption: "Three teams", text: "Three teams access the same internal assistant through the enterprise network. Hybrid connectivity does not expand their permissions." },
       network: { x: 235, y: 40, w: 210, owner: "Platform foundation", art: "network", title: "Connectivity hub", caption: "Routes / DNS", text: "The platform owns hybrid connectivity, routing and shared DNS. Firewall inspection depends on configured routes. This network hub is not APIM." },
-      app: { x: 500, y: 40, w: 180, owner: "Workload", art: "app", title: "Application", caption: "Assistant UX", text: "The workload owns the assistant, prompts, authorized retrieval, evaluations and approved actions. It calls the shared gateway for model access." },
+      app: { x: 500, y: 40, w: 180, owner: "Workload", art: "app", title: "Application", caption: "Assistant backend", text: "The UX can be a custom app or Copilot Studio. This node is the Azure-side backend, not Copilot Studio hosting. The workload owns prompts, authorized retrieval, evaluations and approved actions. The illustrated backend calls APIM; a Copilot Studio integration needs its own supported connectivity and identity configuration." },
       gateway: { x: 735, y: 40, w: 180, owner: "Shared AI services", art: "gateway", title: "AI gateway", caption: "APIM", text: "APIM applies configured controls to requests routed through it. Backend identity and network controls prevent unintended bypass; placement can be a shared-services spoke." },
       model: { x: 970, y: 40, w: 180, owner: "Shared AI services", art: "model", title: "Foundry model", caption: "Azure OpenAI", text: "Microsoft Foundry provides the model and agent platform for this example, with Azure OpenAI as the selected model provider. Confirm model compatibility, region and quota. Model output is not permission to act." },
       data: { x: 500, y: 172, w: 180, owner: "", art: "data", title: "Company data", caption: "Permitted retrieval", text: "The same assistant now retrieves permitted company documents. Workload owners enforce document access and evaluate grounded responses." },
