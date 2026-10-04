@@ -774,8 +774,8 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
       <div class="brand-tile" aria-hidden="true">AI</div>
       <div class="title">AI Landing Zone</div>
     </div>
-    <button class="navbtn active" data-panel="p0" data-route="scenario"><span class="num">1</span> Opening scenario</button>
-    <button class="navbtn" data-panel="p1" data-route="architecture"><span class="num">2</span> Evolving architecture</button>
+    <button class="navbtn active" data-panel="p0" data-route="scenario"><span class="num">1</span> Why AI landing zones?</button>
+    <button class="navbtn" data-panel="p1" data-route="architecture"><span class="num">2</span> AI landing zone architecture</button>
     <button class="navbtn" data-panel="p4" data-route="ownership"><span class="num">3</span> Shared/workload ownership</button>
     <button class="navbtn" data-panel="p4" data-route="gateway"><span class="num">4</span> Gateway outcome</button>
     <button class="navbtn" data-panel="p3" data-route="network"><span class="num">5</span> Network decision</button>
@@ -792,7 +792,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
   <main class="main">
     <div class="topbar">
       <div>
-        <h1 id="topTitle">Opening scenario</h1>
+        <h1 id="topTitle">Why AI landing zones?</h1>
         <div class="presentation-nav" aria-label="Section navigation">
           <button class="iconbtn" id="sidebarToggle" aria-controls="sectionSidebar" aria-expanded="false">Show sections</button>
           <button class="iconbtn" id="previousSection">Previous section</button>
@@ -826,7 +826,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
     <div class="content">
       <section class="panel active" id="p0">
         <div class="card opening">
-          <h2>One assistant. Three upgrades.</h2>
+          <h2>AI Landing Zones</h2>
           <div class="opening-team-story">
             <svg viewBox="0 0 176 64" aria-hidden="true" focusable="false">
               <g fill="var(--cp-accent-soft)" stroke="currentColor" stroke-width="2">
@@ -835,26 +835,26 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
                 <circle cx="148" cy="19" r="10"/><path d="M128 56V46a20 20 0 0 1 40 0v10Z"/>
               </g>
             </svg>
-            <div><strong>Three teams. One shared foundation.</strong><span>How far should their assistant go?</span></div>
+            <div><strong>Three teams. One reusable foundation.</strong><span>What should every AI workload inherit?</span></div>
           </div>
-          <div class="opening-journey" role="group" aria-label="Explore the assistant's capabilities">
-            <button class="opening-choice" type="button" data-start-mode="model" data-start-icon="model" aria-label="Explore AI application with approved models">
-              <span class="choice-number">01</span><strong>Ask.</strong><span class="choice-description">Use approved models</span><span class="choice-action">Explore →</span>
+          <div class="opening-journey" role="group" aria-label="Explore the AI landing zone story">
+            <button class="opening-choice" type="button" data-story-step="architecture" data-story-icon="network" aria-label="Explore the shared AI landing zone foundation">
+              <span class="choice-number">01</span><strong>Shared foundation</strong><span class="choice-description">Identity, connectivity and operations</span><span class="choice-action">Explore foundation →</span>
             </button>
-            <button class="opening-choice" type="button" data-start-mode="rag" data-start-icon="search" aria-label="Explore company knowledge with permitted retrieval">
-              <span class="choice-number">02</span><strong>Know.</strong><span class="choice-description">Add permitted company knowledge</span><span class="choice-action">Explore →</span>
+            <button class="opening-choice" type="button" data-story-step="ownership" data-story-icon="app" aria-label="Explore shared platform and workload ownership">
+              <span class="choice-number">02</span><strong>Clear ownership</strong><span class="choice-description">Platform guardrails. Workload accountability.</span><span class="choice-action">Explore ownership →</span>
             </button>
-            <button class="opening-choice" type="button" data-start-mode="agent" data-start-icon="tools" aria-label="Explore agent actions with authorized tools">
-              <span class="choice-number">03</span><strong>Act.</strong><span class="choice-description">Use authorized tools</span><span class="choice-action">Explore →</span>
+            <button class="opening-choice" type="button" data-story-step="policy" data-story-icon="shield" aria-label="Explore repeatable AI landing zone controls">
+              <span class="choice-number">03</span><strong>Repeatable controls</strong><span class="choice-description">Consistent governance as teams grow</span><span class="choice-action">Explore controls →</span>
             </button>
           </div>
-          <div class="opening-foundation"><strong>AI landing zone</strong><span>Identity</span><span>Connectivity</span><span>Governance</span><span>Operations</span></div>
+          <div class="opening-foundation"><strong>Reusable guardrails</strong><span>Identity</span><span>Connectivity</span><span>Governance</span><span>Operations</span></div>
           <p class="browser-note opening-caption">Illustrative · No live Azure calls · Browser-local activity</p>
           <details class="reference-content" id="openingDetails">
             <summary>Scenario details</summary>
             <p class="opening-definition">An AI landing zone is a repeatable foundation for deploying and operating AI workloads with enterprise identity, connectivity, governance and operational controls.</p>
             <p>Today we’ll identify what is shared, what each workload owns, and the decisions needed to onboard our first AI workload.</p>
-            <p id="platformChoices"><b>Microsoft Foundry</b> powers the application and agent capabilities in this scenario. Users enter through Teams, Microsoft 365 or web via configured integrations. <b>Microsoft Copilot Studio</b> is an alternative conversational UX or integration option, not a second architecture in this walkthrough.</p>
+            <p id="platformChoices">The story is the <b>AI landing zone</b>: a foundation that teams can reuse without losing workload accountability. An internal assistant built with <b>Microsoft Foundry</b> is our example workload, not the subject of a separate application demo. Users enter through Teams, Microsoft 365 or web via configured integrations. <b>Microsoft Copilot Studio</b> remains an alternative UX or integration option.</p>
             <div class="assumptions-strip" aria-label="Example assumptions">
               <span><b>Use case</b> Internal assistant</span><span><b>Experience / agent</b> New Foundry · Prompt agent, standard resources</span><span><b>Network</b> Channel-specific ingress; compare managed/BYO agent egress</span><span><b>Model choice</b> Azure OpenAI · agent-compatible model to confirm</span><span><b>Target region</b> Canada East candidate · validate availability and quota</span>
             </div>
@@ -868,11 +868,12 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
       <section class="panel" id="p1">
         <div class="card studio" id="architectureStudio">
           <div class="studio-topline">
-            <h2 id="studioHeading">See the architecture come to life</h2>
+            <h2 id="studioHeading">AI landing zone: shared foundation, owned workloads</h2>
             <span class="badge">Illustrative · No live Azure calls</span><button class="iconbtn" type="button" id="studioExpand" aria-haspopup="dialog">Focus explorer</button>
           </div>
           <div class="studio-controls">
-            <div class="scenario-options" role="group" aria-label="Visual architecture workload">
+            <div class="scenario-options" role="group" aria-label="Example workload requirements">
+              <span class="browser-note">Example workload:</span>
               <button class="iconbtn" type="button" data-studio-mode="model" aria-pressed="true">AI application</button>
               <button class="iconbtn" type="button" data-studio-mode="rag" aria-pressed="false">Add company knowledge</button>
               <button class="iconbtn" type="button" data-studio-mode="agent" aria-pressed="false">Add agent actions</button>
@@ -882,7 +883,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
               <button class="iconbtn" type="button" data-studio-entry="hybrid" aria-pressed="false">Private hybrid</button>
             </div>
           </div>
-          <p class="studio-supporting" id="studioPlatformContext"><b>Primary story: a custom application with Microsoft Foundry.</b> Copilot Studio is an optional UX or integration.</p>
+          <p class="studio-supporting" id="studioPlatformContext"><b>AI landing zone: shared identity, connectivity, governance and operations.</b> The assistant is our example workload.</p>
           <div class="studio-canvas">
             <svg id="studioSvg" viewBox="0 0 1180 300" role="group" aria-labelledby="studioTitle studioDescription">
               <title id="studioTitle">AI access: users, Teams or Microsoft 365 or web, Azure application, APIM and model</title>
@@ -968,8 +969,8 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
               </g>
               <g id="studioNodes"></g>
               <g id="studioEmptyWorkload">
-                <text class="studio-node-title" x="785" y="218">Three teams, one internal assistant.</text>
-                <text class="studio-node-caption" x="785" y="246">Add permitted knowledge, then approved actions.</text>
+                <text class="studio-node-title" x="785" y="218">One reusable AI foundation.</text>
+                <text class="studio-node-caption" x="785" y="246">Shared guardrails. Workload-owned capabilities.</text>
               </g>
               <circle id="studioPacket" class="studio-packet" cx="0" cy="0" r="8" hidden></circle>
             </svg>
@@ -1923,8 +1924,8 @@ SOFTWARE</pre>
   ];
 
   const presentationRoute = [
-    { panel: "p0", key: "scenario", title: "Opening scenario" },
-    { panel: "p1", key: "architecture", title: "Evolving architecture" },
+    { panel: "p0", key: "scenario", title: "Why AI landing zones?" },
+    { panel: "p1", key: "architecture", title: "AI landing zone architecture" },
     { panel: "p4", key: "ownership", title: "Shared/workload ownership" },
     { panel: "p4", key: "gateway", title: "Gateway outcome" },
     { panel: "p3", key: "network", title: "Network decision" },
@@ -2042,8 +2043,8 @@ SOFTWARE</pre>
   const navButtons = document.querySelectorAll(".navbtn");
   const panels = document.querySelectorAll(".panel");
   const titles = {
-    p0: "Opening scenario",
-    p1: "AI Landing Zone - High Level",
+    p0: "Why AI landing zones?",
+    p1: "AI landing zone architecture",
     p2: "Day-1 Services Sort",
     p3: "Choose your network model",
     p4: "Hub & Spoke Landing Zones",
@@ -2560,9 +2561,9 @@ SOFTWARE</pre>
       return [...entryRoutes[entry].start, ...routes[mode], ...entryRoutes[entry].finish];
     }
     const summaries = {
-      model: ["Three teams, one AI application", "Users reach the assistant through a configured channel. The Azure backend calls approved models through APIM."],
-      rag: ["Company knowledge added", "Company knowledge adds permitted document retrieval and grounded-answer evaluation."],
-      agent: ["Agent actions added", "Agents add tools. The workload checks permissions and approvals before any action."],
+      model: ["A shared path to approved models", "The landing zone provides reusable access controls. The example application owns its prompts, permissions and answer quality."],
+      rag: ["New data, the same foundation", "Shared identity and connectivity remain. The workload owns document permissions and grounded-answer evaluation."],
+      agent: ["More capability, the same guardrails", "The foundation supports the workload as it grows. The workload still authorizes tools and checks required approvals."],
     };
     function pauseStudio() {
       cancelAnimationFrame(frame);
@@ -3265,15 +3266,21 @@ SOFTWARE</pre>
     document.getElementById("sidebarToggle").textContent = hidden ? "Show sections" : "Hide sections";
   });
   function setupPresentation() {
-    document.querySelectorAll("[data-start-mode]").forEach(button => {
-      button.prepend(visualIcon(button.dataset.startIcon));
+    document.querySelectorAll("[data-story-step]").forEach(button => {
+      button.prepend(visualIcon(button.dataset.storyIcon));
       button.addEventListener("click", () => {
-        showPanel("p1");
-        document.querySelector('#architectureStudio .section-toggle[aria-expanded="false"]')?.click();
-        document.querySelector('[data-studio-entry="channels"]').click();
-        const mode = document.querySelector('[data-studio-mode="' + button.dataset.startMode + '"]');
-        mode.click();
-        mode.focus({ preventScroll: true });
+        presentationIndex = presentationRoute.findIndex(step => step.key === button.dataset.storyStep);
+        showPanel(presentationRoute[presentationIndex].panel);
+        const selector = { architecture: "#architectureStudio", ownership: "#ownershipMain", policy: "#p5 > .card" }[button.dataset.storyStep];
+        const card = document.querySelector(selector);
+        card.querySelector('.section-toggle[aria-expanded="false"]')?.click();
+        if (button.dataset.storyStep === "architecture") {
+          document.querySelector('[data-studio-entry="channels"]').click();
+          document.querySelector('[data-studio-mode="model"]').click();
+        }
+        const heading = card.querySelector("h2");
+        heading.tabIndex = -1;
+        heading.focus({ preventScroll: true });
       });
     });
     presentationRoute.forEach((step, index) => {

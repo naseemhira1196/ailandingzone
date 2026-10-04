@@ -12,7 +12,7 @@ Download or clone this repository and open `index.html` in a modern browser. No 
 
 The dashboard includes:
 
-- A visual **Opening scenario** with three clickable **Ask / Know / Act** cards that open the matching explorer scene. The definition, session purpose and scenario assumptions remain available under **Scenario details**.
+- A visual **Why AI landing zones?** opening centered on **Shared foundation / Clear ownership / Repeatable controls**. Its cards open the corresponding architecture, ownership and policy steps. The assistant is an example workload, not the session's main topic.
 - A **visual architecture explorer** that evolves the same three-team internal assistant from model access to permitted company knowledge, then approved actions. Agent actions retain the knowledge path. User entry starts with **Teams / M365 / web**; **Private hybrid** is a separate selectable path, not a prerequisite.
 - An **AI Landing Zone - High Level** view with a clickable hub/spoke map and supporting enterprise foundation, platform, workload, and operations blueprint.
 - Illustrated **Follow an AI request** journeys for model-only, grounded-answer, and agent-action workloads.
@@ -40,17 +40,17 @@ The dashboard includes:
 
 The published dashboard contains customer-facing architecture content and interactive controls, not presenter preparation or how-to guidance. Rehearsal and fallback guidance stays here in the README.
 
-`AI-Landing-Zone-Dashboard-Talk-Track.docx` is a **legacy presenter guide** and has not been revised for this guided route or the latest technical corrections. Use the current in-app scenario and explanations for this workshop. The DOCX is not published on the Azure site.
+The separate presenter deliverable **AI-Landing-Zones-45-Minute-Story-Talk-Track.docx** follows the current six-step route and tells the AI landing-zone story through shared foundation, ownership and repeatable controls. Earlier 35-minute and legacy scripts are superseded. Presenter documents are not published on the Azure site.
 
 ### Optional presentation interactions
 
-Start on **Opening scenario**, then follow **Evolving architecture -> Shared/workload ownership -> Gateway outcome -> Network decision -> Audit versus Deny**. Use **Next section** rather than navigating through every reference card. Ownership shows the ownership card; the gateway stop shows the **Missing identity** demonstration. **AI Landing Zones in Detail** stays collapsed unless explicitly opened. **More outcomes**, including safely configured caching, is available for questions.
+Start on **Why AI landing zones?**, then follow **AI landing zone architecture -> Shared/workload ownership -> Gateway outcome -> Network decision -> Audit versus Deny**. Use **Next section** rather than navigating through every reference card. Ownership shows the ownership card; the gateway stop shows the **Missing identity** demonstration. **AI Landing Zones in Detail** stays collapsed unless explicitly opened. **More outcomes**, including safely configured caching, is available for questions.
 
-In the explorer, progress from **AI application** to **Add company knowledge** to **Add agent actions**. Click a service for its responsibility and use **Next hop** to narrate manually. **Trace request** is optional playback. **Focus explorer** enlarges the complete interactive scene; Escape returns it with selections intact. Layer buttons change the illustration, not security controls.
+In the explorer, vary **AI application**, **Add company knowledge** and **Add agent actions** to test what changes in the workload and what remains reusable in the landing zone. These are examples of requirements, not three product demonstrations. Click a service for its responsibility and use **Next hop** manually. **Trace request** is optional playback. **Focus explorer** enlarges the complete scene; Escape returns it with selections intact. Layer buttons change the illustration, not security controls.
 
 The architecture section retains this reference order: **architecture explorer -> private-hybrid hub/spoke map -> Agent and AI Gateway architectures -> landing-zone blueprint -> architecture challenges -> request walkthrough**. Only the explorer is open initially. Reload and Reset restore both this order and the collapsed-reference layout.
 
-The primary story is one custom application backed by Foundry: approved model access, permitted company knowledge, then authorized actions. Copilot Studio is an alternative UX or optional integration, not a parallel architecture tour. Earlier presenter scripts that visit every reference diagram are not the default 45-minute route. The full card sort and networking deep dive remain optional.
+The primary story is the **AI landing zone**: why teams need a reusable foundation, what it supplies, who owns the workload, and how access, networking and policy controls are validated. A Foundry-backed assistant makes those responsibilities concrete. Copilot Studio is an alternative UX or optional integration, not a parallel architecture tour. The full card sort and networking deep dive remain optional.
 
 The documented Copilot Studio–Foundry connection is preview, supports agents created in the new Foundry portal, and requires the Activity protocol endpoint. It is not enabled by default and currently requires REST API or Python SDK configuration, not a portal setting. The documented default Responses and A2A endpoints alone are insufficient. The source link and last-reviewed date are in **Architecture details**.
 
