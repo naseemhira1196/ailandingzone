@@ -12,35 +12,39 @@ Download or clone this repository and open `index.html` in a modern browser. No 
 
 The dashboard includes:
 
-- A large **visual architecture explorer** at the top of the first tab, with original service illustrations, switchable AI/knowledge/agent architectures, clickable responsibility layers, and animated round-trip request paths through an explicit hybrid connectivity hub.
+- An **Opening scenario** with a landing-zone definition, session purpose and explicit use-case, Foundry experience, networking, model and region assumptions.
+- A **visual architecture explorer** that evolves the same three-team internal assistant from model access to permitted company knowledge, then approved actions. Agent actions retain the knowledge path.
 - An **AI Landing Zone - High Level** view with a clickable hub/spoke map and supporting enterprise foundation, platform, workload, and operations blueprint.
 - Illustrated **Follow an AI request** journeys for model-only, grounded-answer, and agent-action workloads.
 - **Play / Pause**, **Next step**, and clickable stage illustrations for request, gateway, workload, and policy walkthroughs. Playback is opt-in, stops on navigation or when the browser tab is hidden, and respects reduced-motion preferences.
 - **Enlarge diagram** views with zoom controls and clickable component details. Close or press Escape to return without changing the original diagram.
 - Three **You make the architecture call** challenges with immediate explanatory feedback on shared AI access, private data, and policy enforcement.
 - APIM hub and Foundry spoke diagrams with illustrative request and workload scenarios.
-- A drag-and-drop service sort with immediate baseline feedback and keyboard-friendly placement controls.
+- An optional three-card or full twelve-card service sort for the documented standard Foundry Agent Service setup. Placement controls are available before explanations; baseline match is scenario-specific.
 - Microsoft-managed and customer-managed networking comparisons.
 - A BYO VNet diagram that separates the delegated agent runtime subnet from the nondelegated private endpoint subnet, with explicit firewall-placement guidance.
 - An optional **Networking Deep Dive** reference tab with hosted/prompt traffic paths, clickable ownership details, subnet address budgets, managed outbound modes, private DNS examples, and troubleshooting checks.
-- Spacious network diagrams with separate hybrid-connectivity paths and arrow labels; smaller screens scroll within the diagram instead of squeezing its text.
-- Governance discussion controls and Audit versus Deny scenarios.
-- Locally saved decisions and open questions, with a plain-text export.
-- A header **Reset demo** button that stops playback, restores activities and diagram selections, and returns to the beginning of the first tab. Decisions, parking-lot notes, theme, and full-screen mode are kept.
+- Responsive primary views designed for a 1366x768 presentation, with diagrams, manual-step explanations and navigation visible together. Supporting diagrams and detailed reference material are collapsed.
+- The actual **Management group -> Subscription -> Resource group -> Resource** hierarchy, Audit versus Deny scenarios, and named policy recommendations with supported effects, coverage, ownership and exception handling.
+- Browser-local decisions with **Owner, Next action, Target date and Status**, migrated legacy notes, readiness prompts and plain-text export. A proposal is not an agreed decision.
+- A header **Reset demo** button that stops playback, restores activities and diagram selections, and returns to **Opening scenario**. Decisions, parking-lot notes, theme, and full-screen mode are kept.
 - Light/dark themes, full-screen controls, and responsive layouts.
-- A prominent **Deployment accelerator** primary button in the sticky desktop header, expanding to full width on phones. It opens the AI Landing Zones accelerator's AI gateway section in a new tab, leaving the dashboard open. It links to guidance; it does not create Azure resources.
+- Primary **Previous / Next section** navigation and a seven-stop current-section indicator; the sidebar can be hidden. The accelerator link, reset and theme controls are secondary.
+- Contextual **Source / Applies to / Last reviewed** references beside technical guidance. Source links require internet; illustrations and exercises do not.
 
 ## Presenter notes
 
-`AI-Landing-Zone-Dashboard-Talk-Track.docx` contains the one-hour agenda, talking points, click cues, and discussion prompts. It matches the current **AI Landing Zone - High Level** tab, seven-part blueprint, revised networking diagrams, and **Deployment accelerator** button. The blueprint walkthrough and accelerator visit fit within the existing 60 minutes. Keep this document separate from the customer-facing dashboard during presentation; it is not published on the Azure site.
+`AI-Landing-Zone-Dashboard-Talk-Track.docx` is a **legacy presenter guide** and has not been revised for this guided route or the latest technical corrections. Use the current in-app scenario, explanations and sources as authoritative for this workshop. The DOCX is not published on the Azure site.
 
 ### Optional presentation interactions
 
-Start with **See the architecture come to life**. Switch from **AI application** to **Add company knowledge** or **Add agent actions** to show which components and paths change. Click a service illustration for its responsibility, use **Trace request** for moving request markers, or **Next hop** to narrate at your own pace. **Focus explorer** enlarges the complete interactive scene; Escape returns it to the page with its selections intact. Layer buttons show or hide visual context only, not actual security controls. **Reset explorer** restores the initial diagram and all layers.
+Start on **Opening scenario**, then follow **scenario -> evolving architecture -> shared/workload ownership -> one gateway outcome -> network decision -> Audit versus Deny -> decisions**. Use **Next section** rather than navigating through every reference panel. The main gateway example starts with **Missing identity**; additional outcomes, including safely configured caching, are available for questions.
 
-In **AI Landing Zone - High Level**, use **Follow an AI request** and one architecture challenge in place of part of the existing discussion, not as additional timed segments. **Play walkthrough** spotlights one illustrated stage at a time; **Next step** or clicking a stage lets you control the pace. **Show overview** clears the spotlight while preserving the selected scenario and its outcome. The same controls appear in the existing gateway, workload, and policy scenarios.
+In the explorer, progress from **AI application** to **Add company knowledge** to **Add agent actions**. Click a service for its responsibility and use **Next hop** to narrate manually. **Trace request** is optional playback. **Focus explorer** enlarges the complete interactive scene; Escape returns it with selections intact. Layer buttons change the illustration, not security controls.
 
-Use **Enlarge diagram** for a room-sized view, then zoom as needed. Where the source diagram supports component details, those remain clickable in the enlarged view. The new illustrations are embedded SVGs, so they work offline without image downloads. Challenges are local discussion aids, not a live audience-voting system; their answers and playback position are not saved to customer notes. The separate DOCX keeps the original 60-minute agenda.
+The supporting hub/spoke map, blueprint, additional request walkthrough and challenges are collapsed reference content. The full card sort and networking deep dive are outside the guided route. **Next step** or clicking a stage controls scenario pacing; **Show overview** clears the spotlight without changing the selected case.
+
+Use **Enlarge diagram** for reference diagrams, then zoom as needed. Supported component details remain clickable. Illustrations are embedded SVGs and work offline. Notes and exercise state are saved only in this browser; this is not shared voting or collaborative notes.
 
 The explorer's scenes are conceptual application flows, not a fixed Foundry runtime topology: retrieval is authorized by the workload, model calls use the illustrated gateway path, and the agent-action example authorizes a tool operation before execution. Request tracing is opt-in, pauses on navigation, backgrounding, or component selection, and ends after one round trip. Reduced-motion users can step through the same flow without moving markers. These are original explanatory illustrations, not official Azure service icons.
 
@@ -55,9 +59,9 @@ The private hybrid example follows **on-premises users → ExpressRoute/VPN → 
 
 ## Optional networking reference
 
-**Networking Deep Dive** is separate from the six core workshop segments and does not affect session progress or the 60-minute agenda. Its topic, agent-path, subnet-size, and outbound-mode selections are saved locally with the existing session; older saved sessions remain compatible. Use it for questions rather than adding it to the timed walkthrough.
+**Networking Deep Dive** is outside the seven-stop guided route (which spans six sections) and does not affect section progress. Its topic, agent-path, subnet-size and outbound-mode selections are saved locally. Use it for specific questions.
 
-The reference adapts the supplied networking deck into generic diagrams and technical explanations, without publishing the source presentation or customer-specific architecture labels. Networking guidance was checked on September 30, 2026. Unlike the deck's older capacity examples, it does not assume a universal 50-session quota, a fixed replica-to-IP formula, or a future relaxation of supported address ranges.
+Technical guidance was reviewed on October 4, 2026. The reference links both conflicting official address-range sources and uses non-overlapping RFC1918 space for the example. Confirm other ranges against the selected deployment path before allocation. Capability hosts and newer capability settings are not one universal provisioning flow.
 
 Subnet figures show address arithmetic and an illustrative below-80% planning envelope, **not** guaranteed session capacity. Validate project-level overhead, peak traffic, current regional quotas, API/agent support, and maintenance headroom. Outbound-mode buttons only change the illustration: they do not configure Azure, simulate real traffic, or imply that managed-network transitions are reversible.
 
@@ -151,7 +155,9 @@ The dashboard requires browser JavaScript. If your hosting environment enforces 
 
 ### Offline presentation
 
-Download `index.html` and open it directly in a modern browser. The dashboard and its supporting diagrams work without a network connection. The optional **Deployment accelerator** link requires internet access.
+Use **Opening scenario -> Presentation preparation and offline fallback -> Download offline dashboard**, or copy `index.html`, then open the downloaded file directly in a modern browser. The dashboard and diagrams work without a network connection; source and accelerator links require internet.
+
+Before presenting, rehearse at the actual sharing resolution, use manual stepping and review retained notes. Every launch and **Reset demo** starts on the opening scenario. Reset does not delete decisions. Export decisions before closing or switching between the live site and offline copy; these have separate browser-local storage.
 
 ### Data and access considerations
 

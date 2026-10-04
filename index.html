@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Landing Zone — Interactive Session Dashboard</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%230078d4'/%3E%3Ctext x='20' y='27' text-anchor='middle' font-family='Segoe UI,sans-serif' font-size='22' fill='white'%3EAI%3C/text%3E%3C/svg%3E">
 <script>
   (() => {
     const param = new URLSearchParams(window.location.search).get("scoutTheme");
@@ -600,22 +601,137 @@ a { color: var(--cp-link); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+.sidebar-hidden .sidebar { display: none; }
+.main { min-width: 0; }
+.content { padding: 12px 20px 28px; overflow: visible; }
+.topbar { padding: 12px 20px; gap: 16px; }
+.topbar h1 { font-size: 1.2rem; margin: 0 0 6px; }
+.presentation-nav { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.presentation-nav #nextSection { background: var(--cp-shell-text); color: var(--cp-shell); border-color: var(--cp-shell-text); font-weight: 700; }
+.panel { max-width: 1320px; }
+#sectionIndicator { font-weight: 600; min-width: 180px; font-size: 0.9rem; }
+.toolbar { gap: 6px; align-items: flex-end; flex-direction: column; }
+.topbar .accelerator-cta, .utility-controls .iconbtn { font-size: 0.8rem; padding: 5px 8px; min-height: 30px; box-shadow: none; background: var(--cp-surface); color: var(--cp-text-muted); border-color: var(--cp-border); }
+.topbar .accelerator-cta svg { width: 14px; height: 14px; }
+.card { padding: 16px; margin-bottom: 12px; }
+.card h2 { margin-bottom: 12px; padding-bottom: 8px; font-size: 1.2rem; }
+.source-note, .browser-note, .studio-footnote { font-size: 0.875rem; color: var(--cp-text-muted); line-height: 1.4; }
+.source-note { margin: 8px 0 0; }
+.source-note a, .policy-implementation a { color: var(--cp-link); }
+.reference-content { padding: 10px 12px; border: 1px solid var(--cp-border); border-radius: 6px; margin: 10px 0; background: var(--cp-surface); }
+.reference-content summary { cursor: pointer; color: var(--cp-text); font-weight: 600; font-size: 0.9rem; }
+#downloadOffline[hidden] { display: none; }
+.reference-content > .card { margin-top: 12px; }
+.takeaway { padding: 8px 12px; background: var(--cp-accent-soft); border-left: 3px solid var(--cp-accent); font-size: 0.95rem; line-height: 1.4; margin: 10px 0; }
+.opening-definition { font-size: 1.25rem; line-height: 1.5; }
+.opening blockquote { margin: 16px 0; padding: 14px; border-left: 3px solid var(--cp-accent); font-size: 1.1rem; background: var(--cp-accent-soft); }
+.assumptions-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; font-size: 0.9rem; }
+.assumptions-strip span { padding: 10px; border: 1px solid var(--cp-border); border-radius: 6px; }
+.assumptions-strip b { display: block; margin-bottom: 4px; }
+.studio .studio-topline, .studio-controls { margin-bottom: 8px; gap: 8px; }
+.studio-controls { margin-top: 8px !important; }
+.studio-controls button { min-height: 32px; padding: 5px 10px; }
+.studio-layer-controls { margin-top: 0 !important; margin-bottom: 0; }
+.studio-canvas { overflow: visible; }
+.studio-canvas svg { min-width: 0; height: 270px; }
+.studio-node-title { font-size: 18px; }
+.studio-node-caption { font-size: 16px; }
+.studio-owner { fill: var(--cp-text-muted); font-size: 16px; text-anchor: middle; font-weight: 600; }
+.studio-supporting { font-size: 0.875rem; color: var(--cp-text-muted); margin: 4px 0; }
+.studio-result { padding: 10px 12px; gap: 16px; margin-top: 8px; }
+.studio-result p { font-size: 0.95rem; line-height: 1.4; margin: 0; }
+.studio-result strong { font-size: 1rem; }
+.studio-footnote { padding: 6px 10px; margin: 6px 0; }
+.studio-dialog .studio-canvas { max-height: none; }
+.studio-dialog .studio-canvas svg { height: 270px; }
+.ownership-grid, .readiness-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.ownership-grid > article { border: 1px solid var(--cp-border); background: var(--cp-accent-soft); padding: 16px; border-radius: 8px; }
+.ownership-grid h3 { margin: 4px 0 8px; }
+.ownership-grid p { font-size: 1.05rem; line-height: 1.55; }
+body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway"]) #gatewayMain { display: none; }
+#gatewayMain:not(.all-outcomes) .scenario-options button:nth-child(n+3) { display: none; }
+.scenario { margin-top: 10px; padding: 14px; }
+.scenario h3 { margin-bottom: 8px; }
+.scenario .journey { margin: 10px 0; }
+.scenario .journey li { padding: 10px; }
+.scenario .journey small, .scenario-source { font-size: 0.875rem; }
+.scenario-result { padding: 10px 12px; margin-top: 8px; }
+.scenario-result p { margin: 4px 0 0; }
+.scenario-heading { margin-bottom: 6px; }
+.scenario .scenario-options { margin: 8px 0; }
+.scenario .stage-art { width: 44px; height: 44px; margin-bottom: 8px; }
+#gatewayScenario .journey small, #policyScenario .journey small { display: none; }
+#gatewayScenario .journey li, #policyScenario .journey li { min-height: 0; }
+.scenario .walkthrough-controls { margin: 8px 0; }
+.scenario .walkthrough-controls button, .scenario .scenario-options button { min-height: 32px; padding: 6px 10px; }
+.scenario .walkthrough-detail { padding: 8px 10px; margin-bottom: 8px; font-size: 0.9rem; line-height: 1.4; }
+.scenario-source { margin: 6px 0 0; }
+.network-comparison { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.network-comparison th, .network-comparison td { text-align: left; vertical-align: top; padding: 7px 10px; border-bottom: 1px solid var(--cp-border); }
+.network-comparison { table-layout: fixed; }
+.network-comparison th { background: var(--cp-accent-soft); }
+.network-comparison th:first-child { width: 17%; }
+.network-model-summary { font-size: 0.95rem; padding: 8px 12px; background: var(--cp-accent-soft); }
+.gov-rings { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 12px 0; }
+.gov-ring[data-level] { position: relative; max-width: 100%; width: 100%; min-height: 0; margin: 0; padding: 10px 8px; border-radius: 8px; }
+.gov-ring:not(:last-child)::after { content: "→"; position: absolute; right: -13px; top: 8px; }
+.gov-ring .ring-icon, .gov-ring .ring-sub { display: none; }
+.gov-ring .ring-sub { font-size: 0.875rem; }
+.gov-detail { padding: 10px 12px; margin-bottom: 8px; }
+.policy-implementation { padding: 8px 16px 14px 48px; font-size: 0.9rem; }
+.policy-implementation p { margin: 6px 0; }
+.decision-entry { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) 34px; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--cp-border); }
+.decision-entry label { font-size: 0.85rem; font-weight: 600; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.decision-entry label:nth-child(-n+2) { grid-column: span 2; }
+.decision-entry .iconbtn { grid-column: 5; grid-row: 1; align-self: start; }
+.decision-entry input, .decision-entry textarea, .decision-entry select { width: 100%; min-width: 0; box-sizing: border-box; padding: 7px; font: inherit; font-weight: 400; color: var(--cp-text); background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: 4px; }
+.decision-entry textarea { height: 48px; resize: vertical; }
+#p6 .footerbar { position: sticky; bottom: 0; background: var(--cp-surface); padding: 10px 0; z-index: 2; }
+.readiness-grid { margin-top: 12px; }
+.readiness-grid button { text-align: left; }
+.chip .chip-head { cursor: default; }
+.chip .chip-move { padding: 6px 10px; display: block; }
+.explain-service { margin: 4px 10px 8px; font-size: 0.85rem; }
+.topo-wrap svg, .topo-wrap.spacious svg { min-width: 0; max-width: 100%; }
+.topo-wrap, .network-table-wrap { overflow: visible; }
+@media (max-width: 1000px) {
+  .topbar { flex-wrap: wrap; }
+  .toolbar { flex-direction: row; align-items: center; width: auto; }
+  .assumptions-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .studio-canvas svg { height: auto; }
+}
+@media (max-width: 700px) {
+  .content { padding: 12px; }
+  .sidebar { flex-wrap: wrap; overflow: visible; }
+  .navbtn { min-width: 0; flex: 1 1 45%; }
+  .ownership-grid, .readiness-grid, .gov-rings { grid-template-columns: 1fr; }
+  .presentation-nav { gap: 6px; }
+  #sectionIndicator { order: -1; width: 100%; }
+  .toolbar { flex-wrap: wrap; }
+  .topbar .accelerator-cta { width: auto; }
+  .decision-entry { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .decision-entry label:nth-child(-n+2) { grid-column: span 2; }
+  .decision-entry .iconbtn { grid-column: 2; grid-row: auto; justify-self: end; }
+  .network-comparison th, .network-comparison td { padding: 6px 4px; overflow-wrap: anywhere; }
+  .studio-dialog .studio-canvas svg { height: auto; }
+}
 </style>
 </head>
-<body>
+<body class="sidebar-hidden">
 <div class="app">
 
-  <nav class="sidebar">
+  <nav class="sidebar" id="sectionSidebar">
     <div class="brand">
       <div class="brand-tile" aria-hidden="true">AI</div>
       <div class="title">AI Landing Zone</div>
     </div>
-    <button class="navbtn active" data-panel="p1"><span class="num">1</span> AI Landing Zone - High Level</button>
+    <button class="navbtn active" data-panel="p0"><span class="num">1</span> Opening scenario</button>
+    <button class="navbtn" data-panel="p1"><span class="num">2</span> AI Landing Zone - High Level</button>
     <button class="navbtn" data-panel="p4"><span class="num">2</span> Hub &amp; Spoke Landing Zones</button>
-    <button class="navbtn" data-panel="p2"><span class="num">3</span> Day-1 Services Sort</button>
-    <button class="navbtn" data-panel="p3"><span class="num">4</span> VNet Showdown</button>
+    <button class="navbtn" data-panel="p3"><span class="num">4</span> Choose your network model</button>
     <button class="navbtn" data-panel="p5"><span class="num">5</span> Policy Baseline</button>
     <button class="navbtn" data-panel="p6"><span class="num">6</span> Decisions &amp; Parking Lot</button>
+    <button class="navbtn nav-reference" data-panel="p2"><span class="num">R</span> Day-1 Services Sort · Optional</button>
     <button class="navbtn nav-reference" data-panel="p7"><span class="num" aria-hidden="true">R</span><span>Networking Deep Dive<small>Optional reference</small></span></button>
     <div class="sidebar-footer">
       <div class="progress-label">Session progress</div>
@@ -627,7 +743,13 @@ a { color: var(--cp-link); }
   <main class="main">
     <div class="topbar">
       <div>
-        <h1 id="topTitle">AI Landing Zone - High Level</h1>
+        <h1 id="topTitle">Opening scenario</h1>
+        <div class="presentation-nav" aria-label="Presentation navigation">
+          <button class="iconbtn" id="sidebarToggle" aria-controls="sectionSidebar" aria-expanded="false">Show sections</button>
+          <button class="iconbtn" id="previousSection">Previous section</button>
+          <span id="sectionIndicator" role="status"></span>
+          <button class="iconbtn" id="nextSection">Next section</button>
+        </div>
       </div>
       <div class="toolbar">
         <a class="iconbtn accelerator-cta" id="acceleratorLink" href="https://azure.github.io/AI-Landing-Zones/#ai-gateway-landing-zone" target="_blank" rel="noopener noreferrer" aria-label="Deployment accelerator (opens in a new tab)">
@@ -644,13 +766,27 @@ a { color: var(--cp-link); }
     <div class="status-banner" id="appStatus" role="alert" hidden></div>
 
     <div class="content">
+      <section class="panel active" id="p0">
+        <div class="card opening">
+          <h2>One internal assistant, three teams</h2>
+          <p class="opening-definition">An AI landing zone is a repeatable foundation for deploying and operating AI workloads with enterprise identity, connectivity, governance and operational controls.</p>
+          <p>Today we’ll identify what is shared, what each workload owns, and the decisions needed to onboard our first AI workload.</p>
+          <blockquote>Three teams need an internal assistant. They need approved models, access to permitted company documents, and eventually the ability to perform approved actions.</blockquote>
+          <div class="assumptions-strip" aria-label="Example assumptions">
+            <span><b>Use case</b> Internal assistant</span><span><b>Experience / agent</b> New Foundry · Prompt agent, standard resources</span><span><b>Network</b> Private hybrid access; compare managed/BYO egress</span><span><b>Model choice</b> Azure OpenAI · agent-compatible model to confirm</span><span><b>Target region</b> Canada East candidate · validate availability and quota</span>
+          </div>
+          <p class="takeaway">These diagrams explain responsibilities and logical flows; deployment details depend on the selected services and configuration.</p>
+          <p class="browser-note">Notes and exercise state are saved only in this browser. This is not a shared voting or collaborative notes session.</p>
+          <details class="reference-content"><summary>Presentation preparation and offline fallback</summary><p>Use manual Next hop / Next step controls. Rehearse at 1366×768 or the actual sharing resolution. Export decisions before closing. Download the dashboard and open it locally as the offline fallback; source links need internet. Reset demo keeps existing decision notes: review them before a new audience. The offline file and live site have separate browser-local notes.</p><a class="iconbtn" id="downloadOffline" href="index.html" download="AI-Landing-Zone-Offline.html">Download offline dashboard</a><span id="offlineReady" hidden>Offline file open. Keep this file available for the presentation.</span></details>
+        </div>
+      </section>
 
       <!-- PANEL 1: AI Landing Zone - High Level -->
-      <section class="panel active" id="p1">
+      <section class="panel" id="p1">
         <div class="card studio" id="architectureStudio">
           <div class="studio-topline">
             <h2 id="studioHeading">See the architecture come to life</h2>
-            <button class="iconbtn" type="button" id="studioExpand" aria-haspopup="dialog">Focus explorer</button>
+            <span class="badge">Illustrative · No live Azure calls</span><button class="iconbtn" type="button" id="studioExpand" aria-haspopup="dialog">Focus explorer</button>
           </div>
           <div class="studio-controls">
             <div class="scenario-options" role="group" aria-label="Visual architecture workload">
@@ -660,7 +796,7 @@ a { color: var(--cp-link); }
             </div>
           </div>
           <div class="studio-canvas">
-            <svg id="studioSvg" viewBox="0 0 1180 685" role="group" aria-labelledby="studioTitle studioDescription">
+            <svg id="studioSvg" viewBox="0 0 1180 300" role="group" aria-labelledby="studioTitle studioDescription">
               <title id="studioTitle">Hybrid AI access: on-premises users, connectivity hub, Azure application, APIM, and model</title>
               <desc id="studioDescription">An illustrative private hybrid access pattern. On-premises users reach an Azure-hosted application through ExpressRoute or VPN and a connectivity hub before the application calls APIM. The connectivity hub and AI gateway are separate responsibilities. Select a workload, click a service, or trace the request. DNS supports name resolution; firewall inspection depends on routing.</desc>
               <defs>
@@ -729,44 +865,31 @@ a { color: var(--cp-link); }
                   <path class="studio-art-side" d="M118 10a19 19 0 0 0-23 23L79 49l10 10 17-17a19 19 0 0 0 23-24l-13 13-10-10z"></path>
                 </symbol>
               </defs>
-              <rect x="0" y="0" width="1180" height="685" fill="url(#studioGrid)"></rect>
-              <g data-studio-layer-art="identity">
-                <rect class="studio-band" x="24" y="18" width="1132" height="67" rx="12"></rect>
-                <path class="studio-art-line" d="m58 31 15 6v11c0 11-7 18-15 22-8-4-15-11-15-22V37zM51 48l5 5 11-13"></path>
-                <text class="studio-layer-title" x="90" y="45">Identity + governance</text>
-                <text class="studio-layer-copy" x="90" y="66">Entra ID · Least privilege · Applicable policy guardrails</text>
-              </g>
+              <rect x="0" y="0" width="1180" height="300" fill="url(#studioGrid)"></rect>
               <g data-studio-layer-art="network">
-                <rect class="studio-boundary" x="210" y="100" width="946" height="485" rx="18"></rect>
-                <text class="studio-zone-label" x="235" y="128">AZURE PRIVATE CONNECTIVITY · MULTIPLE NETWORK / SERVICE BOUNDARIES</text>
+                <rect class="studio-boundary" x="210" y="1" width="946" height="297" rx="12"></rect>
               </g>
-              <text class="studio-node-caption" x="100" y="128">ExpressRoute / VPN</text>
+              <text class="studio-node-caption" x="100" y="178">ExpressRoute / VPN</text>
               <g id="studioLanes">
-                <path id="studio-lane-user-network" class="studio-lane" d="M180 244H235"></path>
-                <path id="studio-lane-network-app" class="studio-lane" d="M445 244H500"></path>
-                <path id="studio-lane-app-gateway" class="studio-lane" d="M680 244H735"></path>
-                <path id="studio-lane-gateway-model" class="studio-lane" d="M915 244H970"></path>
-                <path id="studio-lane-app-data" class="studio-lane studio-optional" d="M590 340V386" hidden></path>
-                <path id="studio-lane-app-tools" class="studio-lane studio-optional" d="M655 340V364H825V386" hidden></path>
+                <path id="studio-lane-user-network" class="studio-lane" d="M180 90H235"></path>
+                <path id="studio-lane-network-app" class="studio-lane" d="M445 90H500"></path>
+                <path id="studio-lane-app-gateway" class="studio-lane" d="M680 90H735"></path>
+                <path id="studio-lane-gateway-model" class="studio-lane" d="M915 90H970"></path>
+                <path id="studio-lane-app-data" class="studio-lane studio-optional" d="M590 146V172" hidden></path>
+                <path id="studio-lane-app-tools" class="studio-lane studio-optional" d="M655 146V159H825V172" hidden></path>
               </g>
               <g id="studioNodes"></g>
               <g id="studioEmptyWorkload">
-                <text class="studio-node-title" x="785" y="434">Start with the use case.</text>
-                <text class="studio-node-caption" x="785" y="462">Add company knowledge or agent actions to grow the architecture.</text>
-                <path class="studio-art-line" d="M655 500h260" stroke-dasharray="4 8"></path>
-              </g>
-              <g data-studio-layer-art="operations">
-                <rect class="studio-band" x="24" y="600" width="1132" height="67" rx="12"></rect>
-                <path class="studio-art-line" d="M44 648h30M48 644v-9m10 9v-20m10 20v-14"></path>
-                <text class="studio-layer-title" x="90" y="633">Observe + operate</text>
-                <text class="studio-layer-copy" x="90" y="653">Correlated traces · Evaluations · Cost ownership · Incident response</text>
+                <text class="studio-node-title" x="785" y="218">Three teams, one internal assistant.</text>
+                <text class="studio-node-caption" x="785" y="246">Add permitted knowledge, then approved actions.</text>
               </g>
               <circle id="studioPacket" class="studio-packet" cx="0" cy="0" r="8" hidden></circle>
             </svg>
           </div>
+          <div class="studio-supporting"><span data-studio-layer-art="identity">Identity: Entra ID + applicable policy.</span> <span data-studio-layer-art="operations">Operations: configured telemetry + evaluations.</span></div>
           <div class="studio-controls" style="margin-top:16px;">
-            <button class="iconbtn primary" type="button" id="studioPlay">Trace request</button>
-            <button class="iconbtn" type="button" id="studioNext">Next hop</button>
+            <button class="iconbtn" type="button" id="studioPlay">Trace request</button>
+            <button class="iconbtn primary" type="button" id="studioNext">Next hop</button>
             <button class="iconbtn" type="button" id="studioReset">Reset explorer</button>
             <div class="studio-controls studio-layer-controls" role="group" aria-label="Architecture layers">
               <button class="iconbtn" type="button" data-studio-layer="identity" aria-pressed="true">Identity + policy</button>
@@ -778,7 +901,8 @@ a { color: var(--cp-link); }
             <div><strong id="studioStep">AI application</strong><div class="studio-progress" aria-hidden="true"><span id="studioProgress"></span></div></div>
             <p id="studioExplanation">On-premises users reach the Azure application through the connectivity hub. The application then calls the AI gateway and approved model.</p>
           </div>
-          <p class="studio-footnote">Private hybrid access example, not a packet trace or live Azure call. APIM can sit in a separate shared-services spoke. DNS resolves names; it is not an inline hop. Firewall inspection depends on routing. Layer buttons change the illustration only; the outline is not a single VNet or deployment boundary.</p>
+          <p class="takeaway">The platform provides reusable guardrails; the workload owns its application, data access, evaluations and authorized actions.</p>
+          <details class="studio-footnote reference-content"><summary>Applies to this example · responsibilities, not deployment boundaries</summary><p>The Agent Landing Zone and AI Gateway Landing Zone can be deployed together or independently. The accelerator is in preview; each Azure service has its own availability status. The connectivity hub and APIM are different responsibilities. DNS is not an inline hop; firewall inspection depends on routing. The outline is not a single VNet.</p></details>
         </div>
         <div class="card">
           <h2>Hub &amp; Spoke Architecture</h2>
@@ -876,16 +1000,16 @@ a { color: var(--cp-link); }
             <h3>AI Gateway Landing Zone - hub for models</h3>
             <ul>
               <li>A logical API gateway hub, not the connectivity hub VNet. Placement may be in a separate shared-services spoke; verify inbound and outbound network support for the selected APIM tier.</li>
-              <li>Centralizes access control, token governance, routing, and telemetry across every Foundry spoke.</li>
+              <li>Applies configured access control, token governance, routing and diagnostics to requests routed through this gateway.</li>
               <li>Publishes API contracts — a single, governed front door for AI apps and agents.</li>
               <li>Can be one deployment covering prod + non-prod, or split, depending on governance needs.</li>
-              <li>Enforces per-consumer token limits, semantic caching, model routing, and rate-limit-by-key policy.</li>
+              <li>Supports configured token limits, routing and eligible caching; safely partition cached responses by authorization and workload context.</li>
             </ul>
           </div>
           <div class="detail" id="detail-spoke">
             <h3>Agent Landing Zone - spoke for agents</h3>
             <ul>
-              <li>Each business unit or use case gets its own Foundry deployment: projects, agents, models.</li>
+              <li>Example isolation boundary: business unit or workload, based on governance, ownership, capacity and lifecycle requirements.</li>
               <li>Isolation for model deployments, quotas, cost tracking, and operational ownership.</li>
               <li>Templated and repeatable — new spokes onboard through infrastructure-as-code, not portal clicks.</li>
             </ul>
@@ -894,8 +1018,8 @@ a { color: var(--cp-link); }
             <h3>Workload Data + Dependencies</h3>
             <ul>
               <li>Storage Account and Key Vault — included in this reference architecture; validate requirements for the selected hosting mode.</li>
-              <li>AI Search — grounding/RAG via Foundry IQ and agentic retrieval (usually required).</li>
-              <li>Cosmos DB — thread/state storage (depends on hosting pattern).</li>
+              <li>AI Search — customer-owned vector stores, required for the documented standard setup illustrated here.</li>
+              <li>Cosmos DB — conversation and agent state, required for this documented standard setup.</li>
               <li>Private endpoints, private DNS, access permissions, and public-network restrictions must be configured together.</li>
             </ul>
           </div>
@@ -1036,7 +1160,8 @@ a { color: var(--cp-link); }
       <section class="panel" id="p2">
         <div class="card">
           <h2>Day-1 Services Card Sort</h2>
-          <p class="hint">Workshop reference baseline. Service requirements vary by model, hosting pattern, and enterprise controls.</p>
+          <p class="hint" id="sortBaseline"><b>For this scenario:</b> Standard Foundry Agent Service with customer-owned data resources, using Azure OpenAI as the selected model provider. Required / Depends / Optional scores apply only to this documented setup, not every Azure AI application.</p>
+          <div class="scenario-options" aria-label="Exercise size"><button class="iconbtn" id="shortSort" aria-pressed="true">Three-card exercise</button><button class="iconbtn" id="fullSort" aria-pressed="false">All 12 cards</button></div>
 
           <div class="pool" id="pool"></div>
 
@@ -1048,7 +1173,7 @@ a { color: var(--cp-link); }
 
           <div class="accuracy-meter">
             <div class="accuracy-row">
-              <span class="accuracy-label">Baseline match</span>
+              <span class="accuracy-label">Baseline match for this scenario</span>
               <span class="accuracy-value" id="accuracyValue">0 / 12 placed</span>
             </div>
             <div class="accuracy-track" id="accuracyTrack" role="progressbar" aria-label="Baseline match among placed services" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="accuracy-fill" id="accuracyFill"></div></div>
@@ -1088,7 +1213,7 @@ a { color: var(--cp-link); }
               <g class="topo-node">
                 <rect class="topo-node-box" x="20" y="70" width="155" height="80" rx="14"></rect>
                 <text class="topo-node-label" x="97" y="105" text-anchor="middle">Foundry Agent</text>
-                <text class="topo-node-sub" x="97" y="123" text-anchor="middle">Standard setup</text>
+                <text class="topo-node-sub" x="97" y="123" text-anchor="middle">Managed networking</text>
               </g>
 
               <g class="topo-node">
@@ -1185,20 +1310,20 @@ a { color: var(--cp-link); }
             <div class="vnet-col">
               <h3>Microsoft-Managed VNet</h3>
               <ul id="vnetA">
-                <li>Microsoft handles subnet range, IP selection, and delegation — fastest path to private connectivity.</li>
-                <li>Storage and Search isolation supported out of the box via managed private endpoints.</li>
-                <li>Lower operational burden — no firewall, UDRs, or peering to design and maintain.</li>
+                <li>Microsoft handles subnet range, IP selection, and delegation inside the managed network.</li>
+                <li>Managed private endpoints can provide private access to supported, configured dependencies, with required permissions and approvals.</li>
+                <li>No customer-owned firewall or UDR design inside the managed VNet. Optional FQDN outbound rules use a Microsoft-managed Azure Firewall and can incur charges.</li>
                 <li>Trade-off: customer-controlled routing and inspection are constrained. Validate connectivity and diagnostics support for the selected service and deployment mode.</li>
               </ul>
             </div>
             <div class="vnet-col">
               <h3>Customer-Managed VNet (BYO)</h3>
               <ul id="vnetB">
-                <li>Full control: your own Azure Firewall/NVA, user-defined routes, and network peering.</li>
+                <li>Customer-controlled Azure Firewall/NVA integration, user-defined routes and peering, subject to the selected runtime's supported paths.</li>
                 <li>Connects to hub/spoke, shared services, or on-premises via ExpressRoute/VPN.</li>
                 <li>Separate subnets: delegate the agent runtime subnet to Microsoft.App/environments; place private endpoint NICs in a different, nondelegated subnet.</li>
                 <li>Encryption key ownership is a separate service-level decision, not a property of a private endpoint.</li>
-                <li>Trade-off: more complex setup (subnet delegation to Container Apps, CapHost creation), private IP ranges only, /27 minimum subnet for agent delegation.</li>
+                <li>Trade-off: subnet delegation and deployment-path-specific capability configuration. /27 is the documented minimum for the relevant agent subnet, not a production recommendation. Start production sizing at /24 or larger and validate peak use; these sizes do not describe Microsoft-managed subnet control.</li>
               </ul>
             </div>
           </div>
@@ -1283,37 +1408,37 @@ a { color: var(--cp-link); }
             <div class="detail" id="detail-hub-consumers">
               <h3>Apps &amp; Agents (Consumers)</h3>
               <ul>
-                <li>Every AI app or agent in the estate calls through the same governed door — no direct-to-model access.</li>
+                <li>A shared enforcement point for requests routed through the gateway, with backend identity and network controls configured to prevent unintended bypass.</li>
                 <li>Consumers are identified by subscription key or Entra identity, never by a shared secret baked into code.</li>
               </ul>
             </div>
             <div class="detail" id="detail-hub-gateway">
               <h3>APIM Gateway</h3>
               <ul>
-                <li>Centralizes access control, token governance, routing, and telemetry across every Foundry spoke.</li>
+                <li>Applies configured access control, token governance, routing and diagnostics to requests routed through this gateway.</li>
                 <li>Publishes API contracts — a single, governed front door for AI apps and agents.</li>
                 <li>Can be one deployment covering prod + non-prod, or split, depending on governance needs.</li>
-                <li>Enforces per-consumer token limits, semantic caching, model routing, and rate-limit-by-key policy.</li>
+                <li>Supports configured token limits, routing and eligible caching; safely partition cached responses by authorization and workload context.</li>
               </ul>
             </div>
             <div class="detail" id="detail-hub-spokes">
               <h3>Foundry Spokes</h3>
               <ul>
-                <li>The hub fans out to every Foundry spoke — one per business unit, product, or use case.</li>
+                <li>Example isolation boundary: business unit or workload, based on governance, ownership, capacity and lifecycle requirements.</li>
                 <li>New spokes plug into the same gateway contract without renegotiating access for every consumer.</li>
               </ul>
             </div>
             <div class="detail" id="detail-hub-shared">
               <h3>Shared Services</h3>
               <ul>
-                <li>One Log Analytics workspace per environment tier makes cross-service audit joins possible.</li>
-                <li>Key Vault holds gateway certificates and secrets; Entra ID backs every identity check at the gateway.</li>
+                <li>Choose workspace boundaries based on access, residency, retention and operating requirements. Cross-workspace queries are supported.</li>
+                <li>Key Vault can hold gateway certificates and secrets. Configure Entra identity validation and least-privilege backend access for this identity-first example.</li>
               </ul>
             </div>
 
             <div class="feature-grid">
-              <div class="feature-card"><div class="fi">🛡️</div><h4>Governed Front Door</h4><p>One place to enforce auth, quota, and routing for every AI consumer.</p></div>
-              <div class="feature-card"><div class="fi">📊</div><h4>Unified Telemetry</h4><p>Every request, token count, and rejection lands in one observable pipeline.</p></div>
+              <div class="feature-card"><div class="fi">🛡️</div><h4>Governed Front Door</h4><p>A shared enforcement point for requests routed through the gateway, with backend identity and network controls configured to prevent unintended bypass.</p></div>
+              <div class="feature-card"><div class="fi">📊</div><h4>Configured Telemetry</h4><p>Configured diagnostics provide gateway request, rejection and available token-usage telemetry. Correlation with application and backend telemetry requires instrumentation. Token usage can be missing or inaccurate for interrupted streams.</p></div>
               <div class="feature-card"><div class="fi">⚡</div><h4>Semantic Caching</h4><p>Eligible similar prompts can reuse responses when caching is configured, partitioned, and safe for the workload.</p></div>
               <div class="feature-card"><div class="fi">🔁</div><h4>Repeatable Onboarding</h4><p>New spokes attach to the hub contract instead of a bespoke integration.</p></div>
             </div>
@@ -1359,7 +1484,7 @@ a { color: var(--cp-link); }
                 <g class="topo-node" data-detail="spoke-account">
                   <rect class="topo-node-box" x="480" y="20" width="245" height="160" rx="14"></rect>
                   <text class="topo-node-label" x="602" y="55" text-anchor="middle">Foundry Account</text>
-                  <text class="topo-node-sub" x="602" y="73" text-anchor="middle">One per business unit</text>
+                  <text class="topo-node-sub" x="602" y="73" text-anchor="middle">Example isolation boundary</text>
                   <rect class="badge-box" x="500" y="90" width="90" height="26" rx="8"></rect>
                   <text class="badge-label" x="545" y="107" text-anchor="middle">Projects</text>
                   <rect class="badge-box" x="600" y="90" width="105" height="26" rx="8"></rect>
@@ -1389,14 +1514,14 @@ a { color: var(--cp-link); }
             <div class="detail" id="detail-spoke-pe">
               <h3>Private Endpoint from the Hub</h3>
               <ul>
-                <li>Traffic arrives from the APIM hub over a private endpoint — never the public internet.</li>
-                <li>This is the only path into the spoke; publicNetworkAccess stays disabled on the Foundry account.</li>
+                <li>In this private-access example, APIM reaches the Foundry endpoint through configured private connectivity. Validate the selected APIM tier, endpoint approval, DNS and routes.</li>
+                <li>This reference design targets private access to supported dependencies. Public-access settings, endpoints, DNS, routing and permissions must be configured and validated.</li>
               </ul>
             </div>
             <div class="detail" id="detail-spoke-account">
               <h3>Foundry Account</h3>
               <ul>
-                <li>Each business unit or use case gets its own Foundry deployment: projects, agents, models.</li>
+                <li>Example isolation boundary: business unit or workload, based on governance, ownership, capacity and lifecycle requirements.</li>
                 <li>Isolation for model deployments, quotas, cost tracking, and operational ownership.</li>
                 <li>Templated and repeatable — new spokes onboard through infrastructure-as-code, not portal clicks.</li>
               </ul>
@@ -1405,15 +1530,15 @@ a { color: var(--cp-link); }
               <h3>Workload Data + Dependencies</h3>
               <ul>
                 <li>Storage Account and Key Vault — included in this reference architecture; validate requirements for the selected hosting mode.</li>
-                <li>AI Search — grounding/RAG via Foundry IQ and agentic retrieval (usually required).</li>
-                <li>Cosmos DB — thread/state storage (depends on hosting pattern).</li>
+                <li>AI Search — customer-owned vector stores, required for the documented standard setup illustrated here.</li>
+                <li>Cosmos DB — conversation and agent state, required for this documented standard setup.</li>
                 <li>Private endpoints, private DNS, access permissions, and public-network restrictions must be configured together.</li>
               </ul>
             </div>
 
             <div class="feature-grid">
               <div class="feature-card"><div class="fi">🏗️</div><h4>Per-Workload Isolation</h4><p>Each spoke owns its projects, agents, and model deployments independently.</p></div>
-              <div class="feature-card"><div class="fi">🔒</div><h4>Private by Default</h4><p>Public network access disabled; every dependency reached via private endpoint.</p></div>
+              <div class="feature-card"><div class="fi">🔒</div><h4>Private access target</h4><p>This reference design targets private access to supported dependencies. Public-access settings, endpoints, DNS, routing and permissions must be configured and validated.</p></div>
               <div class="feature-card"><div class="fi">💰</div><h4>Cost &amp; Quota Ownership</h4><p>Track workload costs and configure usage controls. Budget alerts alone do not cap spending.</p></div>
               <div class="feature-card"><div class="fi">📦</div><h4>Repeatable Onboarding</h4><p>New spokes stand up from the same infrastructure-as-code template.</p></div>
             </div>
@@ -1426,28 +1551,28 @@ a { color: var(--cp-link); }
       <section class="panel" id="p5">
         <div class="card">
           <h2>Policy Baseline</h2>
-          <p class="hint">Policy set higher up is inherited by everything nested inside it.</p>
+          <p class="hint">Management group → Subscription → Resource group → Resource. Apply policies through the existing landing-zone hierarchy. Introduce a dedicated AI management group when distinct governance requirements justify it.</p>
 
           <div class="gov-rings" id="govRings">
             <div class="gov-ring" data-level="1" data-ring="mg">
               <div class="ring-icon">🏢</div>
-              <div class="ring-label">Management Group (AI subscriptions)</div>
+              <div class="ring-label">Management group</div>
               <div class="ring-sub">Inheritance within this management group</div>
             </div>
             <div class="gov-ring" data-level="2" data-ring="sub">
               <div class="ring-icon">🗂️</div>
-              <div class="ring-label">Subscriptions (shared + per-LOB)</div>
+              <div class="ring-label">Subscription</div>
               <div class="ring-sub">Hub and spoke boundaries</div>
             </div>
-            <div class="gov-ring" data-level="3" data-ring="lz">
+            <div class="gov-ring" data-level="3" data-ring="rg">
               <div class="ring-icon">🧭</div>
-              <div class="ring-label">AI Landing Zone (APIM + Foundry)</div>
-              <div class="ring-sub">Workload-specific compliance</div>
+              <div class="ring-label">Resource group</div>
+              <div class="ring-sub">Related Azure resources</div>
             </div>
-            <div class="gov-ring" data-level="4" data-ring="deploy">
+            <div class="gov-ring" data-level="4" data-ring="resource">
               <div class="ring-icon">🚀</div>
-              <div class="ring-label">Foundry Deployment</div>
-              <div class="ring-sub">Per-model, per-project telemetry</div>
+              <div class="ring-label">Resource</div>
+              <div class="ring-sub">Service-specific coverage</div>
             </div>
           </div>
           <div class="gov-detail" id="govDetail">
@@ -1455,8 +1580,7 @@ a { color: var(--cp-link); }
             <p>Policy assigned once here is inherited by every subscription and resource underneath — this is what makes the next four controls consistent across the whole estate instead of configured per-subscription.</p>
           </div>
 
-          <h3 style="margin-top:6px;">Five governance controls to have in place</h3>
-          <div id="checklist"></div>
+          <details class="reference-content" id="policyRecommendations"><summary>Policy recommendations: names, effects, scopes, owners and exceptions</summary><div id="checklist"></div><p>Foundry projects and model deployments are resource relationships, not replacements for Azure scope levels. Prefer Entra identities and least-privilege RBAC; disable local key authentication where supported. Managed identities are not covered by workload-identity Conditional Access.</p><p>Workspace design recommendation: choose workspace boundaries based on access, residency, retention and operating requirements. Cross-workspace queries are supported.</p></details>
           <div class="scenario" id="policyScenario"></div>
         </div>
       </section>
@@ -1465,10 +1589,10 @@ a { color: var(--cp-link); }
       <section class="panel" id="p6">
         <div class="card">
           <h2>Decisions &amp; Parking Lot</h2>
-          <table class="lot-table">
-            <thead><tr><th style="width:46%">✅ Decision ready to make today</th><th style="width:46%">❓ Open question to park</th><th></th></tr></thead>
-            <tbody id="lotBody"></tbody>
-          </table>
+          <p class="browser-note">Notes and exercise state are saved only in this browser. This is not a shared voting or collaborative notes session. Reset demo preserves these notes.</p>
+          <div class="scenario-options" id="decisionPrompts" aria-label="Decision prompts"></div>
+          <details class="reference-content" id="readinessCheckpoint"><summary>Production-readiness checkpoint — decisions to resolve, not automatic capabilities</summary><div class="readiness-grid" id="readinessItems"></div></details>
+          <div id="lotBody" role="list" aria-label="Decisions and open questions"></div>
           <div class="footerbar">
             <button class="iconbtn primary" id="addRow">+ Add Row</button>
             <button class="iconbtn" id="exportNotes">Export decisions</button>
@@ -1581,7 +1705,7 @@ a { color: var(--cp-link); }
             </div>
             <details class="network-accordion"><summary>What consumes capacity?</summary><div><p>Hosted sessions normally map 1:1 to usable IPs. Data proxies and other project-level networking components also consume addresses. Prompt agent versions do not consume their own runtime IPs, but their project networking still does.</p><p>Do not size from a fixed replica-to-IP formula. Real consumption depends on concurrency, project traffic, scale-out, and platform maintenance. Low-traffic project counts are not a guarantee of capacity under load.</p></div></details>
             <details class="network-accordion"><summary>Subnet capacity is not the session quota</summary><div><p>All Foundry accounts and projects in the same subscription and region share the regional session quota. A larger subnet does not raise it. Check current regional limits and request an increase when necessary.</p><p>A support-approved mapping of up to 10 sessions per IP may be available, subject to regional capacity. Do not assume this mapping in the default address plan.</p></div></details>
-            <details class="network-accordion"><summary>Address space and subnet prerequisites</summary><div><ul><li>Use non-overlapping RFC 1918 space: <code>10.0.0.0/8</code>, <code>172.16.0.0/12</code>, or <code>192.168.0.0/16</code>.</li><li>Public ranges and CGNAT <code>100.64.0.0/10</code> are not supported by this BYO setup. Do not plan against an announced future exception.</li><li>Delegate the runtime subnet to <code>Microsoft.App/environments</code>; /27 is the minimum, not a production recommendation.</li><li>Use a separate subnet for private endpoints. Check overlap across peered VNets and hybrid routes before allocation.</li></ul></div></details>
+            <details class="network-accordion" id="addressApplicability"><summary>Address space and subnet prerequisites</summary><div><ul><li>Use non-overlapping RFC1918 space for this example. Confirm support for other ranges against the selected deployment path before allocation.</li><li>Current setup guidance permits specified CGNAT ranges while the networking deep dive excludes them. Confirm the applicable deployment path before allocation; do not treat either statement as universal.</li><li>Delegate the runtime subnet to <code>Microsoft.App/environments</code>; /27 is the documented minimum for the relevant path, not a production recommendation. Start production planning at /24 or larger.</li><li>Use a separate subnet for private endpoints. Check overlap across peered VNets and hybrid routes before allocation.</li></ul></div></details>
           </div>
 
           <div class="network-pane" id="network-egress" hidden>
@@ -1638,7 +1762,30 @@ a { color: var(--cp-link); }
 <script>
 (() => {
   const STORAGE_KEY = "aiLandingZoneDashboard_v1";
-  const corePanels = ["p1", "p4", "p2", "p3", "p5", "p6"];
+  const corePanels = ["p0", "p1", "p4", "p3", "p5", "p6"];
+  const allPanels = [...corePanels, "p2", "p7"];
+  const sources = {
+    accelerator: ["https://azure.github.io/AI-Landing-Zones/", "AI Landing Zones accelerator (preview); service status varies"],
+    standard: ["https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/standard-agent-setup", "Standard Agent Service; customer-owned data resources"],
+    managed: ["https://learn.microsoft.com/en-us/azure/foundry/how-to/managed-virtual-network", "New Foundry prompt/hosted agents; managed outbound network"],
+    byo: ["https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/virtual-networks#limitations", "BYO delegated subnet; check selected deployment path"],
+    deep: ["https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/agents-networking-deep-dive", "New Foundry hosted/prompt agents; BYO runtime networking"],
+    telemetry: ["https://learn.microsoft.com/en-us/azure/api-management/api-management-howto-llm-logs", "Configured APIM language-model API diagnostics"],
+    policy: ["https://learn.microsoft.com/en-us/azure/ai-services/policy-reference", "Named built-ins and supported effects; not all model calls"],
+    scope: ["https://learn.microsoft.com/en-us/azure/governance/policy/concepts/scope", "Azure Policy assignment scopes and exemptions"],
+    identity: ["https://learn.microsoft.com/en-us/entra/identity/conditional-access/workload-identity", "Workload-identity Conditional Access; excludes managed identities"],
+    logs: ["https://learn.microsoft.com/en-us/azure/azure-monitor/logs/cross-workspace-query", "Azure Monitor cross-workspace querying and permissions"],
+  };
+  function sourceNote(key) {
+    const [url, applies] = sources[key];
+    const p = document.createElement("p");
+    p.className = "source-note";
+    const a = document.createElement("a");
+    a.href = url; a.target = "_blank"; a.rel = "noopener noreferrer";
+    a.textContent = "Source";
+    p.append(a, " · Applies to: " + applies + " · Last reviewed: 2026-10-04");
+    return p;
+  }
   const playbackStops = new Set();
   const demoResets = new Set();
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -1648,32 +1795,34 @@ a { color: var(--cp-link); }
   });
 
   const services = [
-    { name: "Microsoft Foundry", icon: "🧭", col: "Required", why: "Unified control plane for AI apps and agents" },
+    { name: "Microsoft Foundry", icon: "🧭", col: "Required", why: "Required for this selected Foundry-based standard setup, not every Azure AI application." },
     { name: "Azure OpenAI", icon: "🧠", col: "Required", why: "Selected model provider in this workshop baseline; other model choices change this requirement." },
-    { name: "AI Search", icon: "🔎", col: "Depends", why: "Usually required — grounding/RAG via Foundry IQ, agentic retrieval" },
-    { name: "Storage Account", icon: "🗄️", col: "Required", why: "Confirmed Foundry Agent Service dependency" },
-    { name: "Key Vault", icon: "🔑", col: "Required", why: "Foundry Agent Service dependency; MS-managed keys by default" },
-    { name: "Managed Identity", icon: "🪪", col: "Required", why: "Identity-first auth; automatic agent identity" },
-    { name: "App Insights", icon: "📈", col: "Depends", why: "Recommended — trace-first diagnostics per project" },
-    { name: "Log Analytics", icon: "📊", col: "Depends", why: "Recommended — centralized diagnostics and auditing" },
-    { name: "Azure Container Apps", icon: "📦", col: "Depends", why: "Recommended BYO agent hosting runtime" },
-    { name: "Container Registry", icon: "🏷️", col: "Depends", why: "BYO agent containerization" },
-    { name: "Cosmos DB", icon: "🌐", col: "Depends", why: "Confirmed Foundry Agent Service dependency" },
-    { name: "Content Safety", icon: "🛡️", col: "Optional", why: "Guardrails: PII, jailbreak, prompt shielding" },
+    { name: "AI Search", icon: "🔎", col: "Required", why: "Required for this documented standard setup: customer-owned vector stores. This is more than an optional RAG addition." },
+    { name: "Storage Account", icon: "🗄️", col: "Required", why: "Required for this standard setup: files uploaded by developers and users, and intermediate data." },
+    { name: "Key Vault", icon: "🔑", col: "Required", why: "Required in the documented setup being illustrated for secrets and connection information; resource need is not explained by encryption-key defaults." },
+    { name: "Managed Identity", icon: "🪪", col: "Required", why: "Supports the selected identity-first access pattern. Appropriate resource roles are still required; provisioning and runtime permissions differ." },
+    { name: "App Insights", icon: "📈", col: "Depends", why: "Application Insights is recommended production observability tooling, not a mandatory standard-setup provisioning dependency. Instrument the workload." },
+    { name: "Log Analytics", icon: "📊", col: "Depends", why: "Choose an appropriate diagnostic destination; an existing shared workspace can be reused. A new workspace per workload is not universally required." },
+    { name: "Azure Container Apps", icon: "📦", col: "Depends", why: "Relevant when you choose to host your application or tool server on Container Apps. A managed service using related infrastructure does not require your own Container App." },
+    { name: "Container Registry", icon: "🏷️", col: "Depends", why: "Relevant to a container-image deployment path, such as a hosted agent. The selected prompt-agent setup does not require a customer image." },
+    { name: "Cosmos DB", icon: "🌐", col: "Required", why: "Required for this standard setup: state, conversation history, messages and agent metadata. Containers differ between classic and new runtimes." },
+    { name: "Content Safety", icon: "🛡️", col: "Optional", why: "Optional separately deployed resource, not optional safety responsibilities. Configured harmful-content and prompt-attack protections. Privacy, PII handling and action authorization require their own controls." },
   ];
 
   const policyItems = [
-    { t: "Dedicated management group for AI subscriptions", d: "So policy is inherited, not configured per-subscription.", icon: "🏢" },
-    { t: "Azure Policy at MG scope", d: "Allow only approved models, deny non-Foundry resource types.", icon: "📜" },
-    { t: "Disable local (key) authentication, enforce with policy", d: "Keys aren't attributable and bypass Conditional Access.", icon: "🔐" },
-    { t: "Use built-in policy initiatives first", d: "Foundry Tools, Machine Learning, AI Search — under Workload Specific Compliance — before writing custom policy.", icon: "📋" },
-    { t: "One shared Log Analytics workspace per environment tier", d: "Dev/test/prod. This is what makes cross-service audit joins possible.", icon: "📊" },
+    { t: "Approve models within supported deployment coverage", d: "Not a filter on every model call or external endpoint. Configure allowed publishers and asset IDs.", icon: "📜", name: "Foundry model deployments should only use approved models", policyId: "aafe3651-cb78-4f68-9f81-e7e41509110f", coverage: "Microsoft.CognitiveServices.Data/accounts/deployments; publisher and assetId", effect: "Audit, Deny, Disabled; example starts with Audit", owner: "AI platform governance" },
+    { t: "Prefer Entra identities and least-privilege RBAC", d: "Disable local key authentication where supported; verify client compatibility. Managed identities are not covered by workload-identity Conditional Access.", icon: "🔐", name: "Azure AI Services resources should have key access disabled (disable local authentication)", policyId: "71ef260a-8f18-47b7-abcb-62d0673d94dc", coverage: "Supported Azure AI Services accounts; not all dependency services", effect: "Audit, Deny, Disabled; example starts with Audit", owner: "Identity and resource owners" },
+    { t: "Assess private endpoint configuration", d: "Private connectivity needs DNS, routing, endpoint approval and permissions. This audit does not build those controls.", icon: "🏢", name: "Azure AI Services resources should use Azure Private Link", policyId: "d6759c02-b87f-42b7-892e-71b3f471d782", coverage: "Supported Azure AI Services accounts", effect: "Audit, Disabled; no Deny effect in this definition", owner: "Network platform" },
+    { t: "Configure diagnostics deliberately", d: "Enable and correlate resource, gateway and application telemetry with appropriate privacy and retention controls.", icon: "📊", name: "Diagnostic logs in Azure AI services resources should be enabled", policyId: "1b4d1c4e-934c-4703-944c-27c82c06bebb", coverage: "Supported Azure AI Services account diagnostic settings", effect: "AuditIfNotExists, Disabled; example uses AuditIfNotExists", owner: "Operations and workload support" },
+    { t: "Allow the complete workload's resource types", d: "Allow approved resource types needed by the complete workload, including its networking, gateway, data and operational dependencies.", icon: "📋", name: "Allowed resource types", policyId: "a08ec900-254a-4555-9bf5-e42af04b5c5c", coverage: "Indexed mode: resource types supporting tags and location; not all child resource types", effect: "Audit, Deny, Disabled (v1.1.0); example starts with Audit", owner: "Landing-zone governance" },
   ];
 
   function createInitialState() {
     return {
-      activePanel: "p1",
-      visited: { p1: true, p2: false, p3: false, p4: false, p5: false, p6: false },
+      schemaVersion: 2,
+      activePanel: "p0",
+      visited: { p0: true, p1: false, p3: false, p4: false, p5: false, p6: false },
+      sortMode: "short",
       sort: {},          // name -> col
       sortWhyShown: {},
       vnetMode: "ms",
@@ -1684,10 +1833,13 @@ a { color: var(--cp-link); }
       networkEgress: "approved",
       govActive: null,
       checked: {},
-      lot: [{ a: "", b: "" }, { a: "", b: "" }, { a: "", b: "" }],
+      lot: Array.from({ length: 3 }, () => emptyDecision()),
     };
   }
   let state = createInitialState();
+  function emptyDecision() {
+    return { a: "", b: "", owner: "", nextAction: "", targetDate: "", status: "Proposal" };
+  }
 
   let storageBlocked = false;
   function reportError(message, error) {
@@ -1704,13 +1856,13 @@ a { color: var(--cp-link); }
         if (!record(saved)) throw new Error("Invalid saved session");
         const restored = { ...state };
         for (const [key, allowed] of Object.entries({
-          activePanel: [...corePanels, "p7"],
+          activePanel: allPanels, sortMode: ["short", "full"],
           vnetMode: ["ms", "byo"], zone: ["hub", "spoke"],
           networkView: ["flows", "capacity", "egress", "operations"],
           networkAgent: ["hosted", "prompt"],
           networkSubnet: ["27", "26", "24", "23"],
           networkEgress: ["approved", "internet"],
-          govActive: [null, "mg", "sub", "lz", "deploy"],
+          govActive: [null, "mg", "sub", "rg", "resource", "lz", "deploy"],
         })) {
           if (key in saved) {
             if (!allowed.includes(saved[key])) throw new Error("Invalid " + key);
@@ -1718,7 +1870,7 @@ a { color: var(--cp-link); }
           }
         }
         for (const [key, keys] of Object.entries({
-          visited: Object.keys(state.visited),
+          visited: allPanels,
           checked: policyItems.map((_, i) => String(i)),
           sortWhyShown: services.map(s => s.name),
           sort: services.map(s => s.name),
@@ -1730,14 +1882,24 @@ a { color: var(--cp-link); }
             if (!keys.includes(name) || (key === "sort"
               ? !["Required", "Depends", "Optional"].includes(value)
               : typeof value !== "boolean")) throw new Error("Invalid saved " + key);
-            restored[key][name] = value;
+            if (key !== "visited" || corePanels.includes(name)) restored[key][name] = value;
           }
         }
         if ("lot" in saved) {
           if (!Array.isArray(saved.lot) || !saved.lot.every(row =>
             record(row) && typeof row.a === "string" && typeof row.b === "string"))
             throw new Error("Invalid saved decisions");
-          restored.lot = saved.lot.map(({ a, b }) => ({ a, b }));
+          restored.lot = saved.lot.map(row => {
+            for (const field of ["owner", "nextAction", "targetDate", "status"]) {
+              if (field in row && typeof row[field] !== "string") throw new Error("Invalid decision " + field);
+            }
+            if ("status" in row && !["Proposal", "Agreed", "In progress", "Blocked", "Done"].includes(row.status)) throw new Error("Invalid decision status");
+            return { ...emptyDecision(), ...row };
+          });
+        }
+        restored.govActive = { lz: "rg", deploy: "resource" }[restored.govActive] || restored.govActive;
+        if (saved.schemaVersion !== 2) {
+          restored.sort = {}; restored.sortWhyShown = {}; restored.checked = {};
         }
         state = restored;
       }
@@ -1765,9 +1927,10 @@ a { color: var(--cp-link); }
   const navButtons = document.querySelectorAll(".navbtn");
   const panels = document.querySelectorAll(".panel");
   const titles = {
+    p0: "Opening scenario",
     p1: "AI Landing Zone - High Level",
     p2: "Day-1 Services Sort",
-    p3: "VNet Showdown",
+    p3: "Choose your network model",
     p4: "Hub & Spoke Landing Zones",
     p5: "Policy Baseline",
     p6: "Decisions & Parking Lot",
@@ -1786,6 +1949,7 @@ a { color: var(--cp-link); }
     state.activePanel = id;
     if (corePanels.includes(id)) state.visited[id] = true;
     updateProgress();
+    updatePresentation(id);
     save();
   }
   navButtons.forEach(b => b.addEventListener("click", () => showPanel(b.dataset.panel)));
@@ -1906,7 +2070,10 @@ a { color: var(--cp-link); }
     ["Required", "Depends", "Optional"].forEach(c => document.getElementById("col-" + c).innerHTML = "");
     const counts = { Required: 0, Depends: 0, Optional: 0 };
 
-    services.forEach(s => {
+    const exerciseServices = state.sortMode === "short" ? services.filter(s => ["AI Search", "Cosmos DB", "Container Registry"].includes(s.name)) : services;
+    document.getElementById("shortSort").setAttribute("aria-pressed", String(state.sortMode === "short"));
+    document.getElementById("fullSort").setAttribute("aria-pressed", String(state.sortMode === "full"));
+    exerciseServices.forEach(s => {
       const placedCol = state.sort[s.name];
       const chip = document.createElement("div");
       chip.className = "chip" + (placedCol ? (placedCol === s.col ? " correct" : " incorrect") : "");
@@ -1914,20 +2081,23 @@ a { color: var(--cp-link); }
       chip.draggable = true;
       const whyId = "why-" + s.name.replace(/[^a-z0-9]/gi, "");
       const whyShown = !!state.sortWhyShown && state.sortWhyShown[s.name];
-      chip.innerHTML = "<button type=\"button\" class=\"chip-head\"><span class=\"chip-icon\" aria-hidden=\"true\">" + s.icon + "</span><span>" + s.name + "</span></button>" +
+      chip.innerHTML = "<div class=\"chip-head\"><span class=\"chip-icon\" aria-hidden=\"true\">" + s.icon + "</span><span>" + s.name + "</span></div>" +
         (placedCol ? '<span class="chip-status">' + (placedCol === s.col ? "Matches baseline" : "Revisit placement") + '</span>' : "") +
         '<div class="why' + (whyShown ? " show" : "") + '" id="' + whyId + '">' + s.why + "</div>";
 
-      const head = chip.querySelector(".chip-head");
-      head.setAttribute("aria-expanded", String(!!whyShown));
-      head.setAttribute("aria-controls", whyId);
-      head.addEventListener("click", () => {
+      const explain = document.createElement("button");
+      explain.type = "button"; explain.className = "iconbtn explain-service";
+      explain.textContent = "Show explanation";
+      explain.setAttribute("aria-expanded", String(!!whyShown));
+      explain.setAttribute("aria-controls", whyId);
+      explain.addEventListener("click", () => {
         state.sortWhyShown = state.sortWhyShown || {};
         state.sortWhyShown[s.name] = !state.sortWhyShown[s.name];
         chip.querySelector(".why").classList.toggle("show", state.sortWhyShown[s.name]);
-        head.setAttribute("aria-expanded", String(state.sortWhyShown[s.name]));
+        explain.setAttribute("aria-expanded", String(state.sortWhyShown[s.name]));
         save();
       });
+      chip.insertBefore(explain, chip.querySelector(".why"));
       const moveLabel = document.createElement("label");
       moveLabel.className = "chip-move";
       moveLabel.textContent = "Placement";
@@ -1945,7 +2115,8 @@ a { color: var(--cp-link); }
         Array.from(document.querySelectorAll(".chip")).find(c => c.dataset.name === s.name).querySelector("select").focus();
       });
       moveLabel.appendChild(select);
-      chip.querySelector(".why").appendChild(moveLabel);
+      chip.insertBefore(moveLabel, explain);
+      chip.querySelector(".why").appendChild(sourceNote("standard"));
 
       chip.addEventListener("dragstart", (e) => {
         chip.classList.add("dragging");
@@ -1964,13 +2135,16 @@ a { color: var(--cp-link); }
 
     ["Required", "Depends", "Optional"].forEach(c => document.getElementById("cnt-" + c).textContent = counts[c]);
 
-    const placed = services.filter(s => state.sort[s.name]).length;
-    const correct = services.filter(s => state.sort[s.name] === s.col).length;
+    const placed = exerciseServices.filter(s => state.sort[s.name]).length;
+    const correct = exerciseServices.filter(s => state.sort[s.name] === s.col).length;
     const pct = placed ? Math.round((correct / placed) * 100) : 0;
     document.getElementById("accuracyFill").style.width = pct + "%";
     document.getElementById("accuracyTrack").setAttribute("aria-valuenow", String(pct));
     document.getElementById("accuracyValue").textContent =
-      placed ? correct + " / " + placed + " match (" + pct + "%) · " + placed + " / " + services.length + " placed" : "0 / " + services.length + " placed";
+      placed ? correct + " / " + placed + " match (" + pct + "%) · " + placed + " / " + exerciseServices.length + " placed" : "0 / " + exerciseServices.length + " placed";
+  }
+  for (const [id, mode] of [["shortSort", "short"], ["fullSort", "full"]]) {
+    document.getElementById(id).addEventListener("click", () => { state.sortMode = mode; renderSort(); save(); });
   }
 
   function placeChip(name, col) {
@@ -1978,7 +2152,7 @@ a { color: var(--cp-link); }
       reportError("This item cannot be placed in the service sort.", new Error("Invalid service or bucket"));
       return;
     }
-    if (col) { state.sort[name] = col; } else { delete state.sort[name]; }
+    if (col) { state.sort[name] = col; state.sortWhyShown[name] = true; } else { delete state.sort[name]; delete state.sortWhyShown[name]; }
     renderSort();
     save();
   }
@@ -2019,6 +2193,9 @@ a { color: var(--cp-link); }
     });
     document.getElementById("vnetDiagramMS").style.display = isByo ? "none" : "block";
     document.getElementById("vnetDiagramBYO").style.display = isByo ? "block" : "none";
+    document.getElementById("networkSelected").textContent = isByo
+      ? "BYO: the customer owns addressing, DNS, routes and firewall integration. Validate the selected agent, tools and deployment path."
+      : "Managed: Microsoft owns the managed VNet. Configure supported private endpoints and outbound rules; inbound access is a separate decision.";
   }
   document.querySelectorAll("#vnetToggle .toggle-opt").forEach(opt => {
     opt.addEventListener("click", () => {
@@ -2069,29 +2246,45 @@ a { color: var(--cp-link); }
         save();
       });
       checklistEl.appendChild(row);
+      const implementation = document.createElement("div");
+      implementation.className = "policy-implementation";
+      const link = document.createElement("a");
+      link.href = "https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyDetailBlade/definitionId/%2Fproviders%2FMicrosoft.Authorization%2FpolicyDefinitions%2F" + item.policyId;
+      link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = item.name;
+      implementation.append(link);
+      for (const text of [
+        "Scope: existing management group or subscription covering the target resources; narrow assignment when justified.",
+        "Coverage: " + item.coverage, "Supported effect: " + item.effect,
+        "Owner: " + item.owner,
+        "Exception approach: documented justification, accountable approver, compensating controls and expiring exemption; review before renewal.",
+      ]) {
+        const p = document.createElement("p"); p.textContent = text; implementation.append(p);
+      }
+      implementation.appendChild(sourceNote("policy"));
+      checklistEl.appendChild(implementation);
     });
   }
 
   // ---------- Panel 5: governance rings ----------
   const govMap = {
     mg: {
-      title: "Management Group (AI subscriptions)",
-      text: "Policy assigned once here is inherited by every subscription and resource underneath — this is what makes the next four controls consistent across the whole estate instead of configured per-subscription.",
+      title: "Management group",
+      text: "Use the existing landing-zone hierarchy. A dedicated AI management group is justified only by distinct governance requirements.",
       items: [0, 1],
     },
     sub: {
-      title: "Subscriptions (shared + per-LOB)",
-      text: "Hub and spoke subscription boundaries carry the inherited policy down, and are where local (key) authentication gets disabled and enforced.",
+      title: "Subscription",
+      text: "Assignments cover applicable resources within the subscription, subject to definition coverage, exclusions and exemptions.",
       items: [2],
     },
-    lz: {
-      title: "AI Landing Zone (APIM + Foundry)",
-      text: "A landing zone is an architecture, not a separate Azure Policy scope. Assign applicable initiatives at management group, subscription, resource group, or resource scope to cover its resources.",
+    rg: {
+      title: "Resource group",
+      text: "Group related resources by ownership and lifecycle. A landing zone is an architecture, not an Azure Policy scope.",
       items: [3],
     },
-    deploy: {
-      title: "Foundry Deployment",
-      text: "Per-model, per-project telemetry lands in one shared Log Analytics workspace per environment tier, enabling cross-service audit joins.",
+    resource: {
+      title: "Resource",
+      text: "Policy coverage depends on resource type and definition. Foundry projects and model deployments are service-specific resource relationships.",
       items: [4],
     },
   };
@@ -2100,6 +2293,7 @@ a { color: var(--cp-link); }
       ring.classList.toggle("active", state.govActive === ring.dataset.ring);
     });
     const def = govMap[state.govActive || "mg"];
+    document.getElementById("govDetail").hidden = !state.govActive;
     document.getElementById("govDetail").innerHTML =
       '<span class="step-tag">' + def.title + '</span><p>' + def.text + '</p>';
   }
@@ -2128,26 +2322,30 @@ a { color: var(--cp-link); }
   function renderLot() {
     lotBody.innerHTML = "";
     state.lot.forEach((row, idx) => {
-      const tr = document.createElement("tr");
-      const tdA = document.createElement("td");
-      const taA = document.createElement("textarea");
-      taA.value = row.a || "";
-      taA.placeholder = "e.g. Adopt APIM as our AI gateway hub";
-      taA.setAttribute("aria-label", "Decision " + (idx + 1));
-      taA.addEventListener("input", () => { state.lot[idx].a = taA.value; save(); });
-      tdA.appendChild(taA);
-
-      const tdB = document.createElement("td");
-      const taB = document.createElement("textarea");
-      taB.value = row.b || "";
-      taB.placeholder = "e.g. Who owns the MG-scope policy assignment?";
-      taB.setAttribute("aria-label", "Open question " + (idx + 1));
-      taB.addEventListener("input", () => { state.lot[idx].b = taB.value; save(); });
-      tdB.appendChild(taB);
-
-      const tdRm = document.createElement("td");
-      tdRm.className = "rm";
+      const article = document.createElement("article");
+      article.className = "decision-entry"; article.setAttribute("role", "listitem");
+      for (const [field, title, type] of [
+        ["a", "Decision", "textarea"], ["b", "Open question", "textarea"],
+        ["owner", "Owner", "text"], ["nextAction", "Next action", "text"],
+        ["targetDate", "Target date", "date"], ["status", "Status", "select"],
+      ]) {
+        const label = document.createElement("label");
+        label.textContent = title;
+        const control = document.createElement(type === "textarea" || type === "select" ? type : "input");
+        if (control.tagName === "INPUT") control.type = type;
+        if (type === "select") {
+          for (const value of ["Proposal", "Agreed", "In progress", "Blocked", "Done"]) {
+            const option = document.createElement("option"); option.value = value; option.textContent = value; control.append(option);
+          }
+        }
+        control.value = row[field]; control.setAttribute("aria-label", title + " " + (idx + 1));
+        if (field === "a") control.placeholder = "What is proposed or agreed?";
+        if (field === "b") control.placeholder = "What remains unresolved?";
+        control.addEventListener("input", () => { state.lot[idx][field] = control.value; save(); });
+        label.append(control); article.append(label);
+      }
       const rmBtn = document.createElement("button");
+      rmBtn.className = "iconbtn"; rmBtn.type = "button";
       rmBtn.innerHTML = "&#10005;";
       rmBtn.title = "Remove row";
       rmBtn.setAttribute("aria-label", "Remove decision row " + (idx + 1));
@@ -2156,22 +2354,21 @@ a { color: var(--cp-link); }
         renderLot();
         save();
       });
-      tdRm.appendChild(rmBtn);
-
-      tr.appendChild(tdA); tr.appendChild(tdB); tr.appendChild(tdRm);
-      lotBody.appendChild(tr);
+      article.appendChild(rmBtn);
+      lotBody.appendChild(article);
     });
   }
   document.getElementById("addRow").addEventListener("click", () => {
-    state.lot.push({ a: "", b: "" });
+    state.lot.push(emptyDecision());
     renderLot();
     save();
   });
 
   document.getElementById("exportNotes").addEventListener("click", () => {
     const lines = ["AI Landing Zone - Decisions & Parking Lot", new Date().toISOString(), ""];
-    state.lot.filter(row => row.a.trim() || row.b.trim()).forEach((row, i) => {
-      lines.push("Item " + (i + 1), "Decision: " + row.a, "Open question: " + row.b, "");
+    state.lot.filter(row => ["a", "b", "owner", "nextAction", "targetDate"].some(field => row[field].trim())).forEach((row, i) => {
+      lines.push("Item " + (i + 1), "Status: " + row.status, "Decision: " + row.a, "Open question: " + row.b,
+        "Owner: " + row.owner, "Next action: " + row.nextAction, "Target date: " + row.targetDate, "");
     });
     if (lines.length === 3) lines.push("No decisions or open questions recorded.");
     const url = URL.createObjectURL(new Blob([lines.join("\r\n")], { type: "text/plain;charset=utf-8" }));
@@ -2216,13 +2413,13 @@ a { color: var(--cp-link); }
     const play = root.querySelector("#studioPlay");
     const nodeRoot = root.querySelector("#studioNodes");
     const nodeDefinitions = {
-      user: { x: 20, y: 156, w: 160, art: "person", title: "On-premises", caption: "Enterprise users / clients", text: "This private hybrid example starts with a user on the enterprise network accessing an Azure-hosted application. ExpressRoute or VPN provides the hybrid connection; identity and permissions still apply." },
-      network: { x: 235, y: 156, w: 210, h: 220, art: "network", title: "Connectivity hub", caption: "ER / VPN gateway + routing", details: ["Shared DNS resolution", "Firewall / NVA (if routed)"], text: "The network hub provides hybrid gateway connectivity, routing, and shared DNS resolution to reach connected spokes. DNS is not an inline request hop. Azure Firewall or an NVA inspects traffic only when configured routes steer it there. This is not APIM." },
-      app: { x: 500, y: 156, w: 180, art: "app", title: "Your application", caption: "Azure workload", text: "The Azure-hosted application receives the user request via the hybrid network path, then makes its own model call through APIM. It owns the user experience, orchestration, retrieval authorization, tool approvals, and answer evaluation." },
-      gateway: { x: 735, y: 156, w: 180, art: "gateway", title: "Shared AI gateway", caption: "APIM / Model access", text: "APIM governs API requests; it is not the connectivity hub. It can sit in a shared-services spoke with supported private connectivity. Configured caller checks, model routing, and usage controls apply here; model backends also need identity and network restrictions to prevent bypass." },
-      model: { x: 970, y: 156, w: 180, art: "model", title: "Foundry model", caption: "Approved deployment", text: "An approved model generates a response or proposes an action. Model output is not an authorization decision and must be evaluated for the workload." },
-      data: { x: 500, y: 386, w: 180, art: "data", title: "Company knowledge", caption: "Authorized retrieval", text: "Grounding adds retrieval from permitted enterprise content, using a service such as AI Search. Enforce document access before passing retrieved content to the model." },
-      tools: { x: 735, y: 386, w: 180, art: "tools", title: "Approved tools", caption: "Authorized actions", text: "Tools execute actions against backend systems. The workload must validate permissions and high-impact approvals before execution; the exact network path depends on the chosen runtime." },
+      user: { x: 20, y: 40, w: 160, owner: "Enterprise", art: "person", title: "On-premises", caption: "Three teams", text: "Three teams access the same internal assistant through the enterprise network. Hybrid connectivity does not expand their permissions." },
+      network: { x: 235, y: 40, w: 210, owner: "Platform foundation", art: "network", title: "Connectivity hub", caption: "Routes / DNS", text: "The platform owns hybrid connectivity, routing and shared DNS. Firewall inspection depends on configured routes. This network hub is not APIM." },
+      app: { x: 500, y: 40, w: 180, owner: "Workload", art: "app", title: "Application", caption: "Assistant UX", text: "The workload owns the assistant, prompts, authorized retrieval, evaluations and approved actions. It calls the shared gateway for model access." },
+      gateway: { x: 735, y: 40, w: 180, owner: "Shared AI services", art: "gateway", title: "AI gateway", caption: "APIM", text: "APIM applies configured controls to requests routed through it. Backend identity and network controls prevent unintended bypass; placement can be a shared-services spoke." },
+      model: { x: 970, y: 40, w: 180, owner: "Shared AI services", art: "model", title: "Approved model", caption: "Azure OpenAI", text: "The chosen provider is Azure OpenAI. Confirm an agent-compatible model, region and quota before deployment. Model output is not permission to act." },
+      data: { x: 500, y: 172, w: 180, owner: "", art: "data", title: "Company data", caption: "Permitted retrieval", text: "The same assistant now retrieves permitted company documents. Workload owners enforce document access and evaluate grounded responses." },
+      tools: { x: 735, y: 172, w: 180, owner: "", art: "tools", title: "Approved tools", caption: "Authorized actions", text: "The same assistant can propose actions. The workload checks permissions and required approval before tools execute. This is a logical flow, not a fixed runtime network path." },
     };
     const ns = "http://www.w3.org/2000/svg";
     function makeSvg(tag, attributes, text) {
@@ -2240,14 +2437,12 @@ a { color: var(--cp-link); }
       const group = makeSvg("g", { class: "studio-node", "data-studio-node": key, role: "button",
         "aria-label": node.title + ": " + node.caption, "aria-pressed": "false" });
       group.append(
-        makeSvg("rect", { class: "studio-surface", x: node.x, y: node.y, width: node.w, height: node.h || 184, rx: 14 }),
-        makeSvg("use", { class: "studio-art", href: "#studio-" + node.art + "-art", x: node.x + (node.w - 140) / 2, y: node.y + 4, width: 140, height: 115, "aria-hidden": "true" }),
-        makeSvg("text", { class: "studio-node-title", x: node.x + node.w / 2, y: node.y + 139 }, node.title),
-        makeSvg("text", { class: "studio-node-caption", x: node.x + node.w / 2, y: node.y + 160 }, node.caption),
+        makeSvg("rect", { class: "studio-surface", x: node.x, y: node.y, width: node.w, height: 106, rx: 10 }),
+        makeSvg("use", { class: "studio-art", href: "#studio-" + node.art + "-art", x: node.x + (node.w - 72) / 2, y: node.y + 2, width: 72, height: 50, "aria-hidden": "true" }),
+        makeSvg("text", { class: "studio-node-title", x: node.x + node.w / 2, y: node.y + 68 }, node.title),
+        makeSvg("text", { class: "studio-node-caption", x: node.x + node.w / 2, y: node.y + 92 }, node.caption),
       );
-      (node.details || []).forEach((text, index) => group.appendChild(
-        makeSvg("text", { class: "studio-node-caption", x: node.x + node.w / 2, y: node.y + 182 + index * 20 }, text)
-      ));
+      if (node.owner) nodeRoot.appendChild(makeSvg("text", { class: "studio-owner", x: node.x + node.w / 2, y: node.y - 12 }, node.owner));
       keyboardClick(group);
       group.addEventListener("click", () => {
         pauseStudio();
@@ -2279,23 +2474,24 @@ a { color: var(--cp-link); }
       hop("network", "Return through the connectivity hub", "The application's response returns over the configured hybrid network path; the hub provides network connectivity, not API governance.", "network-app", true),
       hop("user", "Return to the user", "The response reaches the enterprise user over ExpressRoute or VPN. The application captures appropriate operational records.", "user-network", true),
     ];
+    const retrieval = [
+      hop("data", "Retrieve permitted knowledge", "The application retrieves only content this user is authorized to access.", "app-data"),
+      hop("app", "Assemble grounded context", "Retrieved content returns to the application and is assembled with the question.", "app-data", true),
+    ];
     const routes = {
       model: [...start, ...modelCall,
         hop("app", "Handle the answer", "The workload applies its response-handling and evaluation controls.", "app-gateway", true), ...finish],
-      rag: [...start,
-        hop("data", "Retrieve permitted knowledge", "The application retrieves only content this user is authorized to access.", "app-data"),
-        hop("app", "Assemble grounded context", "Retrieved content returns to the application and is assembled with the question.", "app-data", true),
-        ...modelCall,
+      rag: [...start, ...retrieval, ...modelCall,
         hop("app", "Present an answer with sources", "The application formats the answer with source references; sources do not guarantee correctness.", "app-gateway", true), ...finish],
-      agent: [...start, ...modelCall,
+      agent: [...start, ...retrieval, ...modelCall,
         hop("app", "Authorize the proposed action", "The workload validates the proposed operation and obtains approval when required before executing a tool.", "app-gateway", true),
         hop("tools", "Execute the approved action", "The authorized tool performs its allowed backend operation. This logical example does not depict the Foundry runtime's detailed tool-network path.", "app-tools"),
         hop("app", "Handle the tool result", "The application receives the result, records the action, and prepares the user-facing response.", "app-tools", true), ...finish],
     };
     const summaries = {
-      model: ["Private hybrid AI application", "On-premises users reach the Azure application through the connectivity hub. The application then calls the separate APIM gateway and approved model. Select an illustration to explore its role."],
-      rag: ["Company knowledge added", "Grounding adds authorized retrieval before the model call. The data path belongs to the workload, not automatically to APIM."],
-      agent: ["Agent actions added", "Model reasoning can propose an action. The workload authorizes it before the tool executes; reasoning is not permission."],
+      model: ["Three teams, one AI application", "The internal assistant reaches an approved model through APIM. The connectivity hub supplies the network path, not API governance."],
+      rag: ["Company knowledge added", "The same assistant now retrieves permitted company documents. Grounding adds document authorization and answer evaluation responsibilities to the workload."],
+      agent: ["Agent actions added", "The same assistant keeps permitted retrieval and adds approved tools. The workload checks action permissions and approvals before execution; model reasoning is not permission."],
     };
     function pauseStudio() {
       cancelAnimationFrame(frame);
@@ -2348,7 +2544,7 @@ a { color: var(--cp-link); }
       root.dataset.mode = mode;
       root.querySelectorAll("[data-studio-mode]").forEach(button =>
         button.setAttribute("aria-pressed", String(button.dataset.studioMode === mode)));
-      for (const [key, visible] of [["data", mode === "rag"], ["tools", mode === "agent"]]) {
+      for (const [key, visible] of [["data", mode !== "model"], ["tools", mode === "agent"]]) {
         nodes[key].toggleAttribute("hidden", !visible);
         nodes[key].tabIndex = visible ? 0 : -1;
         document.getElementById("studio-lane-app-" + key).toggleAttribute("hidden", !visible);
@@ -2587,8 +2783,8 @@ a { color: var(--cp-link); }
     result.setAttribute("role", "status");
     const controls = document.createElement("div");
     controls.className = "walkthrough-controls";
-    controls.innerHTML = '<button type="button" class="iconbtn primary walkthrough-play">Play walkthrough</button>' +
-      '<button type="button" class="iconbtn walkthrough-next">Next step</button>' +
+    controls.innerHTML = '<button type="button" class="iconbtn walkthrough-play">Play walkthrough</button>' +
+      '<button type="button" class="iconbtn primary walkthrough-next">Next step</button>' +
       '<button type="button" class="iconbtn walkthrough-overview">Show overview</button>' +
       '<span class="walkthrough-status" role="status" aria-live="polite"></span>';
     const play = controls.querySelector(".walkthrough-play");
@@ -2934,6 +3130,129 @@ a { color: var(--cp-link); }
     },
   ], "Illustrative resource-property policy; independent of the discussion checklist.");
 
+  const presentationRoute = [
+    { panel: "p0", key: "scenario", title: "Opening scenario" },
+    { panel: "p1", key: "architecture", title: "Evolving architecture" },
+    { panel: "p4", key: "ownership", title: "Shared / workload ownership" },
+    { panel: "p4", key: "gateway", title: "One gateway outcome" },
+    { panel: "p3", key: "network", title: "Network decision" },
+    { panel: "p5", key: "policy", title: "Audit versus Deny" },
+    { panel: "p6", key: "decisions", title: "Decisions" },
+  ];
+  let presentationIndex = 0;
+  function updatePresentation(id) {
+    const first = presentationRoute.findIndex(step => step.panel === id);
+    if (first >= 0 && presentationRoute[presentationIndex].panel !== id) presentationIndex = first;
+    const step = presentationRoute[presentationIndex];
+    document.body.dataset.route = first < 0 ? "reference" : step.key;
+    document.getElementById("sectionIndicator").textContent = first < 0
+      ? "Optional reference" : (presentationIndex + 1) + " / " + presentationRoute.length + " · " + step.title;
+    document.getElementById("previousSection").disabled = first >= 0 && presentationIndex === 0;
+    document.getElementById("nextSection").disabled = first >= 0 && presentationIndex === presentationRoute.length - 1;
+    document.getElementById("nextSection").textContent = first < 0 ? "Return to presentation" : "Next section";
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }
+  function movePresentation(offset) {
+    if (document.body.dataset.route !== "reference") presentationIndex += offset;
+    presentationIndex = Math.max(0, Math.min(presentationRoute.length - 1, presentationIndex));
+    showPanel(presentationRoute[presentationIndex].panel);
+  }
+  document.getElementById("previousSection").addEventListener("click", () => movePresentation(-1));
+  document.getElementById("nextSection").addEventListener("click", () => movePresentation(1));
+  document.getElementById("sidebarToggle").addEventListener("click", () => {
+    const hidden = document.body.classList.toggle("sidebar-hidden");
+    document.getElementById("sidebarToggle").setAttribute("aria-expanded", String(!hidden));
+    document.getElementById("sidebarToggle").textContent = hidden ? "Show sections" : "Hide sections";
+  });
+  function setupPresentation() {
+    if (location.protocol === "file:") {
+      document.getElementById("downloadOffline").hidden = true;
+      document.getElementById("offlineReady").hidden = false;
+    }
+    function reference(panel, nodes, label) {
+      const details = document.createElement("details"); details.className = "reference-content";
+      const summary = document.createElement("summary"); summary.textContent = label; details.append(summary);
+      nodes.forEach(node => details.append(node)); panel.append(details);
+      return details;
+    }
+    const high = document.getElementById("p1");
+    reference(high, [...high.children].filter(node => node.id !== "architectureStudio"),
+      "Reference: Hub & Spoke Architecture, AI Landing Zone Blueprint and additional walkthroughs");
+    document.querySelector("#p0 .opening").append(sourceNote("standard"));
+    document.querySelector("#architectureStudio .studio-footnote").append(sourceNote("accelerator"));
+    const ownership = document.createElement("div"); ownership.className = "card"; ownership.id = "ownershipMain";
+    ownership.innerHTML = '<h2>One foundation, clear ownership</h2><div class="ownership-grid">' +
+      '<article><h3>Shared platform responsibilities</h3><p>Connectivity, shared gateway, applicable policies and shared operational standards.</p><p>Enterprise/platform foundation: identity, hybrid networking, governance and operating standards.</p><p>Shared AI services: approved model access and gateway controls.</p></article>' +
+      '<article><h3>Workload responsibilities</h3><p>Application, prompts, authorized retrieval, tools, evaluations, workload costs and support.</p><p>The three teams retain their own document permissions. Sharing a gateway does not grant access to another team’s data or actions.</p></article></div>' +
+      '<p class="takeaway">The Agent Landing Zone and AI Gateway Landing Zone can be deployed together or independently.</p><p>Accelerator: preview. Individual Azure services: check their own availability and selected features.</p>';
+    ownership.append(sourceNote("accelerator"));
+    const zones = document.getElementById("p4");
+    const originalZones = [...zones.children];
+    const gateway = document.createElement("div"); gateway.className = "card"; gateway.id = "gatewayMain";
+    gateway.innerHTML = '<h2>One gateway outcome: missing identity</h2><p>A shared enforcement point for requests routed through the gateway, with backend identity and network controls configured to prevent unintended bypass.</p>';
+    const gatewayScenario = document.getElementById("gatewayScenario");
+    gateway.append(gatewayScenario);
+    const more = document.createElement("button"); more.type = "button"; more.className = "iconbtn"; more.textContent = "More outcomes (questions)"; more.setAttribute("aria-expanded", "false");
+    more.addEventListener("click", () => {
+      more.setAttribute("aria-expanded", String(gateway.classList.toggle("all-outcomes")));
+    });
+    gateway.append(more, sourceNote("telemetry"));
+    function resetGateway() {
+      gateway.classList.remove("all-outcomes"); more.setAttribute("aria-expanded", "false");
+      gatewayScenario.querySelectorAll(".scenario-options button")[1].click();
+    }
+    resetGateway(); demoResets.add(resetGateway);
+    zones.prepend(ownership, gateway);
+    reference(zones, originalZones, "Reference: hub / spoke diagrams, private-access design and other workload flows");
+    const network = document.getElementById("p3");
+    const originalNetwork = [...network.children];
+    const comparison = document.createElement("div"); comparison.className = "card"; comparison.id = "networkMain";
+    comparison.innerHTML = '<h2>Choose your network model</h2><p class="takeaway">Private connectivity alone does not require BYO networking; customer-controlled routing and inspection may.</p>';
+    comparison.append(document.getElementById("vnetToggle").parentElement);
+    const summary = document.createElement("p"); summary.id = "networkSelected"; summary.className = "network-model-summary"; summary.setAttribute("role", "status"); comparison.append(summary);
+    comparison.insertAdjacentHTML("beforeend", '<table class="network-comparison"><thead><tr><th>Choose based on</th><th>Microsoft-managed</th><th>Bring your own VNet</th></tr></thead><tbody>' +
+      '<tr><th>Inbound access</th><td colspan="2">Decide separately how clients reach the application or Foundry endpoint; private inbound access does not alone require BYO.</td></tr>' +
+      '<tr><th>Outbound access</th><td>Supported managed private endpoints, required permissions and approvals; configured outbound rules.</td><td>Customer-managed connectivity to permitted dependencies, agents and tools.</td></tr>' +
+      '<tr><th>Inspection / routing</th><td>No customer firewall or UDR design inside the managed VNet. Optional FQDN rules use a Microsoft-managed Azure Firewall and can incur charges.</td><td>Customer-controlled routes and firewall integration, subject to agent and service support.</td></tr>' +
+      '<tr><th>Existing connectivity</th><td>Validate supported access to each private dependency.</td><td>Plan shared-service / on-premises routes and DNS.</td></tr>' +
+      '<tr><th>Operational ownership</th><td>Microsoft owns managed addressing and infrastructure; you configure rules and approvals.</td><td>You own addressing, DNS, routes and rules.</td></tr>' +
+      '<tr><th>Support constraints</th><td colspan="2">Confirm region, agent type, tools and deployment path. Resource setup (basic / standard) and network model are separate choices.</td></tr>' +
+      '</tbody></table><p class="browser-note">This switch changes the illustration, not Azure. Managed isolation cannot be disabled once enabled; approved-only cannot revert to internet access. BYO-to-managed migration requires redeployment.</p>');
+    comparison.append(sourceNote("managed")); network.prepend(comparison);
+    const networkReference = reference(network, originalNetwork, "Reference: network diagrams, BYO sizing and deployment-path-specific capability configuration");
+    const capability = document.createElement("p");
+    capability.textContent = "Deployment-path-specific capability configuration: classic capability hosts and newer Foundry capability settings are different provisioning paths. Confirm the selected experience, API/tooling version, supported region and required caller permissions; do not apply one universal CapHost creation sequence.";
+    networkReference.append(capability, sourceNote("standard"), sourceNote("byo"));
+    document.querySelector("#p5 .card").append(document.getElementById("policyRecommendations"));
+    document.querySelector("#p5 .card").append(sourceNote("scope"));
+    const recommendations = document.getElementById("policyRecommendations");
+    recommendations.append(sourceNote("identity"), sourceNote("logs"));
+    for (const [selector, keys] of [
+      ["#p2 .card", ["standard"]], ["#byoSubnetExplanation", ["byo"]],
+      ["#vnetDiagramMS", ["managed"]],
+      ["#detail-deps", ["standard"]], ["#detail-spoke-deps", ["standard"]],
+      ["#detail-hub", ["accelerator"]], ["#detail-hub-gateway", ["telemetry"]],
+      ["#hub .feature-grid", ["telemetry"]], ["#detail-hub-shared", ["logs"]],
+      ["#addressApplicability > div", ["byo", "deep"]],
+      ["#network-flows", ["deep"]], ["#network-capacity", ["byo", "deep"]],
+      ["#network-egress", ["managed"]], ["#network-operations", ["byo", "managed"]],
+    ]) {
+      const target = document.querySelector(selector); keys.forEach(key => target.append(sourceNote(key)));
+    }
+    const prompts = ["First workload", "Shared gateway ownership", "Network approach", "Policy ownership", "Remaining prerequisites"];
+    const readiness = ["Region / model availability", "Quota and capacity", "Cost ownership", "Evaluations and acceptance criteria", "Safety / privacy and action authorization", "Recovery expectations", "Monitoring and alerting", "Support ownership"];
+    function promptButton(text, target) {
+      const button = document.createElement("button"); button.type = "button"; button.className = "iconbtn"; button.textContent = text;
+      button.addEventListener("click", () => {
+        const row = emptyDecision(); row.b = "Resolve: " + text;
+        state.lot.push(row); renderLot(); save();
+        lotBody.lastElementChild.querySelector("textarea").focus();
+      }); target.append(button);
+    }
+    prompts.forEach(text => promptButton(text, document.getElementById("decisionPrompts")));
+    readiness.forEach(text => promptButton(text, document.getElementById("readinessItems")));
+  }
+  setupPresentation();
   const initialAccordions = [...document.querySelectorAll("details")].map(element => ({ element, open: element.open }));
   document.getElementById("resetDemo").addEventListener("click", async () => {
     pauseWalkthroughs();
@@ -2958,11 +3277,15 @@ a { color: var(--cp-link); }
     renderVnet();
     renderChecklist();
     renderGovRings();
-    showPanel("p1");
+    presentationIndex = 0;
+    document.body.classList.add("sidebar-hidden");
+    document.getElementById("sidebarToggle").setAttribute("aria-expanded", "false");
+    document.getElementById("sidebarToggle").textContent = "Show sections";
+    showPanel("p0");
     document.querySelectorAll(".content, .sidebar, .topo-wrap, .studio-canvas, .network-table-wrap").forEach(element =>
       element.scrollTo({ top: 0, left: 0, behavior: "instant" }));
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-    document.querySelector('.navbtn[data-panel="p1"]').focus({ preventScroll: true });
+    document.getElementById("nextSection").focus({ preventScroll: true });
   });
 
   // ---------- Init ----------
@@ -2977,7 +3300,7 @@ a { color: var(--cp-link); }
   renderGovRings();
   renderLot();
   updateProgress();
-  showPanel(state.activePanel || "p1");
+  showPanel("p0");
 })();
 </script>
 </body>
