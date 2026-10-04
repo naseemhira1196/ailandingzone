@@ -665,7 +665,6 @@ a { color: var(--cp-link); }
 .opening-choice:not(:last-child)::after { content: "→"; position: absolute; right: -27px; top: 44%; color: var(--cp-accent); font-size: 24px; pointer-events: none; }
 .opening-foundation { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 8px 16px; padding: 14px; border-radius: 10px; background: var(--cp-accent-soft); color: var(--cp-text); }
 .opening-foundation strong { color: var(--cp-accent); }
-.opening-caption { text-align: center; margin: 14px 0 8px; }
 @media (max-width: 700px) {
   .opening-team-story { flex-direction: column; gap: 6px; text-align: center; }
   .opening-journey { grid-template-columns: 1fr; gap: 30px; }
@@ -849,7 +848,6 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
             </button>
           </div>
           <div class="opening-foundation"><strong>Reusable guardrails</strong><span>Identity</span><span>Connectivity</span><span>Governance</span><span>Operations</span></div>
-          <p class="browser-note opening-caption">Illustrative · No live Azure calls · Browser-local activity</p>
           <details class="reference-content" id="openingDetails">
             <summary>Scenario details</summary>
             <p class="opening-definition">An AI landing zone is a repeatable foundation for deploying and operating AI workloads with enterprise identity, connectivity, governance and operational controls.</p>
@@ -869,7 +867,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
         <div class="card studio" id="architectureStudio">
           <div class="studio-topline">
             <h2 id="studioHeading">AI landing zone: shared foundation, owned workloads</h2>
-            <span class="badge">Illustrative · No live Azure calls</span><button class="iconbtn" type="button" id="studioExpand" aria-haspopup="dialog">Focus explorer</button>
+            <button class="iconbtn" type="button" id="studioExpand" aria-haspopup="dialog">Focus explorer</button>
           </div>
           <div class="studio-controls">
             <div class="scenario-options" role="group" aria-label="Example workload requirements">
@@ -1817,7 +1815,7 @@ SOFTWARE</pre>
           <div class="network-pane" id="network-capacity" hidden>
             <h3>Shared subnet capacity, not a per-agent allocation</h3>
             <p class="network-intro">The delegated subnet is configured at the Foundry account level and shared across its projects and agent types. Start production planning at /24 or larger, then size for actual peak usage and temporary maintenance capacity.</p>
-            <div class="network-tabs" role="group" aria-label="Illustrative subnet size">
+            <div class="network-tabs" role="group" aria-label="Subnet size">
               <button class="iconbtn" data-network-subnet="27" aria-pressed="false" aria-controls="networkCapacityResult">/27 · Small development</button>
               <button class="iconbtn" data-network-subnet="26" aria-pressed="false" aria-controls="networkCapacityResult">/26 · Scoped pilot</button>
               <button class="iconbtn" data-network-subnet="24" aria-pressed="true" aria-controls="networkCapacityResult">/24 · Production starting point</button>
@@ -2138,7 +2136,7 @@ SOFTWARE</pre>
     document.getElementById("networkEnvelope").textContent = String(envelope);
     document.getElementById("networkSpare").textContent = String(usable - envelope);
     document.getElementById("networkCapacitySummary").textContent = "/" + state.networkSubnet +
-      ": illustrative address budget only, not a supported session count or measured utilization. " +
+      ": address budget only, not a supported session count or measured utilization. " +
       (Number(state.networkSubnet) > 24 ? "Smaller than the /24 production starting point. " : "Validate this size against your workload peak. ") +
       "Project networking consumes part of the envelope, and regional session quotas apply separately.";
     const approved = state.networkEgress === "approved";
@@ -2857,17 +2855,14 @@ SOFTWARE</pre>
     });
   }
 
-  // Illustrative cases are intentionally separate from persisted customer notes and real telemetry.
+  // Example cases are intentionally separate from persisted customer notes and real telemetry.
   function buildScenario(id, title, cases, disclaimer) {
     const root = document.getElementById(id);
     const heading = document.createElement("div");
     heading.className = "scenario-heading";
     const h3 = document.createElement("h3");
     h3.textContent = title;
-    const badge = document.createElement("span");
-    badge.className = "badge";
-    badge.textContent = "Illustrative · No live Azure calls";
-    heading.append(h3, badge);
+    heading.append(h3);
     const choices = document.createElement("div");
     choices.className = "scenario-options";
     choices.setAttribute("role", "group");
@@ -3225,7 +3220,7 @@ SOFTWARE</pre>
       result: "Passing one policy is not a full security assessment",
       text: "Other policies, permissions, and deployment checks still apply. Disabling public access alone does not create working private endpoints, DNS resolution, or identity permissions.",
     },
-  ], "Illustrative resource-property policy; independent of the discussion checklist.");
+  ], "Resource-property policy; independent of the discussion checklist.");
 
   let presentationIndex = 0;
   function updatePresentation(id) {
