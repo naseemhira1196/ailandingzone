@@ -12,7 +12,7 @@ Download or clone this repository and open `index.html` in a modern browser. No 
 
 The dashboard includes:
 
-- An **Opening scenario** with a landing-zone definition, session purpose and explicit use-case, Foundry experience, networking, model and region assumptions.
+- A visual **Opening scenario** with three clickable **Ask / Know / Act** cards that open the matching explorer scene. The definition, session purpose and scenario assumptions remain available under **Scenario details**.
 - A **visual architecture explorer** that evolves the same three-team internal assistant from model access to permitted company knowledge, then approved actions. Agent actions retain the knowledge path. User entry starts with **Teams / M365 / web**; **Private hybrid** is a separate selectable path, not a prerequisite.
 - An **AI Landing Zone - High Level** view with a clickable hub/spoke map and supporting enterprise foundation, platform, workload, and operations blueprint.
 - Illustrated **Follow an AI request** journeys for model-only, grounded-answer, and agent-action workloads.

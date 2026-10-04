@@ -649,6 +649,28 @@ a { color: var(--cp-link); }
 .reference-content > .card { margin-top: 12px; }
 .takeaway { padding: 8px 12px; background: var(--cp-accent-soft); border-left: 3px solid var(--cp-accent); font-size: 0.95rem; line-height: 1.4; margin: 10px 0; }
 .opening-definition { font-size: 1.25rem; line-height: 1.5; }
+.opening h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.2; border: 0; padding: 0; }
+.opening-team-story { display: flex; align-items: center; justify-content: center; gap: 20px; margin: 8px 0 24px; }
+.opening-team-story svg { width: 176px; height: 64px; flex-shrink: 0; color: var(--cp-accent); }
+.opening-team-story strong { display: block; font-size: 1.25rem; }
+.opening-team-story span { color: var(--cp-text-muted); font-size: 0.95rem; }
+.opening-journey { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; margin: 12px 0 24px; }
+.opening-choice { position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 0; padding: 24px 16px 18px; border: 2px solid var(--cp-border); border-radius: 16px; background: var(--cp-surface); color: var(--cp-text); font: inherit; cursor: pointer; box-shadow: var(--cp-shadow); transition: border-color 150ms, background 150ms; }
+.opening-choice:hover, .opening-choice:focus-visible { border-color: var(--cp-accent); background: var(--cp-accent-soft); }
+.opening-choice .stage-art { width: 70px; height: 70px; color: var(--cp-accent); }
+.opening-choice strong { font-size: 1.5rem; }
+.opening-choice .choice-description { font-size: 1rem; line-height: 1.4; }
+.opening-choice .choice-number { position: absolute; top: 12px; left: 14px; color: var(--cp-text-muted); font-size: 0.8rem; font-weight: 700; }
+.opening-choice .choice-action { margin-top: 6px; color: var(--cp-link); font-weight: 600; }
+.opening-choice:not(:last-child)::after { content: "→"; position: absolute; right: -27px; top: 44%; color: var(--cp-accent); font-size: 24px; pointer-events: none; }
+.opening-foundation { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 8px 16px; padding: 14px; border-radius: 10px; background: var(--cp-accent-soft); color: var(--cp-text); }
+.opening-foundation strong { color: var(--cp-accent); }
+.opening-caption { text-align: center; margin: 14px 0 8px; }
+@media (max-width: 700px) {
+  .opening-team-story { flex-direction: column; gap: 6px; text-align: center; }
+  .opening-journey { grid-template-columns: 1fr; gap: 30px; }
+  .opening-choice:not(:last-child)::after { content: "↓"; top: auto; bottom: -29px; right: calc(50% - 8px); }
+}
 .opening blockquote { margin: 16px 0; padding: 14px; border-left: 3px solid var(--cp-accent); font-size: 1.1rem; background: var(--cp-accent-soft); }
 .assumptions-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; font-size: 0.9rem; }
 .assumptions-strip span { padding: 10px; border: 1px solid var(--cp-border); border-radius: 6px; }
@@ -804,16 +826,41 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
     <div class="content">
       <section class="panel active" id="p0">
         <div class="card opening">
-          <h2>One internal assistant, three teams</h2>
-          <p class="opening-definition">An AI landing zone is a repeatable foundation for deploying and operating AI workloads with enterprise identity, connectivity, governance and operational controls.</p>
-          <p>Today we’ll identify what is shared, what each workload owns, and the decisions needed to onboard our first AI workload.</p>
-          <p id="platformChoices"><b>Microsoft Foundry</b> powers the application and agent capabilities in this scenario. Users enter through Teams, Microsoft 365 or web via configured integrations. <b>Microsoft Copilot Studio</b> is an alternative conversational UX or integration option, not a second architecture in this walkthrough.</p>
-          <blockquote>Three teams need an internal assistant. They need approved models, access to permitted company documents, and eventually the ability to perform approved actions.</blockquote>
-          <div class="assumptions-strip" aria-label="Example assumptions">
-            <span><b>Use case</b> Internal assistant</span><span><b>Experience / agent</b> New Foundry · Prompt agent, standard resources</span><span><b>Network</b> Channel-specific ingress; compare managed/BYO agent egress</span><span><b>Model choice</b> Azure OpenAI · agent-compatible model to confirm</span><span><b>Target region</b> Canada East candidate · validate availability and quota</span>
+          <h2>One assistant. Three upgrades.</h2>
+          <div class="opening-team-story">
+            <svg viewBox="0 0 176 64" aria-hidden="true" focusable="false">
+              <g fill="var(--cp-accent-soft)" stroke="currentColor" stroke-width="2">
+                <circle cx="28" cy="19" r="10"/><path d="M8 56V46a20 20 0 0 1 40 0v10Z"/>
+                <circle cx="88" cy="15" r="12"/><path d="M64 56V44a24 24 0 0 1 48 0v12Z"/>
+                <circle cx="148" cy="19" r="10"/><path d="M128 56V46a20 20 0 0 1 40 0v10Z"/>
+              </g>
+            </svg>
+            <div><strong>Three teams. One shared foundation.</strong><span>How far should their assistant go?</span></div>
           </div>
-          <p class="takeaway">These diagrams explain responsibilities and logical flows; deployment details depend on the selected services and configuration.</p>
-          <p class="browser-note">Exercise state is saved only in this browser. This is not a shared voting session.</p>
+          <div class="opening-journey" role="group" aria-label="Explore the assistant's capabilities">
+            <button class="opening-choice" type="button" data-start-mode="model" data-start-icon="model" aria-label="Explore AI application with approved models">
+              <span class="choice-number">01</span><strong>Ask.</strong><span class="choice-description">Use approved models</span><span class="choice-action">Explore →</span>
+            </button>
+            <button class="opening-choice" type="button" data-start-mode="rag" data-start-icon="search" aria-label="Explore company knowledge with permitted retrieval">
+              <span class="choice-number">02</span><strong>Know.</strong><span class="choice-description">Add permitted company knowledge</span><span class="choice-action">Explore →</span>
+            </button>
+            <button class="opening-choice" type="button" data-start-mode="agent" data-start-icon="tools" aria-label="Explore agent actions with authorized tools">
+              <span class="choice-number">03</span><strong>Act.</strong><span class="choice-description">Use authorized tools</span><span class="choice-action">Explore →</span>
+            </button>
+          </div>
+          <div class="opening-foundation"><strong>AI landing zone</strong><span>Identity</span><span>Connectivity</span><span>Governance</span><span>Operations</span></div>
+          <p class="browser-note opening-caption">Illustrative · No live Azure calls · Browser-local activity</p>
+          <details class="reference-content" id="openingDetails">
+            <summary>Scenario details</summary>
+            <p class="opening-definition">An AI landing zone is a repeatable foundation for deploying and operating AI workloads with enterprise identity, connectivity, governance and operational controls.</p>
+            <p>Today we’ll identify what is shared, what each workload owns, and the decisions needed to onboard our first AI workload.</p>
+            <p id="platformChoices"><b>Microsoft Foundry</b> powers the application and agent capabilities in this scenario. Users enter through Teams, Microsoft 365 or web via configured integrations. <b>Microsoft Copilot Studio</b> is an alternative conversational UX or integration option, not a second architecture in this walkthrough.</p>
+            <div class="assumptions-strip" aria-label="Example assumptions">
+              <span><b>Use case</b> Internal assistant</span><span><b>Experience / agent</b> New Foundry · Prompt agent, standard resources</span><span><b>Network</b> Channel-specific ingress; compare managed/BYO agent egress</span><span><b>Model choice</b> Azure OpenAI · agent-compatible model to confirm</span><span><b>Target region</b> Canada East candidate · validate availability and quota</span>
+            </div>
+            <p>These diagrams explain responsibilities and logical flows; deployment details depend on the selected services and configuration.</p>
+            <p class="browser-note">Exercise state is saved only in this browser. This is not a shared voting session.</p>
+          </details>
         </div>
       </section>
 
@@ -3218,6 +3265,17 @@ SOFTWARE</pre>
     document.getElementById("sidebarToggle").textContent = hidden ? "Show sections" : "Hide sections";
   });
   function setupPresentation() {
+    document.querySelectorAll("[data-start-mode]").forEach(button => {
+      button.prepend(visualIcon(button.dataset.startIcon));
+      button.addEventListener("click", () => {
+        showPanel("p1");
+        document.querySelector('#architectureStudio .section-toggle[aria-expanded="false"]')?.click();
+        document.querySelector('[data-studio-entry="channels"]').click();
+        const mode = document.querySelector('[data-studio-mode="' + button.dataset.startMode + '"]');
+        mode.click();
+        mode.focus({ preventScroll: true });
+      });
+    });
     presentationRoute.forEach((step, index) => {
       const button = document.querySelector('.navbtn[data-route="' + step.key + '"]');
       const number = button.querySelector(".num");
