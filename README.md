@@ -30,12 +30,12 @@ The dashboard includes:
 - A header **Reset demo** button that stops playback, restores activities and diagram selections, and returns to **Opening scenario**. Decisions, parking-lot notes, theme, and full-screen mode are kept.
 - Light/dark themes, full-screen controls, and responsive layouts.
 - Primary **Previous / Next section** navigation and a seven-stop current-section indicator; the sidebar can be hidden. The accelerator link, reset and theme controls are secondary.
-- Contextual **Source / Applies to / Last reviewed** references beside technical guidance. Source links require internet; illustrations and exercises do not.
-- Both original **Agent Landing Zone** and **AI Gateway Landing Zone** architecture diagrams from Azure/AI-Landing-Zones, under **AI Landing Zone - High Level -> Official reference architectures**. They are embedded for offline use, with enlargement/zoom controls, pinned source links and the Microsoft MIT license notice.
+- Clear **Microsoft Foundry** and **Microsoft Copilot Studio** role callouts across the opening, architecture, ownership, networking, governance and decision prompts. The illustrated Azure workload uses Foundry; Copilot Studio is a separate low-code platform, not an agent subnet deployment.
+- Both original **Agent Landing Zone** and **AI Gateway Landing Zone** architecture diagrams from Azure/AI-Landing-Zones, under **AI Landing Zone - High Level -> Official reference architectures**. They are embedded for offline use, with enlargement/zoom controls and the Microsoft MIT license notice. Presentation source footnotes and citation links are omitted.
 
 ## Presenter notes
 
-`AI-Landing-Zone-Dashboard-Talk-Track.docx` is a **legacy presenter guide** and has not been revised for this guided route or the latest technical corrections. Use the current in-app scenario, explanations and sources as authoritative for this workshop. The DOCX is not published on the Azure site.
+`AI-Landing-Zone-Dashboard-Talk-Track.docx` is a **legacy presenter guide** and has not been revised for this guided route or the latest technical corrections. Use the current in-app scenario and explanations for this workshop. The DOCX is not published on the Azure site.
 
 ### Optional presentation interactions
 
@@ -62,7 +62,7 @@ The private hybrid example follows **on-premises users → ExpressRoute/VPN → 
 
 **Networking Deep Dive** is outside the seven-stop guided route (which spans six sections) and does not affect section progress. Its topic, agent-path, subnet-size and outbound-mode selections are saved locally. Use it for specific questions.
 
-Technical guidance was reviewed on October 4, 2026. The reference links both conflicting official address-range sources and uses non-overlapping RFC1918 space for the example. Confirm other ranges against the selected deployment path before allocation. Capability hosts and newer capability settings are not one universal provisioning flow.
+Technical guidance was reviewed on October 4, 2026. The reference acknowledges conflicting address-range guidance and uses non-overlapping RFC1918 space for the example. Confirm other ranges against the selected deployment path before allocation. Capability hosts and newer capability settings are not one universal provisioning flow.
 
 Subnet figures show address arithmetic and an illustrative below-80% planning envelope, **not** guaranteed session capacity. Validate project-level overhead, peak traffic, current regional quotas, API/agent support, and maintenance headroom. Outbound-mode buttons only change the illustration: they do not configure Azure, simulate real traffic, or imply that managed-network transitions are reversible.
 
@@ -156,7 +156,7 @@ The dashboard requires browser JavaScript. If your hosting environment enforces 
 
 ### Offline presentation
 
-Use **Opening scenario -> Presentation preparation and offline fallback -> Download offline dashboard**, or copy `index.html`, then open the downloaded file directly in a modern browser. The dashboard and diagrams work without a network connection; source and accelerator links require internet.
+Use **Opening scenario -> Presentation preparation and offline fallback -> Download offline dashboard**, or copy `index.html`, then open the downloaded file directly in a modern browser. The dashboard and diagrams work without a network connection; the accelerator link requires internet.
 
 Before presenting, rehearse at the actual sharing resolution, use manual stepping and review retained notes. Every launch and **Reset demo** starts on the opening scenario. Reset does not delete decisions. Export decisions before closing or switching between the live site and offline copy; these have separate browser-local storage.
 
