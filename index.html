@@ -618,9 +618,16 @@ a { color: var(--cp-link); }
 .card h2 { margin-bottom: 12px; padding-bottom: 8px; font-size: 1.2rem; }
 .section-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
 .section-heading h2 { flex: 1; min-width: 0; }
-.section-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.section-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; flex-shrink: 0; }
 .section-toggle { flex-shrink: 0; font-size: 0.8rem; padding: 5px 10px; }
-.section-move { font-size: 1rem; padding: 5px 9px; }
+.section-move { display: none; font-size: 1rem; padding: 5px 9px; }
+.layout-editing .section-move { display: inline-flex; }
+.reference-label { font-size: 0.75rem; color: var(--cp-text-muted); }
+.utility-controls { position: relative; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.layout-options > summary { cursor: pointer; }
+.layout-options .layout-actions { position: absolute; top: calc(100% + 6px); right: 0; z-index: 20; display: flex; flex-direction: column; gap: 8px; padding: 12px; min-width: 180px; background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: 8px; box-shadow: var(--cp-shadow); }
+.source-note { font-size: 0.875rem; line-height: 1.5; color: var(--cp-text-muted); overflow-wrap: anywhere; }
+#studioExpand { font-weight: 700; border-color: var(--cp-accent); }
 .section-body[hidden] { display: none; }
 .section-collapsed > .section-heading h2 { margin-bottom: 0; }
 .section-collapsed > .studio-topline { margin-bottom: 0; }
@@ -745,18 +752,19 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
       <div class="brand-tile" aria-hidden="true">AI</div>
       <div class="title">AI Landing Zone</div>
     </div>
-    <button class="navbtn active" data-panel="p0"><span class="num">1</span> Opening scenario</button>
-    <button class="navbtn" data-panel="p1"><span class="num">2</span> AI Landing Zone - High Level</button>
-    <button class="navbtn" data-panel="p4"><span class="num">2</span> Hub &amp; Spoke Landing Zones</button>
-    <button class="navbtn" data-panel="p3"><span class="num">4</span> Choose your network model</button>
-    <button class="navbtn" data-panel="p5"><span class="num">5</span> Policy Baseline</button>
-    <button class="navbtn" data-panel="p6"><span class="num">6</span> Decisions &amp; Parking Lot</button>
+    <button class="navbtn active" data-panel="p0" data-route="scenario"><span class="num">1</span> Opening scenario</button>
+    <button class="navbtn" data-panel="p1" data-route="architecture"><span class="num">2</span> Evolving architecture</button>
+    <button class="navbtn" data-panel="p4" data-route="ownership"><span class="num">3</span> Shared/workload ownership</button>
+    <button class="navbtn" data-panel="p4" data-route="gateway"><span class="num">4</span> Gateway outcome</button>
+    <button class="navbtn" data-panel="p3" data-route="network"><span class="num">5</span> Network decision</button>
+    <button class="navbtn" data-panel="p5" data-route="policy"><span class="num">6</span> Audit versus Deny</button>
+    <button class="navbtn" data-panel="p6" data-route="decisions"><span class="num">7</span> Decisions</button>
     <button class="navbtn nav-reference" data-panel="p2"><span class="num">R</span> Day-1 Services Sort · Optional</button>
     <button class="navbtn nav-reference" data-panel="p7"><span class="num" aria-hidden="true">R</span><span>Networking Deep Dive<small>Optional reference</small></span></button>
     <div class="sidebar-footer">
-      <div class="progress-label">Session progress</div>
+      <div class="progress-label">45-minute walkthrough</div>
       <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-      <div class="progress-label" id="progressLabel">0 / 6 segments visited</div>
+      <div class="progress-label" id="progressLabel">0 / 7 steps visited</div>
     </div>
   </nav>
 
@@ -777,8 +785,14 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
           <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path d="M9 2h5v5M14 2L7 9M7 3H2v11h11V9"></path></svg>
         </a>
         <div class="utility-controls">
-          <button class="iconbtn" type="button" id="collapseSections" aria-controls="p0">Collapse all</button>
-          <button class="iconbtn" type="button" id="expandSections" aria-controls="p0">Expand all</button>
+          <details class="layout-options" id="layoutOptions">
+            <summary class="iconbtn">Layout options</summary>
+            <div class="layout-actions">
+              <button class="iconbtn" type="button" id="editLayout" aria-pressed="false">Edit layout</button>
+              <button class="iconbtn" type="button" id="collapseSections" aria-controls="p0">Collapse all</button>
+              <button class="iconbtn" type="button" id="expandSections" aria-controls="p0">Expand all</button>
+            </div>
+          </details>
           <button class="iconbtn" type="button" id="resetDemo" title="Activity reset; decisions and notes retained">Reset demo</button>
           <button class="iconbtn" id="themeToggle">Dark theme</button>
           <button class="iconbtn" id="fullscreenToggle">Full screen</button>
@@ -794,7 +808,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
           <h2>One internal assistant, three teams</h2>
           <p class="opening-definition">An AI landing zone is a repeatable foundation for deploying and operating AI workloads with enterprise identity, connectivity, governance and operational controls.</p>
           <p>Today we’ll identify what is shared, what each workload owns, and the decisions needed to onboard our first AI workload.</p>
-          <p id="platformChoices"><b>Microsoft Foundry</b> supports custom AI applications and agents on Azure. <b>Microsoft Copilot Studio</b> can provide the conversational user experience (UX), with low-code agents and workflows. A custom app or Copilot Studio can surface the experience through Teams, Microsoft 365 or web channels with supported integrations; users do not need to be on-premises.</p>
+          <p id="platformChoices"><b>Microsoft Foundry</b> powers the application and agent capabilities in this scenario. Users enter through Teams, Microsoft 365 or web via configured integrations. <b>Microsoft Copilot Studio</b> is an alternative conversational UX or integration option, not a second architecture in this walkthrough.</p>
           <blockquote>Three teams need an internal assistant. They need approved models, access to permitted company documents, and eventually the ability to perform approved actions.</blockquote>
           <div class="assumptions-strip" aria-label="Example assumptions">
             <span><b>Use case</b> Internal assistant</span><span><b>Experience / agent</b> New Foundry · Prompt agent, standard resources</span><span><b>Network</b> Channel-specific ingress; compare managed/BYO agent egress</span><span><b>Model choice</b> Azure OpenAI · agent-compatible model to confirm</span><span><b>Target region</b> Canada East candidate · validate availability and quota</span>
@@ -822,7 +836,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
               <button class="iconbtn" type="button" data-studio-entry="hybrid" aria-pressed="false">Private hybrid</button>
             </div>
           </div>
-          <p class="studio-supporting" id="studioPlatformContext"><b>Assistant UX: custom app or Copilot Studio.</b> Cloud channels do not require the connectivity hub.</p>
+          <p class="studio-supporting" id="studioPlatformContext"><b>Primary story: a custom application with Microsoft Foundry.</b> Copilot Studio is an optional UX or integration.</p>
           <div class="studio-canvas">
             <svg id="studioSvg" viewBox="0 0 1180 300" role="group" aria-labelledby="studioTitle studioDescription">
               <title id="studioTitle">AI access: users, Teams or Microsoft 365 or web, Azure application, APIM and model</title>
@@ -930,7 +944,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
             <p id="studioExplanation">Users reach the assistant through a configured channel. The Azure backend calls approved models through APIM.</p>
           </div>
           <p class="takeaway">Shared guardrails; workload-owned applications, data access, evaluations and actions.</p>
-          <details class="studio-footnote reference-content" id="studioArchitectureNotes"><summary>Architecture details</summary><p>The Agent Landing Zone and AI Gateway Landing Zone can be deployed together or independently. The accelerator is in preview; each Azure service has its own availability status. The connectivity hub and APIM are different responsibilities. DNS is not an inline hop; firewall inspection depends on routing. The outline is not a single VNet.</p><p>Copilot Studio is SaaS, not deployed inside the illustrated VNet. Channel integration and backend reachability are configured separately. Copilot Studio can connect to supported Foundry agents through a preview integration. This is a separate integration decision, not the illustrated request path. Validate supported agent experience, endpoint configuration, identity, data handling and network reachability; neither platform automatically grants the other access.</p></details>
+          <details class="studio-footnote reference-content" id="studioArchitectureNotes"><summary>Architecture details</summary><p>The Agent Landing Zone and AI Gateway Landing Zone can be deployed together or independently. The accelerator is in preview; each Azure service has its own availability status. The connectivity hub and APIM are different responsibilities. Cloud channels do not require this connectivity hub. DNS is not an inline hop; firewall inspection depends on routing. The outline is not a single VNet.</p><p>Copilot Studio is SaaS, not deployed inside the illustrated VNet. It is an optional UX or integration choice, not the primary request path shown here. Channel integration and backend reachability are configured separately.</p><p>The documented Copilot Studio–Foundry agent connection is preview. It supports agents created in the new Foundry portal and requires the Foundry agent’s Activity protocol endpoint to be enabled. That endpoint is not enabled by default and currently requires REST API or Python SDK configuration; it cannot be enabled in the Foundry portal. The default Responses and A2A endpoints alone are insufficient.</p><p>Validate supported agent experience, endpoint configuration, identity, data handling and network reachability; neither platform automatically grants the other access.</p></details>
         </div>
         <div class="card" id="officialArchitectures">
           <h2>Agent Landing Zone &amp; AI Gateway Landing Zone architectures</h2>
@@ -1418,7 +1432,7 @@ SOFTWARE</pre>
 
       <!-- PANEL 4: Hub & Spoke Landing Zones -->
       <section class="panel" id="p4">
-        <div class="card">
+        <div class="card" id="landingZonesReference">
           <h2>AI Landing Zones in Detail</h2>
           <div class="tabs">
             <button class="tab active" data-tab="hub">APIM Landing Zone — Hub</button>
@@ -1878,11 +1892,21 @@ SOFTWARE</pre>
     { t: "Allow the complete workload's resource types", d: "Allow approved resource types needed by the complete workload, including its networking, gateway, data and operational dependencies.", icon: "📋", name: "Allowed resource types", policyId: "a08ec900-254a-4555-9bf5-e42af04b5c5c", coverage: "Indexed mode: resource types supporting tags and location; not all child resource types", effect: "Audit, Deny, Disabled (v1.1.0); example starts with Audit", owner: "Landing-zone governance" },
   ];
 
+  const presentationRoute = [
+    { panel: "p0", key: "scenario", title: "Opening scenario" },
+    { panel: "p1", key: "architecture", title: "Evolving architecture" },
+    { panel: "p4", key: "ownership", title: "Shared/workload ownership" },
+    { panel: "p4", key: "gateway", title: "Gateway outcome" },
+    { panel: "p3", key: "network", title: "Network decision" },
+    { panel: "p5", key: "policy", title: "Audit versus Deny" },
+    { panel: "p6", key: "decisions", title: "Decisions" },
+  ];
   function createInitialState() {
     return {
       schemaVersion: 2,
       activePanel: "p0",
       visited: { p0: true, p1: false, p3: false, p4: false, p5: false, p6: false },
+      visitedSteps: Object.fromEntries(presentationRoute.map(step => [step.key, step.key === "scenario"])),
       sortMode: "short",
       sort: {},          // name -> col
       sortWhyShown: {},
@@ -1932,6 +1956,7 @@ SOFTWARE</pre>
         }
         for (const [key, keys] of Object.entries({
           visited: allPanels,
+          visitedSteps: presentationRoute.map(step => step.key),
           checked: policyItems.map((_, i) => String(i)),
           sortWhyShown: services.map(s => s.name),
           sort: services.map(s => s.name),
@@ -2001,25 +2026,22 @@ SOFTWARE</pre>
   function showPanel(id) {
     pauseWalkthroughs();
     panels.forEach(p => p.classList.toggle("active", p.id === id));
-    navButtons.forEach(b => {
-      b.classList.toggle("active", b.dataset.panel === id);
-      if (b.dataset.panel === id) b.setAttribute("aria-current", "page");
-      else b.removeAttribute("aria-current");
-    });
-    document.getElementById("topTitle").textContent = titles[id];
     state.activePanel = id;
     if (corePanels.includes(id)) state.visited[id] = true;
-    updateProgress();
     updatePresentation(id);
+    updateProgress();
     save();
   }
-  navButtons.forEach(b => b.addEventListener("click", () => showPanel(b.dataset.panel)));
+  navButtons.forEach(b => b.addEventListener("click", () => {
+    if (b.dataset.route) presentationIndex = presentationRoute.findIndex(step => step.key === b.dataset.route);
+    showPanel(b.dataset.panel);
+  }));
 
   function updateProgress() {
-    const total = corePanels.length;
-    const done = corePanels.filter(id => state.visited[id]).length;
+    const total = presentationRoute.length;
+    const done = presentationRoute.filter(step => state.visitedSteps[step.key]).length;
     document.getElementById("progressFill").style.width = (done / total * 100) + "%";
-    document.getElementById("progressLabel").textContent = done + " / " + total + " segments visited";
+    document.getElementById("progressLabel").textContent = done + " / " + total + " steps visited";
   }
 
   function keyboardClick(element) {
@@ -2308,8 +2330,12 @@ SOFTWARE</pre>
       checklistEl.appendChild(row);
       const implementation = document.createElement("div");
       implementation.className = "policy-implementation";
-      const name = document.createElement("strong");
+      const name = document.createElement("a");
       name.textContent = item.name;
+      name.href = "https://portal.azure.com/#blade/Microsoft_Azure_Policy/PolicyDetailBlade/definitionId/" +
+        encodeURIComponent("/providers/Microsoft.Authorization/policyDefinitions/" + item.policyId);
+      name.target = "_blank";
+      name.rel = "noopener noreferrer";
       implementation.append(name);
       for (const text of [
         "Scope: existing management group or subscription covering the target resources; narrow assignment when justified.",
@@ -3236,21 +3262,21 @@ SOFTWARE</pre>
     },
   ], "Illustrative resource-property policy; independent of the discussion checklist.");
 
-  const presentationRoute = [
-    { panel: "p0", key: "scenario", title: "Opening scenario" },
-    { panel: "p1", key: "architecture", title: "Evolving architecture" },
-    { panel: "p4", key: "ownership", title: "Shared / workload ownership" },
-    { panel: "p4", key: "gateway", title: "One gateway outcome" },
-    { panel: "p3", key: "network", title: "Network decision" },
-    { panel: "p5", key: "policy", title: "Audit versus Deny" },
-    { panel: "p6", key: "decisions", title: "Decisions" },
-  ];
   let presentationIndex = 0;
   function updatePresentation(id) {
     const first = presentationRoute.findIndex(step => step.panel === id);
     if (first >= 0 && presentationRoute[presentationIndex].panel !== id) presentationIndex = first;
     const step = presentationRoute[presentationIndex];
     document.body.dataset.route = first < 0 ? "reference" : step.key;
+    if (first >= 0) state.visitedSteps[step.key] = true;
+    document.getElementById("topTitle").textContent = first < 0 ? titles[id] : step.title;
+    navButtons.forEach(button => {
+      const active = first < 0 ? button.dataset.panel === id : button.dataset.route === step.key;
+      button.classList.toggle("active", active);
+      if (active) button.setAttribute("aria-current", first < 0 ? "page" : "step");
+      else button.removeAttribute("aria-current");
+    });
+    document.getElementById("layoutOptions").open = false;
     document.getElementById("sectionIndicator").textContent = first < 0
       ? "Optional reference" : (presentationIndex + 1) + " / " + presentationRoute.length + " · " + step.title;
     document.getElementById("previousSection").disabled = first >= 0 && presentationIndex === 0;
@@ -3275,6 +3301,12 @@ SOFTWARE</pre>
     document.getElementById("sidebarToggle").textContent = hidden ? "Show sections" : "Hide sections";
   });
   function setupPresentation() {
+    presentationRoute.forEach((step, index) => {
+      const button = document.querySelector('.navbtn[data-route="' + step.key + '"]');
+      const number = button.querySelector(".num");
+      number.textContent = index + 1;
+      button.replaceChildren(number, document.createTextNode(" " + step.title));
+    });
     if (location.protocol === "file:") {
       document.getElementById("downloadOffline").hidden = true;
     }
@@ -3284,6 +3316,31 @@ SOFTWARE</pre>
       nodes.forEach(node => details.append(node)); panel.append(details);
       return details;
     }
+    function sources(details, links) {
+      const note = document.createElement("p");
+      note.className = "source-note";
+      note.append("Sources: ");
+      links.forEach(([label, href], index) => {
+        if (index) note.append(" · ");
+        const link = document.createElement("a");
+        link.textContent = label; link.href = href; link.target = "_blank"; link.rel = "noopener noreferrer";
+        note.append(link);
+      });
+      const date = document.createElement("time");
+      date.dateTime = "2026-10-04"; date.textContent = "October 4, 2026";
+      note.append(" · Last reviewed: ", date);
+      details.append(note);
+    }
+    const agentSetup = ["Standard agent setup", "https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/standard-agent-setup"];
+    sources(document.getElementById("studioArchitectureNotes"), [
+      ["Copilot Studio–Foundry connection (preview)", "https://learn.microsoft.com/en-us/microsoft-copilot-studio/add-agent-foundry-agent"],
+    ]);
+    sources(document.getElementById("officialArchitectureNotes"), [agentSetup]);
+    const sortBaseline = document.getElementById("sortBaseline");
+    const sortSource = reference(sortBaseline.parentElement, [], "Standard setup: documentation and applicability");
+    sortSource.id = "standardSetupSources";
+    sortBaseline.after(sortSource);
+    sources(sortSource, [agentSetup]);
     const high = document.getElementById("p1");
     for (const id of ["architectureStudio", "hybridArchitecture", "officialArchitectures",
       "landingZoneBlueprint", "architectureChallenges", "requestWalkthrough"]) {
@@ -3291,7 +3348,7 @@ SOFTWARE</pre>
     }
     const ownership = document.createElement("div"); ownership.className = "card"; ownership.id = "ownershipMain";
     ownership.innerHTML = '<h2>One foundation, clear ownership</h2><div class="ownership-grid">' +
-      '<article><h3>Shared platform responsibilities</h3><p>Connectivity, shared gateway, applicable policies and shared operational standards.</p><p>Enterprise/platform foundation: identity, hybrid networking, governance and operating standards.</p><p>Foundry: approved model access and Azure resource controls. Copilot Studio: environment, connector and data policies, where used.</p></article>' +
+      '<article><h3>Shared platform responsibilities</h3><p>Connectivity, shared gateway, applicable policies and shared operational standards.</p><p>Enterprise/platform foundation: identity, hybrid networking, governance and operating standards.</p></article>' +
       '<article><h3>Workload responsibilities</h3><p>Application, prompts, authorized retrieval, tools, evaluations, workload costs and support.</p><p>The three teams retain their own document permissions. Sharing a gateway does not grant access to another team’s data or actions.</p></article></div>' +
       '<p class="takeaway">The Agent Landing Zone and AI Gateway Landing Zone can be deployed together or independently.</p><p>Accelerator: preview. Individual Azure services: check their own availability and selected features.</p>';
     const zones = document.getElementById("p4");
@@ -3325,16 +3382,24 @@ SOFTWARE</pre>
       '</tbody></table><p class="browser-note">This switch changes the illustration, not Azure. Managed isolation cannot be disabled once enabled; approved-only cannot revert to internet access. BYO-to-managed migration requires redeployment.</p>');
     const platformBoundary = document.createElement("p"); platformBoundary.className = "browser-note"; platformBoundary.id = "networkPlatformBoundary";
     platformBoundary.textContent = "These are Foundry networking choices. Copilot Studio is a separate SaaS platform, not a workload deployed into this agent subnet. Validate supported connectivity for each integration.";
-    comparison.append(platformBoundary); network.prepend(comparison);
+    const networkDetails = reference(comparison, [platformBoundary], "Networking details and sources");
+    networkDetails.id = "networkSources";
+    sources(networkDetails, [
+      ["Microsoft-managed network guidance", "https://learn.microsoft.com/en-us/azure/foundry/how-to/managed-virtual-network"],
+    ]);
+    network.prepend(comparison);
     const capability = document.createElement("p");
     capability.textContent = "Deployment-path-specific capability configuration: classic capability hosts and newer Foundry capability settings are different provisioning paths. Confirm the selected experience, API/tooling version, supported region and required caller permissions; do not apply one universal CapHost creation sequence.";
     reference(network, [capability], "Deployment-path-specific capability configuration");
     document.querySelector("#p5 .card").append(document.getElementById("policyRecommendations"));
     const recommendations = document.getElementById("policyRecommendations");
+    sources(recommendations, [
+      ["Built-in policy definitions", "https://learn.microsoft.com/en-us/azure/ai-services/policy-reference"],
+    ]);
     const governanceBoundary = document.createElement("p"); governanceBoundary.id = "policyPlatformBoundary";
     governanceBoundary.textContent = "Azure Policy here governs supported Azure resources, including Foundry resources. Copilot Studio environment settings, connectors and data policies require separate Copilot Studio / Power Platform governance; Azure Policy assignments do not replace those controls.";
     recommendations.append(governanceBoundary);
-    const prompts = ["First workload", "Agent platform: Foundry / Copilot Studio", "Shared gateway ownership", "Network approach", "Policy ownership", "Remaining prerequisites"];
+    const prompts = ["First workload", "Optional Copilot Studio integration", "Shared gateway ownership", "Network approach", "Policy ownership", "Remaining prerequisites"];
     const readiness = ["Region / model availability", "Quota and capacity", "Cost ownership", "Evaluations and acceptance criteria", "Safety / privacy and action authorization", "Recovery expectations", "Monitoring and alerting", "Support ownership"];
     function promptButton(text, target) {
       const button = document.createElement("button"); button.type = "button"; button.className = "iconbtn"; button.textContent = text;
@@ -3351,6 +3416,15 @@ SOFTWARE</pre>
   function setupCollapsibleSections() {
     const sections = [];
     const initialOrders = new Map();
+    const editLayout = document.getElementById("editLayout");
+    function setEditing(editing) {
+      document.body.classList.toggle("layout-editing", editing);
+      editLayout.setAttribute("aria-pressed", String(editing));
+      editLayout.textContent = editing ? "Finish editing" : "Edit layout";
+      document.getElementById("layoutOptions").open = false;
+      document.querySelector("#layoutOptions > summary").focus({ preventScroll: true });
+    }
+    editLayout.addEventListener("click", () => setEditing(!document.body.classList.contains("layout-editing")));
     function orderedCards(parent) {
       return [...parent.children].filter(child =>
         child.classList.contains("card") && getComputedStyle(child).display !== "none");
@@ -3409,6 +3483,13 @@ SOFTWARE</pre>
       button.setAttribute("aria-controls", body.id);
       const actions = document.createElement("div");
       actions.className = "section-actions";
+      const defaultExpanded = !(parent.id === "p1" && card.id !== "architectureStudio") &&
+        card.id !== "landingZonesReference";
+      if (!defaultExpanded) {
+        const label = document.createElement("span");
+        label.className = "reference-label"; label.textContent = "Optional reference";
+        actions.append(label);
+      }
       const up = document.createElement("button");
       const down = document.createElement("button");
       for (const [control, direction, label] of [[up, "up", "↑"], [down, "down", "↓"]]) {
@@ -3422,23 +3503,26 @@ SOFTWARE</pre>
       actions.append(button, up, down);
       heading.append(actions);
       card.append(body);
-      const section = { card, parent, heading, body, button, up, down, title: title.textContent.trim() };
+      const section = { card, parent, heading, body, button, up, down, defaultExpanded, title: title.textContent.trim() };
       sections.push(section);
       button.addEventListener("click", () => setExpanded(section, body.hidden));
       up.addEventListener("click", () => moveSection(section, -1));
       down.addEventListener("click", () => moveSection(section, 1));
-      setExpanded(section, true);
+      setExpanded(section, defaultExpanded);
     });
     for (const [id, expanded] of [["collapseSections", false], ["expandSections", true]]) {
       document.getElementById(id).addEventListener("click", () => {
         const panel = document.querySelector(".panel.active");
         sections.filter(section => section.card.closest(".panel") === panel)
           .forEach(section => setExpanded(section, expanded));
+        document.getElementById("layoutOptions").open = false;
+        document.querySelector("#layoutOptions > summary").focus({ preventScroll: true });
       });
     }
     demoResets.add(() => {
       initialOrders.forEach((children, parent) => parent.append(...children));
-      sections.forEach(section => setExpanded(section, true));
+      sections.forEach(section => setExpanded(section, section.defaultExpanded));
+      setEditing(false);
       refreshMoves();
     });
     return refreshMoves;
