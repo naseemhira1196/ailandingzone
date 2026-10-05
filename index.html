@@ -751,7 +751,7 @@ body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway
 .gov-ring .ring-icon, .gov-ring .ring-sub { display: none; }
 .gov-ring .ring-sub { font-size: 0.875rem; }
 .gov-detail { padding: 10px 12px; margin-bottom: 8px; }
-.policy-implementation { padding: 8px 16px 14px 48px; font-size: 0.9rem; }
+.policy-implementation { padding: 8px 16px 14px 48px; font-size: 0.9rem; overflow-wrap: anywhere; }
 .policy-implementation p { margin: 6px 0; }
 .decision-entry { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) 34px; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--cp-border); }
 .decision-entry label { font-size: 0.85rem; font-weight: 600; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
@@ -1772,7 +1772,7 @@ SOFTWARE</pre>
             <p>Policy assigned once here is inherited by every subscription and resource underneath — this is what makes the next four controls consistent across the whole estate instead of configured per-subscription.</p>
           </div>
 
-          <details class="reference-content" id="policyRecommendations"><summary>Policy recommendations: names, effects, scopes, owners and exceptions</summary><div id="checklist"></div><p>Foundry projects and model deployments are resource relationships, not replacements for Azure scope levels. Prefer Entra identities and least-privilege RBAC; disable local key authentication where supported. Managed identities are not covered by workload-identity Conditional Access.</p><p>Workspace design recommendation: choose workspace boundaries based on access, residency, retention and operating requirements. Cross-workspace queries are supported.</p></details>
+          <section class="reference-content" id="policyRecommendations" aria-labelledby="policyRecommendationsTitle"><h3 id="policyRecommendationsTitle">Policy recommendations: names, effects, scopes, owners and exceptions</h3><div id="checklist"></div><p>Foundry projects and model deployments are resource relationships, not replacements for Azure scope levels. Prefer Entra identities and least-privilege RBAC; disable local key authentication where supported. Managed identities are not covered by workload-identity Conditional Access.</p><p>Workspace design recommendation: choose workspace boundaries based on access, residency, retention and operating requirements. Cross-workspace queries are supported.</p></section>
           <div class="scenario" id="policyScenario"></div>
         </div>
       </section>
@@ -3880,7 +3880,7 @@ SOFTWARE</pre>
       button.setAttribute("aria-controls", body.id);
       const actions = document.createElement("div");
       actions.className = "section-actions";
-      const defaultExpanded = !(parent.id === "p1" && card.id !== "architectureStudio") &&
+      const defaultExpanded = !(parent.id === "p1" && !["architectureStudio", "officialArchitectures"].includes(card.id)) &&
         card.id !== "landingZonesReference";
       if (!defaultExpanded) {
         const label = document.createElement("span");
