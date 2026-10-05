@@ -707,6 +707,20 @@ a { color: var(--cp-link); }
 .ownership-grid > article { border: 1px solid var(--cp-border); background: var(--cp-accent-soft); padding: 16px; border-radius: 8px; }
 .ownership-grid h3 { margin: 4px 0 8px; }
 .ownership-grid p { font-size: 1.05rem; line-height: 1.55; }
+.ownership-visual svg { display: block; width: 100%; color: var(--cp-accent); }
+.ownership-visual .ownership-zone { fill: var(--cp-surface); stroke: var(--cp-border-strong); }
+.ownership-visual .ownership-platform { fill: var(--cp-accent-soft); stroke: var(--cp-accent); }
+.ownership-visual text { fill: var(--cp-text); font-family: inherit; }
+.ownership-visual .ownership-title { font-size: 26px; font-weight: 700; }
+.ownership-visual .ownership-item { font-size: 23px; font-weight: 600; }
+.ownership-visual .ownership-caption { font-size: 19px; fill: var(--cp-text-muted); }
+.ownership-visual .ownership-agreement { fill: var(--cp-surface-soft); stroke: var(--cp-border); }
+.ownership-visual .stage-art { color: var(--cp-accent); }
+.ownership-boundary { text-align: center; font-weight: 600; margin: 10px 0; }
+.ownership-visual.topo-wrap { overflow-x: auto; }
+.ownership-visual.topo-wrap > svg { min-width: 760px; }
+#ownershipVisual > svg { max-width: 1000px; margin: 0 auto; }
+#ownershipVisual { padding: 12px; margin-bottom: 10px; }
 body:not([data-route="ownership"]) #ownershipMain, body:not([data-route="gateway"]) #gatewayMain { display: none; }
 #gatewayMain:not(.all-outcomes) .scenario-options button:nth-child(n+3) { display: none; }
 .scenario { margin-top: 10px; padding: 14px; }
@@ -3105,14 +3119,16 @@ SOFTWARE</pre>
       button.setAttribute("aria-label", "Enlarge diagram: " + title);
       actions.appendChild(button);
       wrap.prepend(actions);
-      const trace = setupArchitectureTrace(source, actions, traceKey);
-      trace.controls.insertBefore(button, trace.controls.querySelector(".architecture-trace-status"));
-      actions.remove();
+      if (!wrap.hasAttribute("data-static-diagram")) {
+        const trace = setupArchitectureTrace(source, actions, traceKey);
+        trace.controls.insertBefore(button, trace.controls.querySelector(".architecture-trace-status"));
+        actions.remove();
+      }
       button.addEventListener("click", () => {
         pauseWalkthroughs();
         trigger = button;
         const copy = source.cloneNode(true);
-        copy.querySelector(".architecture-trace").remove();
+        copy.querySelector(".architecture-trace")?.remove();
         const idMap = new Map();
         [copy, ...copy.querySelectorAll("[id]")].forEach(node => {
           if (node.id) idMap.set(node.id, "enlarged-" + index + "-" + node.id);
@@ -3149,8 +3165,9 @@ SOFTWARE</pre>
           });
         });
         dialog.querySelector("#diagramViewerTitle").textContent = source.querySelector("title")?.textContent || title;
+        viewport.classList.toggle("ownership-visual", wrap.classList.contains("ownership-visual"));
         viewport.replaceChildren(copy);
-        viewerTrace = setupArchitectureTrace(copy, viewport, traceKey);
+        viewerTrace = wrap.hasAttribute("data-static-diagram") ? null : setupArchitectureTrace(copy, viewport, traceKey);
         detail.replaceChildren();
         zoom = 100;
         renderZoom();
@@ -3700,10 +3717,49 @@ SOFTWARE</pre>
     selectArchitectureView("flow");
     demoResets.add(() => selectArchitectureView("flow"));
     const ownership = document.createElement("div"); ownership.className = "card"; ownership.id = "ownershipMain";
-    ownership.innerHTML = '<h2>One foundation, clear ownership</h2><div class="ownership-grid">' +
+    ownership.innerHTML = `<h2>One foundation, clear ownership</h2>
+      <div class="topo-wrap ownership-visual" id="ownershipVisual" data-static-diagram>
+        <svg viewBox="0 0 1120 420" role="img" aria-labelledby="ownershipVisualTitle ownershipVisualDescription">
+          <title id="ownershipVisualTitle">Shared platform vs workload ownership</title>
+          <desc id="ownershipVisualDescription">Shared platform teams own reusable connectivity, model gateway and guardrails. Each workload team owns its application and agent, data and tool permissions, and workload operations. Teams align on access, incident response and cost allocation. Shared services do not share data permissions.</desc>
+          <rect class="ownership-zone ownership-platform" x="4" y="4" width="536" height="340" rx="16"/>
+          <rect class="ownership-zone" x="580" y="4" width="536" height="340" rx="16"/>
+          <text class="ownership-title" x="28" y="42">Shared platform owns</text>
+          <text class="ownership-caption" x="28" y="70">Build once. Reuse across teams.</text>
+          <text class="ownership-title" x="604" y="42">Each workload team owns</text>
+          <text class="ownership-caption" x="604" y="70">Team A / Team B / Team C</text>
+          <g data-ownership-icon="network" transform="translate(24 93)"></g>
+          <text class="ownership-item" x="100" y="116">Connectivity foundation</text>
+          <text class="ownership-caption" x="100" y="145">Shared DNS, routing &amp; hybrid access</text>
+          <g data-ownership-icon="gateway" transform="translate(24 174)"></g>
+          <text class="ownership-item" x="100" y="197">Shared model gateway</text>
+          <text class="ownership-caption" x="100" y="226">APIM policies, quotas &amp; model routing</text>
+          <g data-ownership-icon="shield" transform="translate(24 255)"></g>
+          <text class="ownership-item" x="100" y="278">Platform guardrails</text>
+          <text class="ownership-caption" x="100" y="307">Identity baseline, policy &amp; log standards</text>
+          <g data-ownership-icon="app" transform="translate(600 93)"></g>
+          <text class="ownership-item" x="676" y="116">Application &amp; agent</text>
+          <text class="ownership-caption" x="676" y="145">Prompts, orchestration &amp; evaluations</text>
+          <g data-ownership-icon="data" transform="translate(600 174)"></g>
+          <text class="ownership-item" x="676" y="197">Data &amp; tool access</text>
+          <text class="ownership-caption" x="676" y="226">Document permissions &amp; action approval</text>
+          <g data-ownership-icon="meter" transform="translate(600 255)"></g>
+          <text class="ownership-item" x="676" y="278">Workload operations</text>
+          <text class="ownership-caption" x="676" y="307">Answer quality, costs &amp; support</text>
+          <rect class="ownership-agreement" x="4" y="360" width="1112" height="56" rx="12"/>
+          <text class="ownership-item" x="560" y="395" text-anchor="middle">Agree together: access onboarding / incident response / cost allocation</text>
+        </svg>
+      </div>
+      <p class="ownership-boundary">Shared services do not mean shared data permissions.</p>
+      <details class="reference-content"><summary>Ownership details</summary><div class="ownership-grid">` +
       '<article><h3>Shared platform responsibilities</h3><p>Connectivity, shared gateway, applicable policies and shared operational standards.</p><p>Enterprise/platform foundation: identity, hybrid networking, governance and operating standards.</p></article>' +
       '<article><h3>Workload responsibilities</h3><p>Application, prompts, authorized retrieval, tools, evaluations, workload costs and support.</p><p>The three teams retain their own document permissions. Sharing a gateway does not grant access to another team’s data or actions.</p></article></div>' +
-      '<p class="takeaway">The Agent Landing Zone and AI Gateway Landing Zone can be deployed together or independently.</p><p>Accelerator: preview. Individual Azure services: check their own availability and selected features.</p>';
+      '<p class="takeaway">The Agent Landing Zone and AI Gateway Landing Zone can be deployed together or independently.</p><p>Accelerator: preview. Individual Azure services: check their own availability and selected features.</p></details>';
+    ownership.querySelectorAll("[data-ownership-icon]").forEach(slot => {
+      const icon = visualIcon(slot.dataset.ownershipIcon);
+      icon.setAttribute("width", "60"); icon.setAttribute("height", "60");
+      slot.append(icon);
+    });
     const zones = document.getElementById("p4");
     const gateway = document.createElement("div"); gateway.className = "card"; gateway.id = "gatewayMain";
     gateway.innerHTML = '<h2>One gateway outcome: missing identity</h2><p>A shared enforcement point for requests routed through the gateway, with backend identity and network controls configured to prevent unintended bypass.</p>';

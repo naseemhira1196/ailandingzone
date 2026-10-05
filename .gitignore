@@ -4,3 +4,4 @@ node_modules/
 Thumbs.db
 ~$*.docx
 .copilot-azure/
+.azure/
